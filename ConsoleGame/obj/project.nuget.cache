@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "09XemmxFZUvYjuykYppVB1KYNTXmoLR5vg3BSB4rXq/qF/d205mZRel9CT/8tFsBnEtPJMF1AZjgGydh+C0EZg==",
+  "dgSpecHash": "G+k6zerxsN4woov7PHQVI2dksAD1VvWWybmPO2oW3afWvoHRRR4Xhzk8J0E5XEJCjbMAxt0YUe4HTbmFcW3bmw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\2020y\\source\\repos\\ConsoleApp1\\ConsoleGame\\ConsoleGame\\ConsoleGame.csproj",
+  "projectFilePath": "C:\\Users\\Lee\\Documents\\GitHub\\PinguRepo\\ConsoleGame\\ConsoleGame.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\2020y\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+    "C:\\Users\\Lee\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
   ],
   "logs": []
 }
