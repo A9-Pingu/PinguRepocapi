@@ -25,17 +25,17 @@ namespace ConsoleGame
 
             switch (item.Type)
             {
-                case Item.ItemType.Weapon:
-                    if (EquippedItems.Any(i => i.Type == Item.ItemType.Weapon))
+                case ItemType.Weapon:
+                    if (EquippedItems.Any(i => i.Type == ItemType.Weapon))
                     {
-                        UnequipItem(EquippedItems.Find(i => i.Type == Item.ItemType.Weapon));
+                        UnequipItem(EquippedItems.Find(i => i.Type == ItemType.Weapon));
                     }
                     Owner.AttackPower += item.StatBonus;
                     break;
-                case Item.ItemType.Defense:
-                    if (EquippedItems.Any(i => i.Type == Item.ItemType.Defense))
+                case ItemType.Defense:
+                    if (EquippedItems.Any(i => i.Type == ItemType.Defense))
                     {
-                        UnequipItem(EquippedItems.Find(i => i.Type == Item.ItemType.Defense));
+                        UnequipItem(EquippedItems.Find(i => i.Type == ItemType.Defense));
                     }
                     Owner.DefensePower += item.StatBonus;
                     break;
@@ -55,10 +55,10 @@ namespace ConsoleGame
 
             switch (item.Type)
             {
-                case Item.ItemType.Weapon:
+                case ItemType.Weapon:
                     Owner.AttackPower -= item.StatBonus;
                     break;
-                case Item.ItemType.Armor:
+                case ItemType.Armor:
                     Owner.DefensePower -= item.StatBonus;  // DefensePower 감소
                     break;
             }
@@ -82,7 +82,7 @@ namespace ConsoleGame
             int totalAttackPower = Owner.AttackPower;
             foreach (var item in EquippedItems)
             {
-                if (item.Type == Item.ItemType.Weapon)
+                if (item.Type == ItemType.Weapon)
                 {
                     totalAttackPower += item.StatBonus;
                 }
@@ -95,7 +95,7 @@ namespace ConsoleGame
             int totalDefensePower = Owner.DefensePower;
             foreach (var item in EquippedItems)
             {
-                if (item.Type == Item.ItemType.Defense)
+                if (item.Type == ItemType.Defense)
                 {
                     totalDefensePower += item.StatBonus;
                 }

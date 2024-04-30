@@ -1,5 +1,21 @@
 ﻿namespace ConsoleGame
 {
+    public enum ItemType
+    {
+        Defense,
+        Attack,
+        Armor,
+        Weapon,
+        SpecialWeapon,  // 상점에서 팔지 않는 무기
+        SpecialArmor,   // 상점에서 팔지 않는 방어구
+        SpecialScroll,  // 상점에서 팔지 않는 주문서
+        Consumable,
+        Potion,
+        Scroll,
+        Loot,
+        All,
+    }
+
     public class Item
     {
         public string Name { get; set; }
@@ -12,21 +28,6 @@
         public bool IsBound { get; set; }  // 귀속 아이템 여부 추가
 
 
-        public enum ItemType
-        {
-            Defense,
-            Attack,
-            Armor,
-            Weapon,
-            SpecialWeapon,  // 상점에서 팔지 않는 무기
-            SpecialArmor,   // 상점에서 팔지 않는 방어구
-            SpecialScroll,  // 상점에서 팔지 않는 주문서
-            Consumable,
-            Potion,
-            Scroll,
-            Loot,
-            All,
-        }
 
         // 귀속 아이템을 생성할 때는 IsBound 값을 true로 설정합니다
         public Item(string name, ItemType type, int price, int statBonus, string description, bool isBound, bool purchased = false)

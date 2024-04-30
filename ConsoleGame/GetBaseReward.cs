@@ -1,17 +1,11 @@
 ﻿using System;
+using ConsoleGame.Managers;
 
 namespace ConsoleGame
 {
-    public static class GetBaseReward
+    public class GetBaseReward
     {
-        public enum Difficulty
-        {
-            Easy,
-            Normal,
-            Hard
-        }
-
-        public static int Calculate(Difficulty difficulty)
+        public int Calculate(Difficulty difficulty)
         {
             switch (difficulty)
             {

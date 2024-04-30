@@ -1,0 +1,29 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleGame.Managers
+{
+    public class InputManager
+    {
+        public int GetValidSelectedIndex(int maxIndex, int minIndex = 0)
+        {
+            int selectedIndex;
+            while (true)
+            {
+                Console.Write("번호를 입력하세요: ");
+                int.TryParse(Console.ReadLine(), out selectedIndex);
+                if (selectedIndex >= minIndex && selectedIndex < maxIndex)
+                {
+                    return selectedIndex;
+                }
+                else
+                {
+                    Console.WriteLine("유효한 번호를 입력해주세요.");
+                }
+            }
+        }
+    }
+}

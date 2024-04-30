@@ -2,9 +2,9 @@
 
 namespace ConsoleGame
 {
-    public static class LevelUp
+    public class LevelUp
     {
-        public static void CheckLevelUp(Character player)
+        public void CheckLevelUp(Character player)
         {
             int requiredClears = player.Level - 1;  // 현재 레벨을 통해 필요한 클리어 횟수 계산
             if (player.DungeonClearCount >= requiredClears)

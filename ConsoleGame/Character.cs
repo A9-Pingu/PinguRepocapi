@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
+using ConsoleGame.Managers;
 
 namespace ConsoleGame
 {
@@ -41,6 +43,7 @@ namespace ConsoleGame
             ConsumableInventoryManager = new InventoryManager();
             WeaponEquipmentManager = new EquipmentManager(this);
             ArmorEquipmentManager = new EquipmentManager(this);
+
         }
 
         public bool HasRequiredDefense(int requiredDefense)
@@ -59,14 +62,14 @@ namespace ConsoleGame
 
             switch (item.Type)
             {
-                case Item.ItemType.Weapon:
+                case ItemType.Weapon:
                     WeaponInventoryManager.AddItem(item);
                     break;
-                case Item.ItemType.Armor:
+                case ItemType.Armor:
                     ArmorInventoryManager.AddItem(item);
                     break;
-                case Item.ItemType.Potion:
-                case Item.ItemType.Scroll:
+                case ItemType.Potion:
+                case ItemType.Scroll:
                     ConsumableInventoryManager.AddItem(item);
                     break;
                 default:
@@ -80,14 +83,14 @@ namespace ConsoleGame
 
             switch (item.Type)
             {
-                case Item.ItemType.Weapon:
+                case ItemType.Weapon:
                     WeaponInventoryManager.RemoveItem(item);
                     break;
-                case Item.ItemType.Armor:
+                case ItemType.Armor:
                     ArmorInventoryManager.RemoveItem(item);
                     break;
-                case Item.ItemType.Potion:
-                case Item.ItemType.Scroll:
+                case ItemType.Potion:
+                case ItemType.Scroll:
                     ConsumableInventoryManager.RemoveItem(item);
                     break;
                 default:
@@ -117,41 +120,11 @@ namespace ConsoleGame
             return totalDefensePower;
         }
 
-        public void ShowStatus()
+        public void Attack(Enemy enemy)
         {
-            Console.WriteLine("상태 보기");
-            Console.WriteLine($"이름: {Name}");
-            Console.WriteLine($"직업: {Job}");
-            Console.WriteLine($"레벨: {Level}");
-            Console.WriteLine($"체력: {Health}");
-            Console.WriteLine($"Gold: {Gold}");
-
-            double totalAttackPower = CalculateTotalAttackPower();
-            double totalDefensePower = CalculateTotalDefensePower();
-
-            Console.WriteLine($"공격력: {totalAttackPower}");
-            Console.WriteLine($"방어력: {totalDefensePower}");
-
-            // 장착한 아이템 정보 출력
-            if (WeaponInventoryManager.GetItemsByType(Item.ItemType.Weapon).Count > 0 ||
-               ArmorInventoryManager.GetItemsByType(Item.ItemType.Armor).Count > 0)
-            {
-                Console.WriteLine("[장착 아이템]");
-
-                foreach (var weapon in WeaponInventoryManager.GetItemsByType(Item.ItemType.Weapon))
-                {
-                    Console.WriteLine($"- {weapon.Name} (무기) : +{weapon.StatBonus}");
-                }
-
-                foreach (var armor in ArmorInventoryManager.GetItemsByType(Item.ItemType.Armor))
-                {
-                    Console.WriteLine($"- {armor.Name} (방어구) : +{armor.StatBonus}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("장착한 아이템이 없습니다.");
-            }
+            int damage = CalculateTotalAttackPower();
+            Console.WriteLine($"당신이 {enemy.Name}에게 {damage}의 피해를 입혔습니다.");
+            enemy.Health -= damage;
         }
     }
 }
