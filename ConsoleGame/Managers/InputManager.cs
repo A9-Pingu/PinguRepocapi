@@ -25,5 +25,11 @@ namespace ConsoleGame.Managers
                 }
             }
         }
+
+        public void InputAnyKey()
+        {
+            Console.WriteLine("아무 키나 누르면 계속...");
+            Console.ReadKey();
+        }
     }
 }

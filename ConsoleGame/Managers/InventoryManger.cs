@@ -44,6 +44,7 @@ namespace ConsoleGame.Managers
             if (Inventory.Count == 0)
             {
                 Console.WriteLine("인벤토리가 비어 있습니다.");
+                Game.instance.inputManager.InputAnyKey();
                 return;
             }
 
@@ -98,6 +99,8 @@ namespace ConsoleGame.Managers
                     Console.WriteLine("잘못된 입력입니다.");
                 }
             }
+
+            Game.instance.inputManager.InputAnyKey();
         }
 
         private string GetCategoryName(ItemType itemType)

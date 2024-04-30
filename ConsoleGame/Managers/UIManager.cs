@@ -21,7 +21,7 @@ namespace ConsoleGame.Managers
             Console.WriteLine("4. 던전 입장");
             Console.WriteLine("5. 휴식하기");
             Console.WriteLine("6. 저장하기");
-            Console.WriteLine("7. 게임 종료");
+            Console.WriteLine("0. 게임 종료");
             Console.WriteLine("===================");
             Console.Write("원하시는 행동을 입력해주세요: ");
         }
@@ -58,6 +58,8 @@ namespace ConsoleGame.Managers
             {
                 Console.WriteLine("장착한 아이템이 없습니다.");
             }
+
+            Game.instance.inputManager.InputAnyKey();
         }
 
         public void DisplayShopMenu()

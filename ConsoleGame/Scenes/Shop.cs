@@ -41,8 +41,7 @@ namespace ConsoleGame.Scenes
                         break;
                 }
 
-                Console.WriteLine("아무 키나 누르면 계속...");
-                Console.ReadKey();
+                Game.instance.inputManager.InputAnyKey();
             }
         }
 
