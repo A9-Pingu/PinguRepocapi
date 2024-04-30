@@ -213,7 +213,7 @@ namespace ConsoleGame.Scenes
             switch (difficulty)
             {
                 case Difficulty.Easy:
-                    level = player.Level - 1;
+                    level = player.Level + 1;
                     health = 50 + (level * 10);
                     attackPower = 5 + (level * 2);
                     break;

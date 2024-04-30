@@ -10,6 +10,7 @@ namespace ConsoleGame
         public string Name { get; set; }
         public string Job { get; set; }
         public int Level { get; set; }
+        public int Experience { get; set; }         // 경험치 추가 추가
         public int AttackPower { get; set; }
         public int DefensePower { get; set; }
         public int Health { get; set; }
@@ -31,6 +32,7 @@ namespace ConsoleGame
             Name = name;
             Job = job;
             Level = 1;
+            Experience = 0;     // 경험치
             AttackPower = 10;
             DefensePower = 5;
             Health = 100;

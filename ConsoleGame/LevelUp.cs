@@ -5,7 +5,11 @@ namespace ConsoleGame
     public class LevelUp
     {
         public void CheckLevelUp(Character player)
-        {
+        {            
+            int defeatedMonsterLevel = 1; // 전투에서 이긴 몬스터의 레벨로 가정
+            int earnedExperience = defeatedMonsterLevel; // 몬스터 레벨당 경험치 1로 가정
+            int requiredExperience = CalculateRequiredExperience(player.Level);
+
             int requiredClears = player.Level - 1;  // 현재 레벨을 통해 필요한 클리어 횟수 계산
             if (player.DungeonClearCount >= requiredClears)
             {
@@ -16,12 +20,18 @@ namespace ConsoleGame
                 player.AttackPower += 1;  // 정수로 변경
                 player.DefensePower += 2;  // 정수로 변경
 
+
                 Console.WriteLine($"축하합니다! 레벨 업! 현재 레벨은 Lv{player.Level} 입니다.");
                 Console.WriteLine($"기본 공격력이 1, 방어력이 2 증가했습니다.");  // 메시지 수정
             }
             else
             {
                 Console.WriteLine("레벨업을 위한 던전 클리어 횟수가 부족합니다.");
+            }
+
+            int CalculateRequiredExperience(int level)
+            {
+                return (level - 1) * 25 + 10; // 레벨에 따른 필요 경험치 계산
             }
         }
     }
