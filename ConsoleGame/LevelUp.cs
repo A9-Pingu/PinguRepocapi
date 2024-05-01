@@ -1,38 +1,60 @@
 ﻿using System;
+using System.ComponentModel.Design;
 
 namespace ConsoleGame
 {
     public class LevelUp
     {
-        public void CheckLevelUp(Character player)
+        private Character character; // Character 클래스 컴포지션
+
+        public LevelUp(Character character)
+        {
+            this.character = character;
+        }
+
+        public void CheckLevelUp()
         {            
-            int defeatedMonsterLevel = 1; // 전투에서 이긴 몬스터의 레벨로 가정
-            int earnedExperience = defeatedMonsterLevel; // 몬스터 레벨당 경험치 1로 가정
-            int requiredExperience = CalculateRequiredExperience(player.Level);
+            int defeatedMonsterLevel = 1;       // 전투에서 이긴 몬스터의 레벨로 가정
+            int earnedExp = defeatedMonsterLevel;       // 몬스터 레벨당 경험치 1로 가정
+            int requiredExp = CalculateRequiredExp(character.Level);        // 필요한 경험치 계산
+            int requiredClears = character.Level - 1;       // 현재 레벨을 통해 필요한 클리어 횟수 계산
 
-            int requiredClears = player.Level - 1;  // 현재 레벨을 통해 필요한 클리어 횟수 계산
-            if (player.DungeonClearCount >= requiredClears)
+            if (character.DungeonClearCount >= requiredClears)
             {
-                player.Level++;
-                player.ResetDungeonClearCount();  // 클리어 횟수 초기화 메서드 호출
-
-                // 기본 공격력과 방어력 증가
-                player.AttackPower += 1;  // 정수로 변경
-                player.DefensePower += 2;  // 정수로 변경
-
-
-                Console.WriteLine($"축하합니다! 레벨 업! 현재 레벨은 Lv{player.Level} 입니다.");
-                Console.WriteLine($"기본 공격력이 1, 방어력이 2 증가했습니다.");  // 메시지 수정
+                //character.Level++;    // 클리어 횟수 계산이 왜 있나?
+                character.ResetDungeonClearCount();     // 클리어 횟수 초기화 메서드 호출                
             }
             else
             {
                 Console.WriteLine("레벨업을 위한 던전 클리어 횟수가 부족합니다.");
             }
 
-            int CalculateRequiredExperience(int level)
+            // 경험치가 최대치에 도달하거나 필요한 경험치보다 크거나 같으면 레벨업 가능
+            if (character.Exp >= requiredExp || character.Exp >= character.MaxExp)
             {
-                return (level - 1) * 25 + 10; // 레벨에 따른 필요 경험치 계산
+                // 기본 공격력과 방어력 증가
+                character.AttackPower += 1;  // 정수로 변경
+                character.DefensePower += 2;  // 정수로 변경
+
+                character.Level++;
+
+                Console.WriteLine($"축하합니다! 레벨 업! 현재 레벨은 Lv{character.Level} 입니다.");
+                Console.WriteLine($"기본 공격력이 1, 방어력이 2 증가했습니다.");
+
+                // 경험치를 0으로 초기화
+                character.Exp = 0;
+                // 최대 경험치 갱신
+                character.MaxExp = CalculateRequiredExp(character.Level);
             }
+            else if (character.Exp < requiredExp)
+            {
+                Console.WriteLine("레벨을 위한 경험치가 부족합니다.");
+            }
+            
+        }
+        private int CalculateRequiredExp(int level)
+        {
+            return (level - 1) * 10 + 5; // 레벨에 따른 필요 경험치 계산
         }
     }
 }

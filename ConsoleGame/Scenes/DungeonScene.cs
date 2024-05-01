@@ -15,7 +15,7 @@ namespace ConsoleGame.Scenes
         public DungeonScene(Character character)
         {
             player = character;
-            random = new Random();
+            random = new Random();            
         }
 
 
@@ -98,6 +98,10 @@ namespace ConsoleGame.Scenes
                 Console.WriteLine("적을 물리쳤습니다!");
                 int additionalReward = CalculateAdditionalReward(player.AttackPower);
 
+                // 적을 물리칠 때마다 경험치 1 증가
+                /*Exp += 1;
+                LevelUp.CheckLevelUp();*/
+
                 Console.WriteLine($"기본 보상: {dungeon.baseReward} G");
                 Console.WriteLine($"공격력으로 인한 추가 보상: {additionalReward} G");
 
@@ -150,6 +154,7 @@ namespace ConsoleGame.Scenes
 
             Start(dungeon.difficulty);
 
+            DropNormalItem(dungeon.difficulty);
             DropSpecialItem(dungeon.difficulty);
 
         }
@@ -165,13 +170,13 @@ namespace ConsoleGame.Scenes
 
                 // 무작위로 갑옷 또는 무기 선택
                 Item droppedItem = null;
-                if (random.Next(2) == 0) // 0 또는 1을 랜덤하게 반환하므로 50% 확률로 수련자 갑옷 선택
+                if (random.Next(4) == 0) // 0 또는 1을 랜덤하게 반환하므로 25% 확률로 수련자 갑옷, 낡은 검, 소비 아이템 각 각 하나씩 드랍
                 {
-                    droppedItem = armorItems[random.Next(armorItems.Count)];
+                    droppedItem = armorItems[random.Next(new Item("수련자 갑옷", ItemType.Armor, 1000, 5, "수련에 도움을 주는 갑옷입니다.").Count)];
                 }
                 else
                 {
-                    droppedItem = weaponItems[random.Next(weaponItems.Count)];
+                    droppedItem = weaponItems[random.Next(new Item("낡은 검", ItemType.Weapon, 600, 2, "쉽게 볼 수 있는 낡은 검입니다.").Count)];
                 }
 
                 // 무작위로 물약 선택
@@ -184,8 +189,8 @@ namespace ConsoleGame.Scenes
                 
                 // 아이템을 인벤토리의 장비 카테고리에 추가
                 player.InventoryManager.AddItem(droppedItem);
-                player.InventoryManager.AddItem(consumableItem);
-            }
+                player.InventoryManager.AddItem(consumableItem);             
+            }           
 
         }
 
