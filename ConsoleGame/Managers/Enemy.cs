@@ -23,7 +23,7 @@ namespace ConsoleGame.Managers
         }
         public void EnemyAttack(Character player)
         {
-            int damage = AttackPower - player.CalculateTotalDefensePower();
+            int damage = AttackPower;
             if (damage < 0)
             {
                 damage = 0;
