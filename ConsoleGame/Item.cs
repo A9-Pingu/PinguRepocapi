@@ -10,6 +10,7 @@
 
     public class Item
     {
+        public int UniqueKey { get; private set; }
         public string Name { get; set; }
         public ItemType Type { get; set; }
         public int StatBonus { get; set; }
@@ -18,11 +19,11 @@
         public bool Purchased { get; set; }
         public bool Equipped { get; set; } = false;
         public bool IsBound { get; set; }  // 귀속 아이템 여부 추가
-        public int Count { get; set; }
+        public int Count { get; set; } = 0;
 
 
         // 귀속 아이템을 생성할 때는 IsBound 값을 true로 설정합니다
-        public Item(string name, ItemType type, int price, int statBonus, string description, bool isBound = false, bool purchased = false)
+        public Item(int keyValue, string name, ItemType type, int price, int statBonus, string description, bool isBound = false, bool purchased = false)
         {
             Name = name;
             Type = type;

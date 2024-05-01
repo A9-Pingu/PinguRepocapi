@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleGame.Scenes
+namespace ConsoleGame
 {
-    internal class Quest
+    public class Quest
     {
+        string Title = "공 백";
+        string Content = string.Empty;
+        bool IsClear = false;
+
     }
 }

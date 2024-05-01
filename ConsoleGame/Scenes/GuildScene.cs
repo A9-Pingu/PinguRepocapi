@@ -27,19 +27,21 @@ namespace ConsoleGame.Scenes
                         Game.instance.inputManager.InputAnyKey();
                         return;
                     case 1:
-
+                        CheckedQuestCondition();
                         break;
                     case 2:
-
+                        ShowQuestList();
                         break;
                     default:
                         break;
                 }
+                Thread.Sleep(1000);
             }
         }
 
         public void CheckedQuestCondition()
         {
+
 
         }
 

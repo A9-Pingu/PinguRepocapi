@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace ConsoleGame.Managers
 {
     public class InventoryManager
     {
-        //public Dictionary<ItemType, List<Item>> dicInventory = new Dictionary<ItemType, List<Item>>();
-        public Dictionary<ItemType, Item> dicEquipItem = new Dictionary<ItemType, Item>();
-        public List<Item> Inventory { get; set; }
-        public Character player;
 
+        public Dictionary<ItemType, Item> dicEquipItem = new Dictionary<ItemType, Item>();
+        public Character player;
+        public Dictionary<int, Item> dicInventory = new Dictionary<int, Item>();
+        
         // 인벤토리 초기화
         public InventoryManager(Character character)
         {
-            Inventory = new List<Item>();
             player = character;
             dicEquipItem[ItemType.Weapon] = null;
             dicEquipItem[ItemType.Armor] = null;
@@ -30,22 +30,47 @@ namespace ConsoleGame.Managers
         }
 
         // 아이템 추가
-        public void AddItem(Item item)
+        public void AddItem(Item item, int count = 1)
         {
-            Inventory.Add(item);
+            if (!dicInventory.ContainsKey(item.UniqueKey))
+            {
+                dicInventory[item.UniqueKey] = item;
+                dicInventory[item.UniqueKey].Purchased = true;
+            }
+            dicInventory[item.UniqueKey].Count += count;
         }
 
-        // 아이템 삭제
-        public void RemoveItem(Item item)
+
+        // 아이템 삭제 //else는 절대 안뜨는게 정상...만약 뜨면 신고바랍니다.
+        public bool RemoveItem(Item item, int count = 1)
         {
-            Inventory.Remove(item);
+            if (dicInventory.ContainsKey(item.UniqueKey))
+            {
+                dicInventory[item.UniqueKey].Count -= count;
+                if(dicInventory[item.UniqueKey].Count - count <= 0)
+                {
+                    dicInventory[item.UniqueKey].Count = 0;
+                    dicInventory[item.UniqueKey].Purchased = false;
+                    dicInventory.Remove(item.UniqueKey);
+                }
+                else
+                {
+                    Console.WriteLine("충분한 개수가 없습니다.");
+                    return false;
+                }
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("아이템이 인벤토리에 없습니다.");
+                return false;
+            }
         }
 
         // 인덱스로 아이템 조회
         public Item GetItem(int index)
         {
-            var list = Inventory;
-            return list[index];
+            return dicInventory[index];
         }
 
         // 인벤토리 출력 및 아이템 장착/해제 기능
@@ -81,12 +106,20 @@ namespace ConsoleGame.Managers
         private void ManagedEquip()
         {
             Console.Write("아이템 번호를 입력하세요: ");
-            int itemIndex = Game.instance.inputManager.GetValidSelectedIndex(Inventory.Count);
-            if (itemIndex == 0)
+            int inputKey = Game.instance.inputManager.GetValidSelectedIndex(dicInventory.Count);
+            if (inputKey == 0)
             {
                 return;
             }
-            EquipItem(Inventory[itemIndex - 1]);
+
+            int index = 0;
+            foreach (var item in dicInventory)
+            {
+                if (inputKey == index)
+                    break;
+                index++;
+            }
+            EquipItem(dicInventory[index - 1]);
         }
 
         public string GetCategoryName(ItemType itemType)
@@ -120,6 +153,7 @@ namespace ConsoleGame.Managers
             {
                 Console.WriteLine("장착 아이템이 아닙니다.");
                 Thread.Sleep(1000);
+                return;
             }
 
             if(CheckedEquipItem(item))

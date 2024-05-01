@@ -18,6 +18,7 @@ namespace ConsoleGame
         public RestInTown restScene { get; set; }
         public Shop shopScene { get; set; }
         public DungeonScene dungeon { get; set; }
+        public GuildScene guild { get; set; }
         #endregion
         public Character player;
         
@@ -36,6 +37,7 @@ namespace ConsoleGame
             shopScene = new Shop(player, itemManager);
             restScene = new RestInTown(player);
             dungeon = new DungeonScene(player);
+            guild = new GuildScene(player);
         }
 
         public void Run()
