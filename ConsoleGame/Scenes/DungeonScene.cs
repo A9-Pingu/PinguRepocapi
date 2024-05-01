@@ -108,31 +108,13 @@ namespace ConsoleGame.Scenes
 
                 if (random.Next(1, 101) <= 20) // 15~20% 확률로 드롭
                 {
-                    DropHighTierItem();
+                    
                 }
             }
 
             ClearDungeon();
         }
 
-        private void DropHighTierItem()
-        {
-            //List<Item> highTierItems = new List<Item>();
-
-            //highTierItems.AddRange(player.WeaponInventoryManager.GetItemsByType(ItemType.Weapon));
-            //highTierItems.AddRange(player.ArmorInventoryManager.GetItemsByType(ItemType.Armor));
-
-            //if (highTierItems.Count == 0)
-            //{
-            //    Console.WriteLine("상위 무기나 방어구가 없습니다.");
-            //    return;
-            //}
-
-            //Item droppedItem = highTierItems[random.Next(highTierItems.Count)];
-
-            //Console.WriteLine($"상위 아이템을 획득하였습니다: {droppedItem.Name}");
-            //player.InventoryManager.AddItem(droppedItem);
-        }
 
         private void ClearDungeon()
         {
