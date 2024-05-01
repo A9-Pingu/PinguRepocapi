@@ -98,8 +98,6 @@ namespace ConsoleGame
             }
         }
 
-
-
         public int CalculateTotalAttackPower()
         {
             int totalAttackPower = AttackPower;

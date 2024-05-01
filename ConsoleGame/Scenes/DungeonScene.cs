@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConsoleGame.Scenes
@@ -17,7 +18,6 @@ namespace ConsoleGame.Scenes
             player = character;
             random = new Random();
         }
-
 
 
         private int CalculateAdditionalReward(int attackPower)
@@ -38,6 +38,18 @@ namespace ConsoleGame.Scenes
             return totalReward;
         }
 
+        List<Enemy> allMonsters = new List<Enemy>
+        {
+            new Enemy("도둑갈매기", 2), // 플레이어 레벨을 1로 설정(난이도 선택시 구분됨)
+            new Enemy("야생들개", 2),
+            new Enemy("여우", 2),
+            new Enemy("바다표범", 3),
+            new Enemy("늑대", 3),
+            new Enemy("북극곰", 4),
+            new Enemy("범고래", 5)
+
+        };
+        //-------------------------------------------------------
         public void Start(Difficulty difficulty)
         {
             if (!player.HasRequiredDefense(dungeon.requiredDefense))
@@ -54,28 +66,67 @@ namespace ConsoleGame.Scenes
                 player.Health /= 2;
                 return;
             }
+            //----------------------------------------
 
             Console.WriteLine($"{difficulty} 던전 입장 성공!");
+            Console.WriteLine("     Battle!!     ");
+            Console.WriteLine("");
 
-            Enemy enemy = GenerateEnemy(difficulty);
-
-            Console.WriteLine($"[적 정보: {enemy.Name}, 레벨 {enemy.Level}, 체력 {enemy.Health}, 공격력 {enemy.AttackPower}]");
-
-            while (player.Health > 0 && enemy.Health > 0)
+            int difficultyIndex = 0;
+            if (difficulty == Difficulty.Easy)
             {
-                Console.WriteLine("\n턴을 선택하세요:");
+                difficultyIndex = 0;
+            }
+            else if (difficulty == Difficulty.Normal)
+            {
+                difficultyIndex = 2;
+            }
+            else
+            {
+                difficultyIndex = 4;
+            }
+
+            List<Enemy> selectedMonsters = new List<Enemy>();
+            // 선택된 난이도에 따라 전투참가몬스터 선택
+            for (int i = difficultyIndex; i < difficultyIndex + 3; i++) //0,1,2//2,3,4//4,5,6
+            {
+                selectedMonsters.Add(allMonsters[i]); //0,1,2번째 몬스터 추가
+            }
+            List<Enemy> battleMonsters = new List<Enemy>();
+            for (int i = 0; i < 3; i++)
+            {
+                int index = random.Next(selectedMonsters.Count);
+                battleMonsters.Add(selectedMonsters[index]);
+                selectedMonsters.Remove(selectedMonsters[index]);
+            }
+
+            foreach (var monster in battleMonsters)
+            {
+                Console.WriteLine($"Lv.{monster.Level} {monster.Name} HP {monster.Health} ATK {monster.Attack}");
+            }
+
+            //int keyInput = int.Parse(Console.ReadLine());
+
+            while (player.Health > 0 && monster.Health > 0)
+            //&& enemy.Health > 0)
+            {
+                Console.WriteLine(""); //여기 반복이 안되고 있음.
+                Console.WriteLine("");
+                //플레이어 정보(Lv. 이름 (직업) /n HP)
+                Console.WriteLine("");
                 Console.WriteLine("1. 공격");
                 Console.WriteLine("2. 아이템 사용");
+                Console.WriteLine("원하시는 행동을 입력해주세요.");
                 Console.Write(">> ");
 
-                string choice = Console.ReadLine();
+                int choice = int.Parse(Console.ReadLine());
 
                 switch (choice)
                 {
-                    case "1":
-                        player.Attack(enemy);
+                    case 1: //공격 선택
+
                         break;
-                    case "2":
+                    case 2:
                         UseItem();
                         break;
                     default:
@@ -83,11 +134,12 @@ namespace ConsoleGame.Scenes
                         break;
                 }
 
-                if (enemy.Health > 0)
+                if (monster.Health > 0)
                 {
-                    enemy.EnemyAttack(player);
+                    monster.EnemyAttack(player);
                 }
             }
+
 
             if (player.Health <= 0)
             {
@@ -114,6 +166,7 @@ namespace ConsoleGame.Scenes
 
             ClearDungeon();
         }
+        //-------------------------------------------------------
 
         private void DropHighTierItem()
         {
@@ -201,37 +254,6 @@ namespace ConsoleGame.Scenes
             int totalDamage = baseDamage + extraDamage;
 
             return totalDamage;
-        }
-
-        //몬스터 작업하는 분이 가져가야 할듯
-        private Enemy GenerateEnemy(Difficulty difficulty)
-        {
-            int level;
-            int health;
-            int attackPower;
-
-            switch (difficulty)
-            {
-                case Difficulty.Easy:
-                    level = player.Level - 1;
-                    health = 50 + (level * 10);
-                    attackPower = 5 + (level * 2);
-                    break;
-                case Difficulty.Normal:
-                    level = player.Level + 2;
-                    health = 200 + (level * 20);
-                    attackPower = 20 + (level * 10);
-                    break;
-                case Difficulty.Hard:
-                    level = player.Level + 5;
-                    health = 350 + (level * 40);
-                    attackPower = 35 + (level * 40);
-                    break;
-                default:
-                    throw new ArgumentException("Invalid difficulty");
-            }
-
-            return new Enemy(level, health, attackPower, $"적 레벨 {level}");
         }
 
         private void UseItem()
