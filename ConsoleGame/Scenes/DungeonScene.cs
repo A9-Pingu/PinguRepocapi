@@ -108,31 +108,13 @@ namespace ConsoleGame.Scenes
 
                 if (random.Next(1, 101) <= 20) // 15~20% 확률로 드롭
                 {
-                    DropHighTierItem();
+                
                 }
             }
 
             ClearDungeon();
         }
 
-        private void DropHighTierItem()
-        {
-            //List<Item> highTierItems = new List<Item>();
-
-            //highTierItems.AddRange(player.WeaponInventoryManager.GetItemsByType(ItemType.Weapon));
-            //highTierItems.AddRange(player.ArmorInventoryManager.GetItemsByType(ItemType.Armor));
-
-            //if (highTierItems.Count == 0)
-            //{
-            //    Console.WriteLine("상위 무기나 방어구가 없습니다.");
-            //    return;
-            //}
-
-            //Item droppedItem = highTierItems[random.Next(highTierItems.Count)];
-
-            //Console.WriteLine($"상위 아이템을 획득하였습니다: {droppedItem.Name}");
-            //player.InventoryManager.AddItem(droppedItem);
-        }
 
         private void ClearDungeon()
         {
@@ -157,7 +139,7 @@ namespace ConsoleGame.Scenes
             Console.WriteLine("0. 나가기");
             Console.Write("원하시는 행동을 입력해주세요.\n>> ");
 
-            int InputKey = Game.instance.inputManager.GetValidSelectedIndex((int)Difficulty.Max - 1, (int)Difficulty.Easy);
+            int InputKey = Game.instance.inputManager.GetValidSelectedIndex((int)Difficulty.Max, (int)Difficulty.Easy);
             dungeon = new Dungeon((Difficulty)InputKey);
 
             if (!player.HasRequiredDefense(dungeon.requiredDefense))
@@ -169,6 +151,41 @@ namespace ConsoleGame.Scenes
             Start(dungeon.difficulty);
 
             DropSpecialItem(dungeon.difficulty);
+
+        }
+        private void DropNormalItem(Difficulty difficulty)
+        {
+            // 이지 던전에서 기본 아이템 및 골드 드롭
+            if (difficulty == Difficulty.Easy)
+            {
+                // 아이템 카테고리별로 나누기
+                var armorItems = Game.instance.itemManager.ItemInfos.Where(item => item.Type == ItemType.Armor).ToList();
+                var weaponItems = Game.instance.itemManager.ItemInfos.Where(item => item.Type == ItemType.Weapon).ToList();
+                var consumableItems = Game.instance.itemManager.ItemInfos.Where(item => item.Type == ItemType.Consumable).ToList();
+
+                // 무작위로 갑옷 또는 무기 선택
+                Item droppedItem = null;
+                if (random.Next(2) == 0) // 0 또는 1을 랜덤하게 반환하므로 50% 확률로 수련자 갑옷 선택
+                {
+                    droppedItem = armorItems[random.Next(armorItems.Count)];
+                }
+                else
+                {
+                    droppedItem = weaponItems[random.Next(weaponItems.Count)];
+                }
+
+                // 무작위로 물약 선택
+                Item consumableItem = consumableItems[random.Next(consumableItems.Count)];
+
+                // 무작위로 선택된 아이템 출력
+                Console.WriteLine($"장비 아이템을 획득하였습니다: {droppedItem}");
+                Console.WriteLine($"소비 아이템을 획득하였습니다: {consumableItem}");
+                
+                
+                // 아이템을 인벤토리의 장비 카테고리에 추가
+                player.InventoryManager.AddItem(droppedItem);
+                player.InventoryManager.AddItem(consumableItem);
+            }
 
         }
 

@@ -20,10 +20,7 @@ namespace ConsoleGame.Managers
             Console.WriteLine("3. 상점");
             Console.WriteLine("4. 던전 입장");
             Console.WriteLine("5. 휴식하기");
-<<<<<<< HEAD
-=======
             Console.WriteLine("6. 길드입장");
->>>>>>> LeeKH
             Console.WriteLine("7. 저장하기");
             Console.WriteLine("0. 게임 종료");
             Console.WriteLine("===================");
