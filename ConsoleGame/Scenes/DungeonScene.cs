@@ -148,7 +148,7 @@ namespace ConsoleGame.Scenes
             else
             {
                 Console.WriteLine("적을 물리쳤습니다!");
-                int additionalReward = CalculateAdditionalReward(player.CalculateTotalAttackPower());
+                int additionalReward = CalculateAdditionalReward(player.AttackPower);
 
                 Console.WriteLine($"기본 보상: {dungeon.baseReward} G");
                 Console.WriteLine($"공격력으로 인한 추가 보상: {additionalReward} G");
@@ -170,21 +170,21 @@ namespace ConsoleGame.Scenes
 
         private void DropHighTierItem()
         {
-            List<Item> highTierItems = new List<Item>();
+            //List<Item> highTierItems = new List<Item>();
 
-            highTierItems.AddRange(player.WeaponInventoryManager.GetItemsByType(ItemType.Weapon));
-            highTierItems.AddRange(player.ArmorInventoryManager.GetItemsByType(ItemType.Armor));
+            //highTierItems.AddRange(player.WeaponInventoryManager.GetItemsByType(ItemType.Weapon));
+            //highTierItems.AddRange(player.ArmorInventoryManager.GetItemsByType(ItemType.Armor));
 
-            if (highTierItems.Count == 0)
-            {
-                Console.WriteLine("상위 무기나 방어구가 없습니다.");
-                return;
-            }
+            //if (highTierItems.Count == 0)
+            //{
+            //    Console.WriteLine("상위 무기나 방어구가 없습니다.");
+            //    return;
+            //}
 
-            Item droppedItem = highTierItems[random.Next(highTierItems.Count)];
+            //Item droppedItem = highTierItems[random.Next(highTierItems.Count)];
 
-            Console.WriteLine($"상위 아이템을 획득하였습니다: {droppedItem.Name}");
-            player.AddItem(droppedItem);
+            //Console.WriteLine($"상위 아이템을 획득하였습니다: {droppedItem.Name}");
+            //player.InventoryManager.AddItem(droppedItem);
         }
 
         private void ClearDungeon()
@@ -210,7 +210,7 @@ namespace ConsoleGame.Scenes
             Console.WriteLine("0. 나가기");
             Console.Write("원하시는 행동을 입력해주세요.\n>> ");
 
-            int InputKey = Game.instance.inputManager.GetValidSelectedIndex((int)Difficulty.Max, (int)Difficulty.Easy);
+            int InputKey = Game.instance.inputManager.GetValidSelectedIndex((int)Difficulty.Max - 1, (int)Difficulty.Easy);
             dungeon = new Dungeon((Difficulty)InputKey);
 
             if (!player.HasRequiredDefense(dungeon.requiredDefense))
@@ -240,7 +240,7 @@ namespace ConsoleGame.Scenes
                 Game.instance.itemManager.UpdateItemPurchasedStatus(droppedItem);
 
                 // 아이템을 인벤토리의 장비 카테고리에 추가
-                player.AddItem(droppedItem);
+                player.InventoryManager.AddItem(droppedItem);
             }
         }
 
@@ -249,7 +249,7 @@ namespace ConsoleGame.Scenes
         private int CalculateDamage()
         {
             int baseDamage = random.Next(20, 36); // 20 ~ 35 랜덤 값
-            int difference = player.CalculateTotalDefensePower() - dungeon.requiredDefense;
+            int difference = player.DefensePower - dungeon.requiredDefense;
             int extraDamage = difference > 0 ? random.Next(difference + 1) : 0;
             int totalDamage = baseDamage + extraDamage;
 

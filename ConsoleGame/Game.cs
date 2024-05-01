@@ -32,7 +32,7 @@ namespace ConsoleGame
             inputManager = new InputManager();
             saveLoadManager = new SaveLoadManager();
             player = saveLoadManager.LoadOrStartGame(inputManager);
-            ItemManager itemManager = new ItemManager();
+            itemManager = new ItemManager();
             shopScene = new Shop(player, itemManager);
             restScene = new RestInTown(player);
             dungeon = new DungeonScene(player);
@@ -43,7 +43,7 @@ namespace ConsoleGame
             while (isPlaying)
             {
                 uiManager.DisplayMainMenu();
-                int choice = inputManager.GetValidSelectedIndex((int)EScene.e_MaxNum);
+                int choice = inputManager.GetValidSelectedIndex((int)EScene.e_MaxNum - 1);
                 isPlaying = SelectScene(choice);
             }
         }
@@ -74,9 +74,6 @@ namespace ConsoleGame
                     break;
                 case (int)EScene.e_Save:
                     saveLoadManager.SaveGame(player);
-                    break;
-                case (int)EScene.e_Load:
-                    //saveLoadManager.LoadGame();
                     break;
                 default:
                     Console.WriteLine("잘못된 선택입니다.");
