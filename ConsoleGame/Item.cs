@@ -40,5 +40,7 @@
             string stat = Type == ItemType.Armor ? $"방어력 +{StatBonus}" : $"공격력 +{StatBonus}";
             return $"{Name.PadRight(15)} | {stat.PadRight(10)} | {Description.PadRight(40)} | {purchaseStatus}";
         }
+
+       
     }
 }
