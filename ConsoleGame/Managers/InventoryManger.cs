@@ -6,18 +6,27 @@ namespace ConsoleGame.Managers
 {
     public class InventoryManager
     {
+        //public Dictionary<ItemType, List<Item>> dicInventory = new Dictionary<ItemType, List<Item>>();
+        public Dictionary<ItemType, Item> dicEquipItem = new Dictionary<ItemType, Item>();
         public List<Item> Inventory { get; set; }
-
-        // 아이템 타입에 따른 아이템 목록 반환
-        public List<Item> GetItemsByType(ItemType itemType)
-        {
-            return Inventory.Where(item => item.Type == itemType).ToList();
-        }
+        public Character player;
 
         // 인벤토리 초기화
-        public InventoryManager()
+        public InventoryManager(Character character)
         {
             Inventory = new List<Item>();
+            player = character;
+            dicEquipItem[ItemType.Weapon] = null;
+            dicEquipItem[ItemType.Armor] = null;
+            dicEquipItem[ItemType.Consumable] = null;
+            dicEquipItem[ItemType.All] = null;
+
+
+        }
+        // 아이템 타입에 따른 아이템 목록 반환
+        public Item GetItemsByType(ItemType itemType)
+        {
+            return dicEquipItem[itemType];
         }
 
         // 아이템 추가
@@ -35,119 +44,134 @@ namespace ConsoleGame.Managers
         // 인덱스로 아이템 조회
         public Item GetItem(int index)
         {
-            return Inventory.ElementAtOrDefault(index);
+            var list = Inventory;
+            return list[index];
         }
 
         // 인벤토리 출력 및 아이템 장착/해제 기능
         public void ShowInventory()
         {
-            if (Inventory.Count == 0)
+            while (true)
             {
-                Console.WriteLine("인벤토리가 비어 있습니다.");
-                Game.instance.inputManager.InputAnyKey();
-                return;
-            }
-
-            Console.WriteLine("인벤토리");
-            Console.WriteLine($"아이템 개수: {Inventory.Count}");
-            Console.WriteLine();
-
-            int index = 1;
-            foreach (var item in Inventory)
-            {
-                string category = GetCategoryName(item.Type);
-                Console.WriteLine($"- {index}. {item.Name} ({category}) : {(item.Equipped ? "장착됨" : "미장착")}");
-                index++;
-            }
-
-            Console.WriteLine();
-
-            Console.WriteLine("1. 아이템 장착");
-            Console.WriteLine("2. 아이템 해제");
-            Console.WriteLine("0. 나가기");
-            Console.Write("원하시는 행동을 입력해주세요.\n>> ");
-
-            string input = Console.ReadLine();
-
-            if (int.TryParse(input, out int actionIndex))
-            {
-                if (actionIndex >= 1 && actionIndex <= 2)
+                bool isEmpty = Game.instance.uiManager.DisplayInventory(this);
+                if (!isEmpty)
                 {
-                    Console.Write("아이템 번호를 입력하세요: ");
-                    if (int.TryParse(Console.ReadLine(), out int itemIndex) && itemIndex >= 1 && itemIndex <= Inventory.Count)
-                    {
-                        if (actionIndex == 1)
-                        {
-                            EquipItem(itemIndex);
-                        }
-                        else
-                        {
-                            UnequipItem(itemIndex);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("잘못된 아이템 번호입니다.");
-                    }
-                }
-                else if (actionIndex == 0)
-                {
+                    Game.instance.inputManager.InputAnyKey();
                     return;
                 }
-                else
-                {
-                    Console.WriteLine("잘못된 입력입니다.");
-                }
-            }
 
-            Game.instance.inputManager.InputAnyKey();
+                int actionIndex = Game.instance.inputManager.GetValidSelectedIndex(1);
+
+                switch (actionIndex)
+                {
+                    case 0:
+                        Console.WriteLine("인벤토리에서 나갑니다.");
+                        Game.instance.inputManager.InputAnyKey();
+                        return;
+                    case 1:
+                        ManagedEquip();
+                        break;
+                    default:
+                        break;
+                }
+                Game.instance.inputManager.InputAnyKey();
+            }
         }
 
-        private string GetCategoryName(ItemType itemType)
+        private void ManagedEquip()
+        {
+            Console.Write("아이템 번호를 입력하세요: ");
+            int itemIndex = Game.instance.inputManager.GetValidSelectedIndex(Inventory.Count);
+            if (itemIndex == 0)
+            {
+                return;
+            }
+            EquipItem(Inventory[itemIndex - 1]);
+        }
+
+        public string GetCategoryName(ItemType itemType)
         {
             switch (itemType)
             {
                 case ItemType.Weapon:
                 case ItemType.Armor:
                     return "장비";
-                case ItemType.Potion:
-                case ItemType.Scroll:
+                case ItemType.Consumable:
                     return "소비";
-                case ItemType.Loot:
+                case ItemType.All:
                     return "기타";
                 default:
                     return "알 수 없음";
             }
         }
 
-
-        // 아이템 장착
-        public void EquipItem(int index)
+        public bool CheckedEquipItem(Item item)
         {
-            var item = GetItem(index - 1); // 인덱스 1부터 시작하므로 1을 빼줌
-            if (item != null && (item.Type == ItemType.Weapon || item.Type == ItemType.Armor))
+            if (dicEquipItem[item.Type] == item)
             {
-                item.Equipped = true;
-                Console.WriteLine($"{item.Name}을(를) 장착했습니다.");
+                return true;
+            }
+            return false;
+        }
+
+        public void EquipItem(Item item)
+        {
+            if(item.Type == ItemType.Consumable || item.Type == ItemType.All) 
+            {
+                Console.WriteLine("장착 아이템이 아닙니다.");
+                Thread.Sleep(1000);
+            }
+
+            if(CheckedEquipItem(item))
+            {
+                RemoveItemStatBonus(item);
+                item.Equipped = false;
+                dicEquipItem[item.Type] = null;
             }
             else
             {
-                Console.WriteLine("잘못된 선택입니다.");
+                if (dicEquipItem[item.Type] != null)
+                {
+                    RemoveItemStatBonus(dicEquipItem[item.Type]);
+                    dicEquipItem[item.Type].Equipped = false;
+                }
+                dicEquipItem[item.Type] = item;
+                item.Equipped = true;
+                AddItemStatBonus(item);
+            }
+            Console.WriteLine("\t[아이템]{0}을/를 장착{1}하였습니다.", item.Name, CheckedEquipItem(item) ? " " : " 해제");
+            Thread.Sleep(1000);
+        }
+
+        public void AddItemStatBonus(Item item)
+        {
+            switch (item.Type)
+            {
+                case ItemType.Weapon:
+                    player.AttackPower += item.StatBonus;
+                    break;
+
+                case ItemType.Armor:
+                    player.DefensePower += item.StatBonus;
+                    break;
+                default:
+                    return;
             }
         }
 
-        // 아이템 해제
-        public void UnequipItem(int index)
+        public void RemoveItemStatBonus(Item item)
         {
-            var item = GetItem(index - 1); // 인덱스 1부터 시작하므로 1을 빼줌
-            if (item != null && (item.Type == ItemType.Weapon || item.Type == ItemType.Armor))
+            switch (item.Type)
             {
-                item.Equipped = false;
-                Console.WriteLine($"{item.Name}을(를) 해제했습니다.");
-            }
-            else
-            {
-                Console.WriteLine("잘못된 선택입니다.");
+                case ItemType.Weapon:
+                    player.AttackPower -= item.StatBonus;
+                    break;
+
+                case ItemType.Armor:
+                    player.DefensePower -= item.StatBonus;
+                    break;
+                default:
+                    return;
             }
         }
     }

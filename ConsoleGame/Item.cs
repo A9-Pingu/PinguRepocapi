@@ -2,18 +2,10 @@
 {
     public enum ItemType
     {
-        Defense,
-        Attack,
-        Armor,
         Weapon,
-        SpecialWeapon,  // 상점에서 팔지 않는 무기
-        SpecialArmor,   // 상점에서 팔지 않는 방어구
-        SpecialScroll,  // 상점에서 팔지 않는 주문서
+        Armor,
         Consumable,
-        Potion,
-        Scroll,
-        Loot,
-        All,
+        All
     }
 
     public class Item
@@ -24,13 +16,13 @@
         public string Description { get; set; }
         public int Price { get; set; }
         public bool Purchased { get; set; }
-        public bool Equipped { get; set; } = true;
+        public bool Equipped { get; set; } = false;
         public bool IsBound { get; set; }  // 귀속 아이템 여부 추가
-
+        public int Count { get; set; }
 
 
         // 귀속 아이템을 생성할 때는 IsBound 값을 true로 설정합니다
-        public Item(string name, ItemType type, int price, int statBonus, string description, bool isBound, bool purchased = false)
+        public Item(string name, ItemType type, int price, int statBonus, string description, bool isBound = false, bool purchased = false)
         {
             Name = name;
             Type = type;
@@ -39,7 +31,7 @@
             StatBonus = statBonus;
             Purchased = purchased;
             Description = description;
-            IsBound = IsBound; // 아이템이 귀속 되었는지 여부를 표시
+            IsBound = isBound; // 아이템이 귀속 되었는지 여부를 표시
         }
 
         public override string ToString()

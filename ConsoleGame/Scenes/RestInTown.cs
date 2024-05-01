@@ -17,7 +17,7 @@ namespace ConsoleGame.Scenes
                 Game.instance.uiManager.ShowRestMenu();
 
                 //1+1임시 +1해줘야되기때문
-                int inputKey = Game.instance.inputManager.GetValidSelectedIndex(1 + 1);
+                int inputKey = Game.instance.inputManager.GetValidSelectedIndex(1);
 
                 switch (inputKey)
                 {
