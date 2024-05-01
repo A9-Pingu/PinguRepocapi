@@ -44,76 +44,20 @@ namespace ConsoleGame
         {
             DungeonClearCount = 0;
         }
-
-<<<<<<< HEAD
-        public void AddItem(Item item)
-        {
-            InventoryManager.AddItem(item);  // 인벤토리에 아이템 추가
-
-            switch (item.Type)
-            {
-                case ItemType.Weapon:
-                    WeaponInventoryManager.AddItem(item);
-                    break;
-                case ItemType.Armor:
-                    ArmorInventoryManager.AddItem(item);
-                    break;
-                case ItemType.Potion:
-                case ItemType.Scroll:
-                    ConsumableInventoryManager.AddItem(item);
-                    break;
-                default:
-                    throw new ArgumentException($"Invalid item type: {item.Type}");
-            }
-        }
-
-        public void RemoveItem(Item item)
-        {
-            InventoryManager.RemoveItem(item);  // 인벤토리에서 아이템 제거
-
-            switch (item.Type)
-            {
-                case ItemType.Weapon:
-                    WeaponInventoryManager.RemoveItem(item);
-                    break;
-                case ItemType.Armor:
-                    ArmorInventoryManager.RemoveItem(item);
-                    break;
-                case ItemType.Potion:
-                case ItemType.Scroll:
-                    ConsumableInventoryManager.RemoveItem(item);
-                    break;
-                default:
-                    throw new ArgumentException($"Invalid item type: {item.Type}");
-            }
-        }
-
-        public int CalculateTotalAttackPower()
-        {
-            int totalAttackPower = AttackPower;
-            foreach (var weapon in WeaponEquipmentManager.EquippedItems)
-            {
-                totalAttackPower += weapon.StatBonus;
-            }
-            return totalAttackPower;
-        }
-
-        public int CalculateTotalDefensePower()
-        {
-            int totalDefensePower = DefensePower;
-            foreach (var armor in ArmorEquipmentManager.EquippedItems)
-            {
-                totalDefensePower += armor.StatBonus;
-            }
-            return totalDefensePower;
-        }
-
-=======
->>>>>>> main
         public void Attack(Enemy enemy)
         {
-            Console.WriteLine($"당신이 {enemy.Name}에게 {AttackPower}의 피해를 입혔습니다.");
+            int enemyMaxHP = enemy.Health;
+            Console.WriteLine($"{Name} 의 공격!");
             enemy.Health -= AttackPower;
+            Console.WriteLine($"Lv.{enemy.Level} {enemy.Name} 에게 {AttackPower} 데미지를 가했습니다.");
+            Console.WriteLine($"");
+            Console.WriteLine($"Lv.{enemy.Level} {enemy.Name}");
+            Console.WriteLine($"HP {enemyMaxHP} -> {enemy.Health}");
+            Console.WriteLine($"");
+            Console.WriteLine($"0. 다음");
+            Console.WriteLine($"");
+            Console.Write(">>");
+
         }
     }
 }
