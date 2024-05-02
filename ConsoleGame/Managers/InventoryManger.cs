@@ -221,12 +221,13 @@ namespace ConsoleGame.Managers
                         if ((player.Health + (int)item.dicStatusBonus[e_ItemStatusType.RecoveryHp]) < player.MaxHealth)
                         {
                             player.Health += (int)item.dicStatusBonus[e_ItemStatusType.RecoveryHp];
+                            Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.RecoveryHp]} 만큼 회복하였습니다");
                         }
                         else
                         {
+                            Console.WriteLine($"{player.MaxHealth - player.Health} 만큼 회복하였습니다");
                             player.Health = player.MaxHealth;
-                        }                            
-                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.RecoveryHp]} 만큼 회복하였습니다");
+                        }                                                 
                         Console.WriteLine($"현재 체력 : {player.Health}");
                         break;
 

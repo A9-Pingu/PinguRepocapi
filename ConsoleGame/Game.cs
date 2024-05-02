@@ -13,6 +13,7 @@ namespace ConsoleGame
         public UIManager uiManager { get; set; }
         public InputManager inputManager { get; set; }
         public ItemManager itemManager { get; set; }
+        public QuestManager questManager { get; set; }
         #endregion
         #region //게임 씬
         public RestInTown restScene { get; set; }
@@ -21,6 +22,7 @@ namespace ConsoleGame
         public GuildScene guild { get; set; }
         #endregion
         public Character player;
+       
         
         public bool isPlaying = true;
         public Game()

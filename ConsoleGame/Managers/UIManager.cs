@@ -123,10 +123,7 @@ namespace ConsoleGame.Managers
             int index = 1;
             Game.instance.itemManager.ItemInfos.FindAll(obj => obj.Type == itemType).ForEach(obj => Console.WriteLine($"- {index++}. {obj.Name} : {obj.Price} G"));
 
-            Console.WriteLine("\n1. 아이템 구매");
-            Console.WriteLine("2. 아이템 판매");
-            Console.WriteLine("0. 나가기");
-            Console.Write("원하시는 행동을 선택해주세요.\n>> ");
+
         }
 
         public void ShowRestMenu()
