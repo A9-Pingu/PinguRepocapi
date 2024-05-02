@@ -86,6 +86,7 @@ namespace ConsoleGame.Scenes
                                         break;
                                     else
                                     {
+                                        Console.WriteLine("===================");
                                         Console.WriteLine("잘못된 입력입니다");
                                         inputKey = int.Parse(Console.ReadLine());
                                     }
@@ -100,10 +101,11 @@ namespace ConsoleGame.Scenes
                                         }
                                     }
                                     else
-                                        {
-                                            Console.WriteLine("잘못된 입력입니다");
-                                            inputKey = int.Parse(Console.ReadLine());
-                                        }
+                                    {
+                                        Console.WriteLine("===================");
+                                        Console.WriteLine("잘못된 입력입니다");
+                                        inputKey = int.Parse(Console.ReadLine());
+                                    }
                                     break;
                                 case 2: //두번째 몬스터
                                     if (!deadMonsters.Contains(selectedMonsters[inputKey - 1]))
@@ -116,6 +118,7 @@ namespace ConsoleGame.Scenes
                                     }
                                     else
                                     {
+                                        Console.WriteLine("===================");
                                         Console.WriteLine("잘못된 입력입니다");
                                         inputKey = int.Parse(Console.ReadLine());
                                     }
@@ -131,11 +134,13 @@ namespace ConsoleGame.Scenes
                                     }
                                     else
                                     {
+                                        Console.WriteLine("===================");
                                         Console.WriteLine("잘못된 입력입니다");
                                         inputKey = int.Parse(Console.ReadLine());
                                     }
                                     break;
                                 default:
+                                    Console.WriteLine("===================");
                                     Console.WriteLine("잘못된 입력입니다");
                                     inputKey = int.Parse(Console.ReadLine());
                                     break;
@@ -147,6 +152,7 @@ namespace ConsoleGame.Scenes
                         }
                         else if (deadMonsters.Count >= 3)
                         {
+                            Console.WriteLine("===================");
                             Console.WriteLine("");
                             Console.WriteLine("Battle!! - Result");
                             Console.WriteLine("");
@@ -177,7 +183,8 @@ namespace ConsoleGame.Scenes
                             }
                         }
                         break;
-                    default: 
+                    default:
+                        Console.WriteLine("===================");
                         Console.WriteLine("잘못된 입력입니다");
                         inputKey = int.Parse(Console.ReadLine());
                         break;
@@ -294,6 +301,7 @@ namespace ConsoleGame.Scenes
         //전투 패배 결과 장면
         private void LoseScene()
         {
+            Console.WriteLine("===================");
             Console.WriteLine("");
             Console.WriteLine("Battle!! - Result");
             Console.WriteLine("");
@@ -316,7 +324,7 @@ namespace ConsoleGame.Scenes
         {
 
             int damage = player.MaxHealth - player.Health;
-
+            Console.WriteLine("===================");
             Console.WriteLine($"던전 클리어! 체력 {damage} 소모됨.");
             Console.WriteLine($"남은 체력: {player.Health}");
             Console.WriteLine("");
@@ -358,6 +366,7 @@ namespace ConsoleGame.Scenes
                 // 무작위로 하나의 아이템 선택
                 Item droppedItem = Game.instance.itemManager.specialItems[random.Next(Game.instance.itemManager.specialItems.Count)];
 
+                Console.WriteLine("===================");
                 Console.WriteLine($"특별한 아이템을 획득하였습니다: {droppedItem.Name}");
 
                 // 귀속 아이템이므로 Purchased 값을 true로 설정
@@ -383,6 +392,7 @@ namespace ConsoleGame.Scenes
 
         private void UseItem()
         {
+            Console.WriteLine("===================");
             Console.WriteLine("사용할 아이템을 선택하세요.");
             // 아이템 사용 로직은 구현하지 못했습니다
         }

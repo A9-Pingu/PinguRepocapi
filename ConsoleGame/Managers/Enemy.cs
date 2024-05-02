@@ -78,6 +78,7 @@ namespace ConsoleGame.Managers
             }
             else
                 player.Health -= Attack;
+            Console.WriteLine("===================");
             Console.WriteLine($"{Name} 의 공격!");
             Console.WriteLine($"Lv.{player.Level} {player.Name} 에게 {Attack} 데미지를 가했습니다.");
             Console.WriteLine($"");

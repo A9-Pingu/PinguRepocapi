@@ -53,6 +53,7 @@ namespace ConsoleGame
             }
             else
                 enemy.Health -= AttackPower;
+            Console.WriteLine("===================");
             Console.WriteLine($"{Name} 의 공격!");
             Console.WriteLine($"Lv.{enemy.Level} {enemy.Name} 에게 {AttackPower} 데미지를 가했습니다.");
             Console.WriteLine($"");
