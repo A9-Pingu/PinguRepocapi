@@ -142,17 +142,16 @@ namespace ConsoleGame.Managers
         }
         private Random random;
         //전투장면
-        public void BattleScene(Difficulty difficulty, Dungeon dungeon, List<Enemy> selectedMonsters, bool isFighting, Character player)
+        public void BattleScene(Difficulty difficulty, Dungeon dungeon, List<Enemy> selectedMonsters, bool isReadyToFight, Character player)
         {
             Console.Clear();
             random = new Random();
-
             Console.WriteLine("");
             Console.WriteLine("     Battle!!     ");
             Console.WriteLine("");
 
             //배틀용 몬스터 리스트
-            if (isFighting)
+            if (isReadyToFight)
             {
                 int index = 1;
                 foreach (var monster in selectedMonsters)
@@ -167,6 +166,8 @@ namespace ConsoleGame.Managers
                 Console.WriteLine("");
                 Console.WriteLine("0. 취소");
                 Console.WriteLine("");
+                Console.WriteLine("대상을 선택해주세요.");
+                Console.Write(">> ");
             }
             else
             {
@@ -182,7 +183,7 @@ namespace ConsoleGame.Managers
                 Console.WriteLine("");
                 Console.WriteLine("0. 취소");
                 Console.WriteLine("1. 공격");
-                Console.WriteLine("2. 아이템 사용");
+                //Console.WriteLine("2. 아이템 사용");
                 Console.WriteLine("대상을 선택해주세요.");
                 Console.Write(">> ");
             }

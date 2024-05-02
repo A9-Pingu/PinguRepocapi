@@ -15,7 +15,7 @@ namespace ConsoleGame.Scenes
         private Character player;
         private Random random;
         private Dungeon dungeon;
-        private Enemy monster;
+        bool useItem = false;
 
         public DungeonScene(Character character)
         {
@@ -26,6 +26,7 @@ namespace ConsoleGame.Scenes
 
         private int CalculateAdditionalReward(int attackPower)
         {
+            Random random= new Random(Guid.NewGuid().GetHashCode());
             double percentage = random.Next(10, 21) / 100.0; // 10% ~ 20% 랜덤 값
 
             int additionalReward = (int)(attackPower * percentage);  // double 값을 int로 캐스팅
@@ -42,6 +43,7 @@ namespace ConsoleGame.Scenes
             return totalReward;
         }
 
+        List<Enemy> deadMonsters = new List<Enemy>(); //죽은 몬스터 수
         public void Start(Difficulty difficulty)
         {
             if (!player.HasRequiredDefense(dungeon.requiredDefense))
@@ -52,100 +54,176 @@ namespace ConsoleGame.Scenes
 
             Console.WriteLine("");
             Console.WriteLine($"{difficulty} 던전 입장 성공!");
-
-            // 몬스터 선택
             List<Enemy> selectedMonsters = SelectMonsters(difficulty);
-            List<Enemy> deadMonsters = new List<Enemy>(); //죽은 몬스터 수
-
+            // 몬스터 선택
             // UIManager의 ShowBattle 메서드 호출
             Game.instance.uiManager.BattleScene(difficulty, dungeon, selectedMonsters, false, player); //--
             int inputKey = Game.instance.inputManager.GetValidSelectedIndex(3);
-
-            switch (inputKey)
+            while (true)
             {
-                case 0: return;
-                case 1: //공격
-                    Game.instance.uiManager.BattleScene(difficulty, dungeon, selectedMonsters, true, player); //1 2
-                    while(player.Health > 0)
-                    {
-                        inputKey = Game.instance.inputManager.GetValidSelectedIndex(3);
-                        // monster.health > 0 -> player attack
-                        if (selectedMonsters[inputKey - 1].Health > 0)
+                switch (inputKey)
+                {
+                    case 0: Game.instance.Run(); //취소
+                        break;
+                    case 1: //공격
+                        while (deadMonsters.Count < 3 && player.Health > 0) //내가 또는 몬스터 한 마리가 살아있을 때
                         {
-                            player.Attack(selectedMonsters[inputKey - 1]);
-                            Game.instance.inputManager.GetValidSelectedIndex(1);
-                            //monster attack
-                            if (!deadMonsters.Contains(selectedMonsters[inputKey - 1]))
+                            Game.instance.uiManager.BattleScene(difficulty, dungeon, selectedMonsters, true, player); //1 2
+                            inputKey = int.Parse(Console.ReadLine());
+                            switch (inputKey)
                             {
-                                selectedMonsters[inputKey - 1].EnemyAttack(player);
+                                case 0://취소
+                                    Console.WriteLine("이대로 던전을 나가시겠습니까?");
+                                    Console.WriteLine("0. 네");
+                                    Console.WriteLine("1. 아니오");
+                                    int nextKey = int.Parse(Console.ReadLine());
+                                    if (nextKey == 0)
+                                        Game.instance.Run(); //취소
+                                    else if (nextKey == 1)
+                                        break;
+                                    else
+                                    {
+                                        Console.WriteLine("잘못된 입력입니다");
+                                        inputKey = int.Parse(Console.ReadLine());
+                                    }
+                                    break; 
+                                case 1: //첫번째 몬스터
+                                    if (!deadMonsters.Contains(selectedMonsters[inputKey - 1]))
+                                    {
+                                        Battle(selectedMonsters[inputKey - 1]);
+                                        if (player.Health <= 0)
+                                        {
+                                            Console.WriteLine("");
+                                            Console.WriteLine("Battle!! - Result");
+                                            Console.WriteLine("");
+                                            Console.WriteLine("You Lose.");
+                                            Console.WriteLine("");
+                                            Console.WriteLine($"Lv.{player.Level} {player.Name}");
+                                            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
+                                            Console.WriteLine("0. 다음");
+                                            Console.WriteLine("");
+                                            nextKey = Game.instance.inputManager.GetValidSelectedIndex(0);
+                                            if (nextKey == 0)
+                                                Game.instance.Run();
+                                        }
+                                    }
+                                    else
+                                        {
+                                            Console.WriteLine("잘못된 입력입니다");
+                                            inputKey = int.Parse(Console.ReadLine());
+                                        }
+                                    break;
+                                case 2: //두번째 몬스터
+                                    if (!deadMonsters.Contains(selectedMonsters[inputKey - 1]))
+                                    {
+                                        Battle(selectedMonsters[inputKey - 1]);
+                                        if (player.Health <= 0)
+                                        {
+                                            Console.WriteLine("");
+                                            Console.WriteLine("Battle!! - Result");
+                                            Console.WriteLine("");
+                                            Console.WriteLine("You Lose.");
+                                            Console.WriteLine("");
+                                            Console.WriteLine($"Lv.{player.Level} {player.Name}");
+                                            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
+                                            Console.WriteLine("0. 다음");
+                                            Console.WriteLine("");
+                                            nextKey = Game.instance.inputManager.GetValidSelectedIndex(0);
+                                            if (nextKey == 0)
+                                                Game.instance.Run();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("잘못된 입력입니다");
+                                        inputKey = int.Parse(Console.ReadLine());
+                                    }
+                                    break;
+                                case 3: //세번째 몬스터
+                                    if (!deadMonsters.Contains(selectedMonsters[inputKey - 1]))
+                                    {
+                                        Battle(selectedMonsters[inputKey - 1]);
+                                        if (player.Health <= 0)
+                                        {
+                                            Console.WriteLine("");
+                                            Console.WriteLine("Battle!! - Result");
+                                            Console.WriteLine("");
+                                            Console.WriteLine("You Lose.");
+                                            Console.WriteLine("");
+                                            Console.WriteLine($"Lv.{player.Level} {player.Name}");
+                                            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
+                                            Console.WriteLine("0. 다음");
+                                            Console.WriteLine("");
+                                            nextKey = Game.instance.inputManager.GetValidSelectedIndex(0);
+                                            if (nextKey == 0)
+                                                Game.instance.Run();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("잘못된 입력입니다");
+                                        inputKey = int.Parse(Console.ReadLine());
+                                    }
+                                    break;
+                                default:
+                                    Console.WriteLine("잘못된 입력입니다");
+                                    inputKey = int.Parse(Console.ReadLine());
+                                    break;
                             }
                         }
-                        // monster.health == 0
-                        else if (deadMonsters.Contains(selectedMonsters[inputKey - 1]))
+                        if (player.Health <= 0)
                         {
-                            deadMonsters.Add(selectedMonsters[inputKey - 1]);
-                            Console.WriteLine("잘못된 입력입니다");
-                            // all monsters die
-                            if (deadMonsters.Contains(selectedMonsters[inputKey - 1]) && deadMonsters.Count >= 3)
+                            Console.WriteLine("");
+                            Console.WriteLine("Battle!! - Result");
+                            Console.WriteLine("");
+                            Console.WriteLine("You Lose.");
+                            Console.WriteLine("");
+                            Console.WriteLine($"Lv.{player.Level} {player.Name}");
+                            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
+                            Console.WriteLine("0. 다음");
+                            Console.WriteLine("");
+                            int nextKey = Game.instance.inputManager.GetValidSelectedIndex(0);
+                            if (nextKey == 0)
+                                Game.instance.Run();
+                        }
+                        else if (deadMonsters.Count >= 3)
+                        {
+                            Console.WriteLine("");
+                            Console.WriteLine("Battle!! - Result");
+                            Console.WriteLine("");
+                            Console.WriteLine("Victory");
+                            Console.WriteLine("");
+                            Console.WriteLine("던전에서 몬스터 3마리를 잡았습니다.");
+                            Console.WriteLine("");
+                            Console.WriteLine($"Lv.{player.Level} {player.Name}");
+                            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
+                            int additionalReward = CalculateAdditionalReward(player.AttackPower);
+
+                            Console.WriteLine($"기본 보상: {dungeon.baseReward} G");
+                            Console.WriteLine($"공격력으로 인한 추가 보상: {additionalReward} G");
+
+                            int totalReward = dungeon.baseReward + additionalReward;
+                            Console.WriteLine($"총 보상: {totalReward} G를 획득하였습니다.");
+                            Console.WriteLine("");
+                            ClearDungeon();
+                            int nextKey = Game.instance.inputManager.GetValidSelectedIndex(0);
+                            if (nextKey == 0)
+                                Game.instance.Run();
+
+                            player.Gold += totalReward;
+
+                            if (random.Next(1, 101) <= 20) // 15~20% 확률로 드롭
                             {
-                                break;
+                                DropHighTierItem();
                             }
                         }
-                    }
-                    if (player.Health <= 0)
-                    {
-                        Console.WriteLine("");
-                        Console.WriteLine("Battle!! - Result");
-                        Console.WriteLine("");
-                        Console.WriteLine("You Lose.");
-                        Console.WriteLine("");
-                        Console.WriteLine($"Lv.{player.Level} {player.Name}");
-                        Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
-                        Console.WriteLine("0. 다음");
-                        Console.WriteLine("");
-                        Game.instance.inputManager.GetValidSelectedIndex(1);
-                    }
-                    else if (deadMonsters.Count <= 0)
-                    {
-                        Console.WriteLine("");
-                        Console.WriteLine("Battle!! - Result");
-                        Console.WriteLine("");
-                        Console.WriteLine("Victory");
-                        Console.WriteLine("");
-                        Console.WriteLine("던전에서 몬스터 3마리를 잡았습니다.");
-                        Console.WriteLine("");
-                        Console.WriteLine($"Lv.{player.Level} {player.Name}");
-                        Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
-                        int additionalReward = CalculateAdditionalReward(player.AttackPower);
-
-                        Console.WriteLine($"기본 보상: {dungeon.baseReward} G");
-                        Console.WriteLine($"공격력으로 인한 추가 보상: {additionalReward} G");
-
-                        int totalReward = dungeon.baseReward + additionalReward;
-                        Console.WriteLine($"총 보상: {totalReward} G를 획득하였습니다.");
-                        Console.WriteLine("0. 다음");
-                        Console.WriteLine("");
-                        Game.instance.inputManager.GetValidSelectedIndex(1);
-
-                        player.Gold += totalReward;
-
-                        if (random.Next(1, 101) <= 20) // 15~20% 확률로 드롭
-                        {
-                            DropHighTierItem();
-                        }
-                    }
-                    break;
-                case 2: //아이템
-                    UseItem();
-                    break;
-
-                default:
-                    Console.WriteLine("잘못된 입력입니다");
-                    break;
-
+                        break;
+                    default: 
+                        Console.WriteLine("잘못된 입력입니다");
+                        inputKey = int.Parse(Console.ReadLine());
+                        break;
+                }
             }
-            ClearDungeon();
-
         }
         private List<Enemy> SelectMonsters(Difficulty difficulty)
         {
@@ -153,12 +231,20 @@ namespace ConsoleGame.Scenes
             List<Enemy> allMonsters = new List<Enemy>
             {
                 new Enemy("도둑갈매기", 2),
+                new Enemy("도둑갈매기", 2),
+                new Enemy("야생들개", 2),
                 new Enemy("야생들개", 2),
                 new Enemy("여우", 2),
+                new Enemy("여우", 2),
+                new Enemy("바다표범", 3),
                 new Enemy("바다표범", 3),
                 new Enemy("늑대", 3),
+                new Enemy("늑대", 3),
                 new Enemy("북극곰", 4),
-                new Enemy("범고래", 5)
+                new Enemy("북극곰", 4),
+                new Enemy("범고래", 5),
+                new Enemy("범고래", 5),
+                //new Enemy("범고래2", 5)
             };
 
             // 선택한 난이도에 따라 랜덤으로 몬스터 3마리 선택
@@ -171,39 +257,41 @@ namespace ConsoleGame.Scenes
             };
 
             List<Enemy> selectedMonsters1 = new List<Enemy>();
-            List<Enemy> selectedMonsters2 = new List<Enemy>();
 
-            for (int i = difficultyIndex; i < difficultyIndex + 3; i++)
+            for (int i = difficultyIndex; i < difficultyIndex + 6; i++)
             {
                 selectedMonsters1.Add(allMonsters[i]);
-                selectedMonsters2.Add(allMonsters[i]);
-                selectedMonsters2.Add(selectedMonsters1[i]);
                 Random random = new Random();
-                if (selectedMonsters2.Count > 5)
+                if (selectedMonsters1.Count > 5)
                 {
-                    selectedMonsters2.Remove(selectedMonsters2[random.Next(0, 4)]);
-                    selectedMonsters2.Remove(selectedMonsters2[random.Next(0, 4)]);
-                    selectedMonsters2.Remove(selectedMonsters2[random.Next(0, 4)]);
+                    selectedMonsters1.Remove(selectedMonsters1[random.Next(0, 5)]);
+                    selectedMonsters1.Remove(selectedMonsters1[random.Next(0, 4)]);
+                    selectedMonsters1.Remove(selectedMonsters1[random.Next(0, 3)]);
                 }
             }
-            return selectedMonsters2;
+            return selectedMonsters1;
         }
 
+        //던전 클리어시 추가 정보 및 특별 아이템 드롭
         private void ClearDungeon()
         {
-            int damage = CalculateDamage();
 
-            player.Health -= damage;
+            int damage = player.MaxHealth - player.Health;
 
             Console.WriteLine($"던전 클리어! 체력 {damage} 소모됨.");
             Console.WriteLine($"남은 체력: {player.Health}");
-
+            Console.WriteLine("");
+            Console.WriteLine("0. 다음");
+            Console.WriteLine("");
+            Console.Write(">>");
+            Random random = new Random();
             if (random.Next(1, 101) <= 20) // 20% 확률로 특별한 아이템 드롭
             {
                 DropSpecialItem(dungeon.difficulty); // difficulty를 전달
             }
         }
 
+        //던전 입장 조건
         public void EnterDungeon()
         {
             Console.WriteLine("1. 쉬운 던전     | 방어력 5 이상 권장");
@@ -224,8 +312,45 @@ namespace ConsoleGame.Scenes
             Start(dungeon.difficulty);
 
             DropSpecialItem(dungeon.difficulty);
-
         }
+        //던전에서 공격 시작 후 전투장면
+        private void Battle(Enemy enemy)
+        {
+            while (!deadMonsters.Contains(enemy) && player.Health > 0) //몬스터와 나 둘 다 생존시
+            {
+                if (!useItem) //아이템 미사용
+                {
+                    player.Attack(enemy); //플레이어 공격
+                    Game.instance.inputManager.GetValidSelectedIndex(0);
+                    if (enemy.Health <= 0)
+                    {
+                        deadMonsters.Add(enemy);
+                        break;
+                    }
+                    else if (enemy.Health > 0)
+                    {
+                        enemy.EnemyAttack(player); //몬스터 공격
+                        int nextKey = Game.instance.inputManager.GetValidSelectedIndex(1);
+                        if (nextKey == 1) //아이템 사용여부
+                        {
+                            useItem = true;
+                            UseItem();
+                        }
+                    }
+                }
+                else //아이템 사용
+                {
+                    enemy.EnemyAttack(player); //몬스터 공격
+                    int nextKey = Game.instance.inputManager.GetValidSelectedIndex(1);
+                    if (nextKey == 1) //아이템 사용여부
+                    {
+                        useItem = true;
+                        UseItem();
+                    }
+                }
+            }
+        }
+
         private void DropHighTierItem()
         {
             //List<Item> highTierItems = new List<Item>();
@@ -266,15 +391,16 @@ namespace ConsoleGame.Scenes
 
 
 
-        private int CalculateDamage()
-        {
-            int baseDamage = random.Next(20, 36); // 20 ~ 35 랜덤 값
-            int difference = player.DefensePower - dungeon.requiredDefense;
-            int extraDamage = difference > 0 ? random.Next(difference + 1) : 0;
-            int totalDamage = baseDamage + extraDamage;
+        //private int CalculateDamage()
+        //{
+        //    Random random = new Random();
+        //    int baseDamage = random.Next(20, 36); // 20 ~ 35 랜덤 값
+        //    int difference = player.DefensePower - dungeon.requiredDefense;
+        //    int extraDamage = difference > 0 ? random.Next(difference + 1) : 0;
+        //    int totalDamage = baseDamage + extraDamage;
 
-            return totalDamage;
-        }
+        //    return totalDamage;
+        //}
 
         private void UseItem()
         {

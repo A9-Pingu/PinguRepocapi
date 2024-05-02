@@ -47,8 +47,13 @@ namespace ConsoleGame
         public void Attack(Enemy enemy)
         {
             int enemyMaxHP = enemy.Health;
+            if (enemy.Health <= AttackPower)
+            {
+                enemy.Health = 0;
+            }
+            else
+                enemy.Health -= AttackPower;
             Console.WriteLine($"{Name} 의 공격!");
-            enemy.Health -= AttackPower;
             Console.WriteLine($"Lv.{enemy.Level} {enemy.Name} 에게 {AttackPower} 데미지를 가했습니다.");
             Console.WriteLine($"");
             Console.WriteLine($"Lv.{enemy.Level} {enemy.Name}");
