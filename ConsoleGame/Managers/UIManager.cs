@@ -152,61 +152,33 @@ namespace ConsoleGame.Managers
             Console.WriteLine("0. 나가기\n");
             Console.Write("원하시는 행동을 입력해주세요.\n>> ");
         }
-        private Random random;
+        private Random randomnew = new Random();
         //전투장면
-        public void BattleScene(Difficulty difficulty, Dungeon dungeon, List<Enemy> selectedMonsters, bool isReadyToFight, Character player)
+        public void BattleScene(List<Enemy> selectedMonsters, Character player)
         {
             Console.Clear();
-            random = new Random();
-            Console.WriteLine("");
-            Console.WriteLine("     Battle!!     ");
-            Console.WriteLine("");
+            Console.WriteLine("\n     Battle!!     \n");
 
-
-            //배틀용 몬스터 리스트
-            if (isReadyToFight)
+            int index = 1;
+            foreach (var monster in selectedMonsters)
             {
-                int index = 1;
-                foreach (var monster in selectedMonsters)
+                if (monster.isDead)
                 {
-                    if (monster.isDead)
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
-                        Console.WriteLine($"- {index++} Lv.{monster.Level} {monster.Name} Dead");
-                        Console.ResetColor();
-                    }
-                    else
-                        Console.WriteLine($"- {index++} Lv.{monster.Level} {monster.Name} HP {monster.Health} ATK {monster.Attack}");
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.WriteLine($"- {index++} Lv.{monster.Level} {monster.Name} Dead");
+                    Console.ResetColor();
                 }
-                Console.WriteLine("");
-                Console.WriteLine("");
-                Console.WriteLine("[플레이어 정보]");
-                Console.WriteLine($"Lv.{player.Level} {player.Name} ({player.Job})");
-                Console.WriteLine($"HP {player.Health}/{player.MaxHealth}");
-                Console.WriteLine("");
-                Console.WriteLine("0. 취소");
-                Console.WriteLine("");
-                Console.WriteLine("대상을 선택해주세요.");
-                Console.Write(">> ");
+                else
+                    Console.WriteLine($"- {index++} Lv.{monster.Level} {monster.Name} HP {monster.Health} ATK {monster.Attack}");
             }
-            else
-            {
-                foreach(var monster in selectedMonsters)
-                {
-                    Console.WriteLine($"Lv.{monster.Level} {monster.Name} HP {monster.Health} ATK {monster.Attack}");
-                }
-                Console.WriteLine("");
-                Console.WriteLine("");
-                Console.WriteLine("[플레이어 정보]");
-                Console.WriteLine($"Lv.{player.Level} {player.Name} ({player.Job})");
-                Console.WriteLine($"HP {player.Health}/{player.MaxHealth}");
-                Console.WriteLine("");
-                Console.WriteLine("0. 취소");
-                Console.WriteLine("1. 공격");
-                //Console.WriteLine("2. 아이템 사용");
-                Console.WriteLine("대상을 선택해주세요.");
-                Console.Write(">> ");
-            }
+            Console.WriteLine("");
+            Console.WriteLine("");
+            Console.WriteLine("[플레이어 정보]");
+            Console.WriteLine($"Lv.{player.Level} {player.Name} ({player.Job})");
+            Console.WriteLine($"HP {player.Health}/{player.MaxHealth}");
+            Console.WriteLine("\n0. 취소");
+            Console.WriteLine("\n대상을 선택해주세요.");
+            Console.Write(">> ");            
         }
     }
 }
