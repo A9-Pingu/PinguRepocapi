@@ -33,8 +33,6 @@ namespace ConsoleGame.Managers
                 Console.WriteLine($"{Name}이(가) 당신의 공격을 회피했습니다.");
             }
             else
-            int damage = AttackPower;
-            if (damage < 0)
             {
                 // 회피가 발생하지 않은 경우에만 공격을 수행합니다.
                 int damage = AttackPower;

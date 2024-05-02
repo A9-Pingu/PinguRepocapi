@@ -13,13 +13,16 @@ namespace ConsoleGame
         public UIManager uiManager { get; set; }
         public InputManager inputManager { get; set; }
         public ItemManager itemManager { get; set; }
+        public QuestManager questManager { get; set; }
         #endregion
         #region //게임 씬
         public RestInTown restScene { get; set; }
         public Shop shopScene { get; set; }
         public DungeonScene dungeon { get; set; }
+        public GuildScene guild { get; set; }
         #endregion
         public Character player;
+       
         
         public bool isPlaying = true;
         public Game()
@@ -33,9 +36,12 @@ namespace ConsoleGame
             saveLoadManager = new SaveLoadManager();
             player = saveLoadManager.LoadOrStartGame(inputManager);
             itemManager = new ItemManager();
+            itemManager.InitItemList();
             shopScene = new Shop(player, itemManager);
             restScene = new RestInTown(player);
             dungeon = new DungeonScene(player);
+            questManager = new QuestManager();
+            guild = new GuildScene(player);
         }
 
         public void Run()
@@ -71,6 +77,7 @@ namespace ConsoleGame
                     restScene.RestMenu();
                     break;
                 case (int)EScene.e_Guild:
+                    guild.GuildMenu();
                     break;
                 case (int)EScene.e_Save:
                     saveLoadManager.SaveGame(player);
