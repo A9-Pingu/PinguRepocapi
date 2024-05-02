@@ -15,7 +15,7 @@ namespace ConsoleGame.Scenes
         public DungeonScene(Character character)
         {
             player = character;
-            random = new Random();            
+            random = new Random();
         }
 
 
@@ -98,10 +98,6 @@ namespace ConsoleGame.Scenes
                 Console.WriteLine("적을 물리쳤습니다!");
                 int additionalReward = CalculateAdditionalReward(player.AttackPower);
 
-                // 적을 물리칠 때마다 경험치 1 증가
-                /*Exp += 1;
-                LevelUp.CheckLevelUp();*/
-
                 Console.WriteLine($"기본 보상: {dungeon.baseReward} G");
                 Console.WriteLine($"공격력으로 인한 추가 보상: {additionalReward} G");
 
@@ -128,6 +124,13 @@ namespace ConsoleGame.Scenes
 
             Console.WriteLine($"던전 클리어! 체력 {damage} 소모됨.");
             Console.WriteLine($"남은 체력: {player.Health}");
+
+
+            player.Exp += 1;       // 적을 물리칠 때마다 경험치 1 증가
+            Console.WriteLine($"경험치획득: {player.Exp}");
+
+            player.LevelUp.CheckLevelUp();
+            
 
             if (random.Next(1, 101) <= 20) // 20% 확률로 특별한 아이템 드롭
             {
@@ -160,7 +163,7 @@ namespace ConsoleGame.Scenes
         }
         private void DropNormalItem(Difficulty difficulty)
         {
-            // 이지 던전에서 기본 아이템 및 골드 드롭
+            // 이지 던전에서 기본 아이템
             if (difficulty == Difficulty.Easy)
             {
                 // 아이템 카테고리별로 나누기

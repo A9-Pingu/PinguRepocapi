@@ -17,8 +17,6 @@ namespace ConsoleGame
         public int Health { get; set; }
         public int Gold { get; set; }
 
-        public int DungeonClearCount { get; private set; } = 0;  // 던전 클리어 횟수 카운트
-
         public int MaxHealth { get; private set; } = 100;  // 최대 체력 속성 추가
 
         public InventoryManager InventoryManager { get; set; }
@@ -42,7 +40,7 @@ namespace ConsoleGame
             // InventoryManager 및 EquipmentManager 초기화
             InventoryManager = new InventoryManager(this);
 
-            LevelUp = new LevelUp(this);    
+            LevelUp = new LevelUp(this);
         }
 
         private int CalculateMaxExp(int level)
@@ -55,18 +53,10 @@ namespace ConsoleGame
             return DefensePower >= requiredDefense;
         }
 
-        public void ResetDungeonClearCount()
-        {
-            DungeonClearCount = 0;
-        }
-
         public void Attack(Enemy enemy)
         {
             Console.WriteLine($"당신이 {enemy.Name}에게 {AttackPower}의 피해를 입혔습니다.");
             enemy.Health -= AttackPower;
-
-            Exp += 1;
-            LevelUp.CheckLevelUp();
         }
     }
 }
