@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading;
 using ConsoleGame.Managers;
 
 namespace ConsoleGame
@@ -75,44 +76,38 @@ namespace ConsoleGame
             double percentage = random.NextDouble() * 0.10 - 0.05; // 공격력 10% 오차범위
             int totalAttackPower = (int)(AttackPower * (1 + percentage)) + AdditionalDamage;
 
-            int enemyMaxHP = enemy.Health;
             bool isCritical = random.Next(1, 101) <= 15; // 15% 확률로 치명타 발생
-
+            Console.WriteLine("===================");
+            Console.WriteLine($"{Name} 의 공격!");
+            int enemyPreHP = enemy.Health;
             if (isCritical)
             {
                 totalAttackPower = (int)(totalAttackPower * 1.6); // 치명타 시 160% 데미지
-                Console.WriteLine($"당신이 {enemy.Name}에게 {totalAttackPower}의 피해를 입혔습니다. - 치명타 공격!!");
+                Console.WriteLine($"Lv.{enemy.Level} {enemy.Name}에게 {totalAttackPower}의 피해를 입혔습니다. - 치명타 공격!!");
             }
             else
             {
-                Console.WriteLine($"당신이 {enemy.Name}에게 {totalAttackPower}의 피해를 입혔습니다.");
-            }
+                Console.WriteLine($"Lv.{enemy.Level} {enemy.Name}에게 {totalAttackPower}의 피해를 입혔습니다.");
 
-            if (enemy.Health <= totalAttackPower)
+            Console.WriteLine($"\nLv.{enemy.Level} {enemy.Name}");
+            if (enemy.Health <= 0)
             {
-                enemy.Health = 0;
+                Console.WriteLine($"HP {enemyPreHP} -> Dead");
             }
             else
-            {
-                enemy.Health -= totalAttackPower;
+                Console.WriteLine($"HP {enemyPreHP} -> {enemy.Health}");
             }
-
-            Console.WriteLine("===================");
-            Console.WriteLine($"{Name} 의 공격!");
-            Console.WriteLine($"Lv.{enemy.Level} {enemy.Name} 에게 {totalAttackPower} 데미지를 가했습니다.");
-            Console.WriteLine($"");
-            Console.WriteLine($"Lv.{enemy.Level} {enemy.Name}");
-            Console.WriteLine($"HP {enemyMaxHP} -> {enemy.Health}");
-            Console.WriteLine($"");
-            Console.WriteLine($"0. 다음");
-            Console.WriteLine($"");
-            Console.Write(">>");
+            Console.WriteLine($"\n0. 다음");
+            Console.Write("\n>>");
+            Console.ReadLine(); //플레이어 공격 후 0.다음 선택시 장면이동.
         }
 
 
         public void UseSkill(Enemy enemy)
         {
-            Console.WriteLine("[내정보]");
+            Console.WriteLine("===================");
+            Console.WriteLine($"Lv.{enemy.Level} {enemy.Name} HP {enemy.Health} ATK {enemy.Attack}");
+            Console.WriteLine("\n[내정보]");
             Console.WriteLine($"Lv.{Level} {Name} ({Job})");
             Console.WriteLine($"HP {Health}/{MaxHealth}");
             Console.WriteLine($"MP {MP}/50");
@@ -160,15 +155,32 @@ namespace ConsoleGame
             int damage = skillIndex == 0 ? player.AttackPower * 3 : player.AttackPower * 2;
             if (player.MP < requiredMP)
             {
+                Console.WriteLine("===================");
                 Console.WriteLine("MP가 부족하여 스킬을 사용할 수 없습니다.");
                 return;
             }
-
-            string skillName = WarriorSkills[skillIndex];
-            Console.WriteLine($"{skillName}를 사용합니다. - MP {requiredMP}");
-            Console.WriteLine($"당신이 {enemy.Name}에게 {damage}의 피해를 입혔습니다.");
-            enemy.Health -= damage;
-            player.MP -= requiredMP;
+            else
+            {
+                string skillName = WarriorSkills[skillIndex];
+                Console.WriteLine("===================");
+                Console.WriteLine($"{skillName}를 사용합니다. - MP {requiredMP}");
+                Console.WriteLine($"\n{Name}의 {skillName}공격!");
+                Console.WriteLine($"\nLv.{enemy.Level} {enemy.Name}에게 {damage}의 피해를 입혔습니다.");
+                int enemyPreHP = enemy.Health;
+                enemy.Health -= damage;
+                Console.WriteLine($"\nLv.{enemy.Level} {enemy.Name}");
+                if (enemy.Health <= 0)
+                {
+                    enemy.Health = 0;
+                    Console.WriteLine($"HP {enemyPreHP} -> Dead");
+                }
+                else
+                    Console.WriteLine($"HP {enemyPreHP} -> {enemy.Health}");
+                Console.WriteLine("\n0. 다음");
+                Console.Write(">>");
+                Console.ReadLine();
+                player.MP -= requiredMP;
+            }            
         }
 
         private void UseMageSkill(Character player, Enemy enemy, int skillIndex)
@@ -180,12 +192,27 @@ namespace ConsoleGame
                 Console.WriteLine("MP가 부족하여 스킬을 사용할 수 없습니다.");
                 return;
             }
-
-            string skillName = MageSkills[skillIndex];
-            Console.WriteLine($"{skillName}를 사용합니다. - MP {requiredMP}");
-            Console.WriteLine($"당신이 {enemy.Name}에게 {damage}의 피해를 입혔습니다.");
-            enemy.Health -= damage;
-            player.MP -= requiredMP;
+            else
+            {
+                string skillName = MageSkills[skillIndex];
+                Console.WriteLine($"{skillName}를 사용합니다. - MP {requiredMP}");
+                Console.WriteLine($"\n{Name}의 {skillName}공격!");
+                Console.WriteLine($"\nLv.{enemy.Level} {enemy.Name}에게 {damage}의 피해를 입혔습니다.");
+                int enemyPreHP = enemy.Health;
+                enemy.Health -= damage;
+                Console.WriteLine($"\nLv.{enemy.Level} {enemy.Name}");
+                if (enemy.Health <= 0)
+                {
+                    enemy.Health = 0;
+                    Console.WriteLine($"HP {enemyPreHP} -> Dead");
+                }
+                else
+                    Console.WriteLine($"HP {enemyPreHP} -> {enemy.Health}");
+                Console.WriteLine("\n0. 다음");
+                Console.Write(">>");
+                Console.ReadLine();
+                player.MP -= requiredMP;
+            }
         }
 
         private void UseRogueSkill(Character player, Enemy enemy, int skillIndex)
@@ -197,11 +224,26 @@ namespace ConsoleGame
                 Console.WriteLine("MP가 부족하여 스킬을 사용할 수 없습니다.");
                 return;
             }
-
-            string skillName = RogueSkills[skillIndex];
-            Console.WriteLine($"{skillName}를 사용합니다. - MP {requiredMP}");
-            Console.WriteLine($"당신이 {enemy.Name}에게 {damage}의 피해를 입혔습니다.");
-            enemy.Health -= damage;
+            else
+            {
+                string skillName = RogueSkills[skillIndex];
+                Console.WriteLine($"{skillName}를 사용합니다. - MP {requiredMP}");
+                Console.WriteLine($"\n{Name}의 {skillName}공격!");
+                Console.WriteLine($"\nLv.{enemy.Level} {enemy.Name}에게 {damage}의 피해를 입혔습니다.");
+                int enemyPreHP = enemy.Health;
+                enemy.Health -= damage;
+                Console.WriteLine($"\nLv.{enemy.Level} {enemy.Name}");
+                if (enemy.Health <= 0)
+                {
+                    enemy.Health = 0;
+                    Console.WriteLine($"HP {enemyPreHP} -> Dead");
+                }
+                else
+                    Console.WriteLine($"HP {enemyPreHP} -> {enemy.Health}");
+            }
+            Console.WriteLine("\n0. 다음");
+            Console.Write(">>");
+            Console.ReadLine();
             player.MP -= requiredMP;
         }
 
@@ -215,9 +257,6 @@ namespace ConsoleGame
                 Console.Write("원하시는 행동을 입력해주세요: ");
             }
             return skillChoice;
-            Console.WriteLine($"당신이 {enemy.Name}에게 {AttackPower}의 피해를 입혔습니다.");
-            enemy.Health -= AttackPower;
-
         }
 
         public void UseItem(Item item, int count = 1)

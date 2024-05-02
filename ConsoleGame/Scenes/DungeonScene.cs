@@ -106,8 +106,8 @@ namespace ConsoleGame.Scenes
                                 case 0: // 취소
                                     Console.WriteLine("===================");
                                     Console.WriteLine("이대로 던전을 나가시겠습니까?");
-                                    Console.WriteLine("0. 네");
-                                    Console.WriteLine("1. 아니오");
+                                    Console.WriteLine("1. 네");
+                                    Console.WriteLine("0. 아니오");
                                     int nextKey = int.Parse(Console.ReadLine());
                                     if (nextKey == 0)
                                         Game.instance.Run(); // 취소
@@ -211,13 +211,24 @@ namespace ConsoleGame.Scenes
             {
                 if (!useItem) // 아이템 미사용
                 {
-                    player.Attack(enemy); // 플레이어 공격
-
+                    Console.WriteLine("===================");
+                    Console.WriteLine("1. 일반공격");
+                    Console.WriteLine("2. 스킬공격");
+                    Console.WriteLine("===================");
+                    int action = Game.instance.inputManager.GetValidSelectedIndex(2);
+                    switch (action)
+                    {
+                        case 1: //일반공격
+                            player.Attack(enemy);
+                            break;
+                        case 2: //스킬공격
+                            player.UseSkill(enemy);
+                            break;
+                    }
                     if (enemy.Health <= 0)
                     {
                         deadMonsters.Add(enemy); // 몬스터 사망시 죽은 몬스터 리스트에 넣기
                         enemy.isDead = true;
-                        break;
                     }
                     else if (enemy.Health > 0)
                     {
@@ -243,19 +254,13 @@ namespace ConsoleGame.Scenes
 
         private void LoseScene()
         {
-            Console.WriteLine("===================");
-            Console.WriteLine("");
-            Console.WriteLine("Battle!! - Result");
-            Console.WriteLine("");
-            Console.WriteLine("You Lose.");
-            Console.WriteLine("");
-            Console.WriteLine("전투에서 패배하였습니다.");
-            Console.WriteLine("");
+            Console.WriteLine("===================\n");
+            Console.WriteLine("Battle!! - Result\n");
+            Console.WriteLine("You Lose.\n");
+            Console.WriteLine("전투에서 패배하였습니다.\n");
             Console.WriteLine($"Lv.{player.Level} {player.Name}");
-            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
-            Console.WriteLine("");
-            Console.WriteLine("0. 다음");
-            Console.WriteLine("");
+            Console.WriteLine($"HP {player.MaxHealth} -> Dead\n");
+            Console.WriteLine("0. 다음\n");
             int nextKey = Game.instance.inputManager.GetValidSelectedIndex(0);
             if (nextKey == 0)
                 Game.instance.Run();
@@ -279,11 +284,8 @@ namespace ConsoleGame.Scenes
             int damage = player.MaxHealth - player.Health;
             Console.WriteLine("===================");
             Console.WriteLine($"던전 클리어! 체력 {damage} 소모됨.");
-            Console.WriteLine($"남은 체력: {player.Health}");
-
-            Console.WriteLine("");
-            Console.WriteLine("0. 다음");
-            Console.WriteLine("");
+            Console.WriteLine($"남은 체력: {player.Health}\n");
+            Console.WriteLine("0. 다음\n");
             Console.Write(">>");
 
             player.Exp += 1;       // 적을 물리칠 때마다 경험치 1 증가

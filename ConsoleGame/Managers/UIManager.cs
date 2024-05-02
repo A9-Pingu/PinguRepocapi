@@ -162,7 +162,6 @@ namespace ConsoleGame.Managers
             Console.WriteLine("     Battle!!     ");
             Console.WriteLine("");
 
-
             //배틀용 몬스터 리스트
             if (isReadyToFight)
             {
@@ -178,15 +177,11 @@ namespace ConsoleGame.Managers
                     else
                         Console.WriteLine($"- {index++} Lv.{monster.Level} {monster.Name} HP {monster.Health} ATK {monster.Attack}");
                 }
-                Console.WriteLine("");
-                Console.WriteLine("");
-                Console.WriteLine("[플레이어 정보]");
+                Console.WriteLine("\n[플레이어 정보]");
                 Console.WriteLine($"Lv.{player.Level} {player.Name} ({player.Job})");
                 Console.WriteLine($"HP {player.Health}/{player.MaxHealth}");
-                Console.WriteLine("");
-                Console.WriteLine("0. 취소");
-                Console.WriteLine("");
-                Console.WriteLine("대상을 선택해주세요.");
+                Console.WriteLine("\n0. 취소");
+                Console.WriteLine("\n대상을 선택해주세요.");
                 Console.Write(">> ");
             }
             else
@@ -195,15 +190,11 @@ namespace ConsoleGame.Managers
                 {
                     Console.WriteLine($"Lv.{monster.Level} {monster.Name} HP {monster.Health} ATK {monster.Attack}");
                 }
-                Console.WriteLine("");
-                Console.WriteLine("");
-                Console.WriteLine("[플레이어 정보]");
+                Console.WriteLine("\n[플레이어 정보]");
                 Console.WriteLine($"Lv.{player.Level} {player.Name} ({player.Job})");
                 Console.WriteLine($"HP {player.Health}/{player.MaxHealth}");
-                Console.WriteLine("");
-                Console.WriteLine("0. 취소");
+                Console.WriteLine("\n0. 취소");
                 Console.WriteLine("1. 공격");
-                //Console.WriteLine("2. 아이템 사용");
                 Console.WriteLine("대상을 선택해주세요.");
                 Console.Write(">> ");
             }
