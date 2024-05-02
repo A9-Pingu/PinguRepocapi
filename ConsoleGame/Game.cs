@@ -48,6 +48,16 @@ namespace ConsoleGame
             }
         }
 
+        public void DungeonRun()
+        {
+            while (isPlaying)
+            {
+                Game.instance.dungeon.EnterDungeon();
+                int choice = inputManager.GetValidSelectedIndex(3);
+                isPlaying = SelectScene(choice);
+            }
+        }
+
         bool SelectScene(int choice)
         {
             switch (choice)
