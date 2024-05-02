@@ -14,12 +14,15 @@ namespace ConsoleGame.Managers
         public int Health { get; set; }
         public int Attack { get; set; }
 
-        public Enemy(string name, int level)
+        public bool isDead { get; set; }
+
+        public Enemy(string name, int level, bool isDead = false)
         {
             Level = level;
             Name = name;
             Health = CalculateHealth(level); //레벨반영
             Attack = CalculateAttack(level);
+            this.isDead = isDead;
         }
 
         //플레이어 레벨 반영하여 몬스터 체력 조정

@@ -44,6 +44,7 @@ namespace ConsoleGame.Scenes
         }
 
         List<Enemy> deadMonsters = new List<Enemy>(); //죽은 몬스터 수
+        Dictionary<int,string> deadMonsterIndex = new Dictionary<int,string>(); //죽은 몬스터 번호
         public void Start(Difficulty difficulty)
         {
             if (!player.HasRequiredDefense(dungeon.requiredDefense))
@@ -97,7 +98,7 @@ namespace ConsoleGame.Scenes
                                         Battle(selectedMonsters[inputKey - 1]);
                                         if (player.Health <= 0)
                                         {
-                                            LoseScene();
+                                            LoseScene(); //....
                                         }
                                     }
                                     else
@@ -245,11 +246,15 @@ namespace ConsoleGame.Scenes
             Console.WriteLine("1. 쉬운 던전     | 방어력 5 이상 권장");
             Console.WriteLine("2. 일반 던전     | 방어력 11 이상 권장");
             Console.WriteLine("3. 어려운 던전    | 방어력 17 이상 권장");
-            Console.WriteLine("0. 나가기"); //$$나가기가 안 됨
+            Console.WriteLine("0. 나가기");
             Console.Write("원하시는 행동을 입력해주세요.\n>> ");
 
             int InputKey = Game.instance.inputManager.GetValidSelectedIndex((int)Difficulty.Max-1, (int)Difficulty.Easy);
             dungeon = new Dungeon((Difficulty)InputKey);
+            if (InputKey == 0)
+            {
+                Game.instance.Run();
+            }
 
             if (!player.HasRequiredDefense(dungeon.requiredDefense))
             {
@@ -272,7 +277,8 @@ namespace ConsoleGame.Scenes
                     Game.instance.inputManager.GetValidSelectedIndex(0);
                     if (enemy.Health <= 0)
                     {
-                        deadMonsters.Add(enemy);
+                        deadMonsters.Add(enemy); //몬스터 사망시 죽은 몬스터 리스트에 넣기
+                        enemy.isDead = true;
                         break;
                     }
                     else if (enemy.Health > 0)

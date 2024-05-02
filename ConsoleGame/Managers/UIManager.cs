@@ -156,7 +156,14 @@ namespace ConsoleGame.Managers
                 int index = 1;
                 foreach (var monster in selectedMonsters)
                 {
-                    Console.WriteLine($"- {index++} Lv.{monster.Level} {monster.Name} HP {monster.Health} ATK {monster.Attack}");
+                    if (monster.isDead)
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.WriteLine($"- {index++} Lv.{monster.Level} {monster.Name} Dead");
+                        Console.ResetColor();
+                    }
+                    else
+                        Console.WriteLine($"- {index++} Lv.{monster.Level} {monster.Name} HP {monster.Health} ATK {monster.Attack}");
                 }
                 Console.WriteLine("");
                 Console.WriteLine("");
