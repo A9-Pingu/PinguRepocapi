@@ -25,6 +25,7 @@
         // 귀속 아이템을 생성할 때는 IsBound 값을 true로 설정합니다
         public Item(int keyValue, string name, ItemType type, int price, int statBonus, string description, bool isBound = false, bool purchased = false)
         {
+            UniqueKey = keyValue;
             Name = name;
             Type = type;
             Price = price;

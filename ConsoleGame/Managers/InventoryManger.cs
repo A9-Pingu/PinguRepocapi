@@ -41,15 +41,18 @@ namespace ConsoleGame.Managers
         }
 
 
-        // 아이템 삭제 //else는 절대 안뜨는게 정상...만약 뜨면 신고바랍니다.
+        // 아이템 삭제 //else는 안뜨는게 정상...만약 뜨면 신고바랍니다.
         public bool RemoveItem(Item item, int count = 1)
         {
             if (dicInventory.ContainsKey(item.UniqueKey))
             {
-                dicInventory[item.UniqueKey].Count -= count;
-                if(dicInventory[item.UniqueKey].Count - count <= 0)
+                if (dicInventory[item.UniqueKey].Count - count > 0)
                 {
-                    dicInventory[item.UniqueKey].Count = 0;
+                    dicInventory[item.UniqueKey].Count -= count;
+                }
+                else if (dicInventory[item.UniqueKey].Count - count == 0)
+                {
+                    dicInventory[item.UniqueKey].Count -= count;
                     dicInventory[item.UniqueKey].Purchased = false;
                     dicInventory.Remove(item.UniqueKey);
                 }
@@ -112,16 +115,25 @@ namespace ConsoleGame.Managers
                 return;
             }
 
+            int index = GetItemKey(inputKey);
+            EquipItem(dicInventory[index]);
+        }
+
+        public int GetItemKey(int inputKey)
+        {
             int index = 0;
             foreach (var item in dicInventory)
             {
-                if (inputKey == index)
-                    break;
                 index++;
+                if (inputKey == index)
+                {
+                    index = item.Value.UniqueKey;
+                    return index;
+                }
             }
-            EquipItem(dicInventory[index - 1]);
+            Console.WriteLine("에러 발생");
+            return 0;
         }
-
         public string GetCategoryName(ItemType itemType)
         {
             switch (itemType)

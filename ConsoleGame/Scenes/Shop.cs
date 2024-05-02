@@ -64,6 +64,7 @@ namespace ConsoleGame.Scenes
                         SellItem();
                         break;
                     case 0:
+                        Console.WriteLine("상점에서 나갑니다");
                         return;
                     default:
                         Console.WriteLine("잘못된 입력입니다.");
@@ -108,65 +109,6 @@ namespace ConsoleGame.Scenes
             Thread.Sleep(1000);
         }
 
-
-        private void SellItem()
-        {
-            var inventoryManager = player.InventoryManager;
-
-            if (inventoryManager.dicInventory.Count == 0)
-            {
-                Console.WriteLine("인벤토리가 비어 있습니다.");
-                Thread.Sleep(1000);
-                return;
-            }
-
-            int index = 1;
-            foreach (var item in inventoryManager.dicInventory)
-            {
-                Console.WriteLine($"{index++}. {item.Value.Name} ({item.Value.Type}) : {(int)(item.Value.Price * 0.85)} G  | * {item.Value.Count}");
-            }
-
-            Console.WriteLine("판매할 아이템을 선택하세요. (취소: 0)");
-
-            int inputKey = Game.instance.inputManager.GetValidSelectedIndex(index);
-
-            if (inputKey == 0)
-            {
-                Console.WriteLine("판매가 취소되었습니다.");
-                Thread.Sleep(1000);
-                return;
-            }
-
-            index = 0;
-            foreach (var item in inventoryManager.dicInventory)
-            {
-                if (inputKey == index)
-                    break;
-                index++;
-            }
-
-            //개수
-            BulkSelling(inventoryManager.dicInventory[index - 1]);
-            Thread.Sleep(1000);
-        }
-
-        //호출 시 -1해서 매개변수넣을것
-        public void ReleasedAndSellingEquipment(int index)
-        {
-            if (player.InventoryManager.dicInventory[index].Equipped && player.InventoryManager.dicInventory[index].Count == 1)
-            {
-                Console.WriteLine($"{player.InventoryManager.dicInventory[index].Name}은(는) 현재 장착 중입니다. 장착을 해제하고 판매하시겠습니까? (Y/N)");
-                string confirm = Console.ReadLine().ToUpper();
-
-                if (confirm != "Y")
-                {
-                    Console.WriteLine("판매가 취소되었습니다.");
-                    Thread.Sleep(1000);
-                    return;
-                }
-                player.InventoryManager.RemoveItemStatBonus(player.InventoryManager.dicInventory[index]);
-            }
-        }
         private void ShowConsumables()
         {
             Console.WriteLine("[소모품 목록]");
@@ -232,13 +174,55 @@ namespace ConsoleGame.Scenes
             }
         }
 
+        private void SellItem()
+        {
+            var inventoryManager = player.InventoryManager;
+
+            if (inventoryManager.dicInventory.Count == 0)
+            {
+                Console.WriteLine("인벤토리가 비어 있습니다.");
+                Thread.Sleep(1000);
+                return;
+            }
+
+            int index = 1;
+            foreach (var item in inventoryManager.dicInventory)
+            {
+                Console.WriteLine($"{index++}. {item.Value.Name} ({item.Value.Type}) : {(int)(item.Value.Price * 0.85)} G  | * {item.Value.Count}");
+            }
+
+            Console.WriteLine("판매할 아이템을 선택하세요. (취소: 0)");
+
+            int inputKey = Game.instance.inputManager.GetValidSelectedIndex(index);
+
+            if (inputKey == 0)
+            {
+                Console.WriteLine("판매가 취소되었습니다.");
+                Thread.Sleep(1000);
+                return;
+            }
+
+            index = inventoryManager.GetItemKey(inputKey);
+
+            //개수
+            BulkSelling(inventoryManager.dicInventory[index]);
+            Thread.Sleep(1000);
+        }
+
         public void BulkSelling(Item item)
         {
             Console.Write($"판매할 {item.Name}의 수량을 입력하세요: ");
             if (int.TryParse(Console.ReadLine(), out int quantity) && item.Count >= quantity && quantity > 0)
             {
-                if(item.Type == ItemType.Weapon || item.Type == ItemType.Armor)
-                    ReleasedAndSellingEquipment(item.UniqueKey);
+                if (item.Type == ItemType.Weapon || item.Type == ItemType.Armor)
+                {
+                    bool isContinue = ReleasedAndSellingEquipment(item.UniqueKey, quantity);
+                    if(!isContinue) 
+                    {
+                        return;
+                    }
+                }
+
                 int totalPrice = (int)(item.Price * quantity * 0.85);
                 player.Gold += totalPrice;
                 Console.WriteLine($"{item.Name} {quantity}개를 총 {totalPrice}G에 판매했습니다.");               
@@ -248,6 +232,25 @@ namespace ConsoleGame.Scenes
             {
                 Console.WriteLine("잘못된 수량입니다.");
             }
+        }
+
+        //호출 시 -1해서 매개변수넣을것
+        public bool ReleasedAndSellingEquipment(int index, int count)
+        {
+            if (player.InventoryManager.dicInventory[index].Equipped && player.InventoryManager.dicInventory[index].Count - count == 0)
+            {
+                Console.WriteLine($"{player.InventoryManager.dicInventory[index].Name}은(는) 현재 장착 중입니다. 장착을 해제하고 판매하시겠습니까? (Y/N)");
+                string confirm = Console.ReadLine().ToUpper();
+
+                if (confirm != "Y")
+                {
+                    Console.WriteLine("판매가 취소되었습니다.");
+                    return false;
+                }
+                player.InventoryManager.EquipItem(player.InventoryManager.dicInventory[index]);
+            }
+
+            return true;
         }
     }
 }

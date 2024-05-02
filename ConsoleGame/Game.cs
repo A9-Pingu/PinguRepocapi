@@ -34,6 +34,7 @@ namespace ConsoleGame
             saveLoadManager = new SaveLoadManager();
             player = saveLoadManager.LoadOrStartGame(inputManager);
             itemManager = new ItemManager();
+            itemManager.InitItemList();
             shopScene = new Shop(player, itemManager);
             restScene = new RestInTown(player);
             dungeon = new DungeonScene(player);
