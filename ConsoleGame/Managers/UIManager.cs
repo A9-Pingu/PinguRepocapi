@@ -19,9 +19,10 @@ namespace ConsoleGame.Managers
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine("3. 상점");
             Console.WriteLine("4. 던전 입장");
-            Console.WriteLine("5. 휴식하기");
-            Console.WriteLine("6. 저장하기");
-            Console.WriteLine("7. 게임 종료");
+            Console.WriteLine("6. 길드입장");
+            Console.WriteLine("7. 저장하기");
+            Console.WriteLine("8. 불러오기");
+            Console.WriteLine("0. 게임 종료");
             Console.WriteLine("===================");
             Console.Write("원하시는 행동을 입력해주세요: ");
         }
