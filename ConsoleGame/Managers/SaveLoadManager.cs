@@ -19,7 +19,7 @@ namespace ConsoleGame.Managers
             if (savedGames.Count > 0)
             {
                 DisplaySavedGames(savedGames);
-                int selectedIndex = input.GetValidSelectedIndex(savedGames.Count + 1, 1);
+                int selectedIndex = input.GetValidSelectedIndex(savedGames.Count, 1);
 
                 string selectedGame = savedGames[selectedIndex - 1];
                 Character player = LoadGame(selectedGame);

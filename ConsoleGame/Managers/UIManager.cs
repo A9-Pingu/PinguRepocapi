@@ -19,6 +19,7 @@ namespace ConsoleGame.Managers
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine("3. 상점");
             Console.WriteLine("4. 던전 입장");
+            Console.WriteLine("5. 휴식하기");
             Console.WriteLine("6. 길드입장");
             Console.WriteLine("7. 저장하기");
             Console.WriteLine("8. 불러오기");
@@ -37,29 +38,56 @@ namespace ConsoleGame.Managers
             Console.WriteLine($"체력: {player.Health}");
             Console.WriteLine($"마나: {player.MP}");
             Console.WriteLine($"Gold: {player.Gold}");
-            Console.WriteLine($"공격력: {(double)player.CalculateTotalAttackPower()}");
-            Console.WriteLine($"방어력: {(double)player.CalculateTotalDefensePower()}");
+            Console.WriteLine($"공격력: {player.AttackPower}");
+            Console.WriteLine($"방어력: {player.DefensePower}");
 
+            Console.WriteLine("[장착 아이템]");
             // 장착한 아이템 정보 출력
-            if (player.WeaponInventoryManager.GetItemsByType(ItemType.Weapon).Count > 0 ||
-               player.ArmorInventoryManager.GetItemsByType(ItemType.Armor).Count > 0)
+            if (player.InventoryManager.dicEquipItem[ItemType.Weapon] != null)
             {
-                Console.WriteLine("[장착 아이템]");
-
-                foreach (var weapon in player.WeaponInventoryManager.GetItemsByType(ItemType.Weapon))
-                {
-                    Console.WriteLine($"- {weapon.Name} (무기) : +{weapon.StatBonus}");
-                }
-
-                foreach (var armor in player.ArmorInventoryManager.GetItemsByType(ItemType.Armor))
-                {
-                    Console.WriteLine($"- {armor.Name} (방어구) : +{armor.StatBonus}");
-                }
+                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Weapon].Name} (무기) : +{player.InventoryManager.dicEquipItem[ItemType.Weapon].StatBonus}");
             }
             else
             {
-                Console.WriteLine("장착한 아이템이 없습니다.");
+                Console.WriteLine("장착한 무기아이템이 없습니다.");
             }
+
+            if (player.InventoryManager.dicEquipItem[ItemType.Armor] != null)
+            {
+                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Armor].Name} (방어구) : +{player.InventoryManager.dicEquipItem[ItemType.Armor].StatBonus}");           
+            }
+            else
+            {
+                Console.WriteLine("장착한 방어구아이템이 없습니다.");
+            }
+
+            Game.instance.inputManager.InputAnyKey();
+        }
+
+        public bool DisplayInventory(InventoryManager inventory)
+        {
+            Console.Clear();
+            if (inventory.Inventory.Count == 0)
+            {
+                Console.WriteLine("인벤토리가 비어 있습니다.");
+                return false;
+            }
+
+            Console.WriteLine("인벤토리");
+            Console.WriteLine($"아이템 개수: {inventory.Inventory.Count}\n");
+
+            int index = 1;
+            foreach (var item in inventory.Inventory)
+            {
+                Console.WriteLine($"- {index++}. {item.Name} ({item.Type}) : {(item.Equipped ? "장착됨" : "미장착")}");
+            }
+
+            Console.WriteLine();
+
+            Console.WriteLine("1. 아이템 관리");
+            Console.WriteLine("0. 나가기");
+            Console.Write("원하시는 행동을 입력해주세요.\n>> ");
+            return true;
         }
 
         public void DisplayShopMenu()
@@ -74,15 +102,42 @@ namespace ConsoleGame.Managers
             Console.Write("원하시는 행동을 입력해주세요: ");
         }
 
+        public void ShowItemsForSale(ItemType itemType)
+        {
+            Console.Clear();
+            string itemTypeString = itemType switch
+            {
+                ItemType.Weapon => "Weapon",
+                ItemType.Armor => "Armor",
+                ItemType.Consumable => "Consumable",
+                ItemType.All => "All",
+            };
+
+            Console.WriteLine($"상점 - {itemTypeString} 상점");
+
+            // 보유한 골드 출력
+            Console.WriteLine("\n[보유 골드]");
+            Console.WriteLine($"{Game.instance.player.Gold} G");
+
+            // 상점 아이템 목록 출력
+            Console.WriteLine("\n[아이템 목록]");
+
+            int index = 1;
+            Game.instance.itemManager.ItemInfos.FindAll(obj => obj.Type == itemType).ForEach(obj => Console.WriteLine($"- {index++}. {obj.Name} : {obj.Price} G"));
+
+            Console.WriteLine("\n1. 아이템 구매");
+            Console.WriteLine("2. 아이템 판매");
+            Console.WriteLine("0. 나가기");
+            Console.Write("원하시는 행동을 선택해주세요.\n>> ");
+        }
+
         public void ShowRestMenu()
         {
             Console.Clear();
             Console.WriteLine($"휴식하기");
             Console.WriteLine($"500 G 를 내면 체력을 회복할 수 있습니다. (보유 골드 : {Game.instance.player.Gold} G)");
-            Console.WriteLine();
-            Console.WriteLine("1. 휴식하기");
-            Console.WriteLine("0. 나가기");
-            Console.WriteLine();
+            Console.WriteLine("\n1. 휴식하기");
+            Console.WriteLine("0. 나가기\n");
             Console.Write("원하시는 행동을 입력해주세요.\n>> ");
         }
     }

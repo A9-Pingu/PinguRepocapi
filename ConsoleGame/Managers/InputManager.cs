@@ -14,8 +14,8 @@ namespace ConsoleGame.Managers
             while (true)
             {
                 Console.Write("번호를 입력하세요: ");
-                int.TryParse(Console.ReadLine(), out selectedIndex);
-                if (selectedIndex >= minIndex && selectedIndex < maxIndex)
+                bool getkey = int.TryParse(Console.ReadLine(), out selectedIndex);
+                if (selectedIndex >= minIndex && selectedIndex <= maxIndex && getkey)
                 {
                     return selectedIndex;
                 }
@@ -24,6 +24,12 @@ namespace ConsoleGame.Managers
                     Console.WriteLine("유효한 번호를 입력해주세요.");
                 }
             }
+        }
+
+        public void InputAnyKey()
+        {
+            Console.WriteLine("아무 키나 누르면 계속...");
+            Console.ReadKey();
         }
     }
 }

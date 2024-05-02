@@ -25,10 +25,10 @@ namespace ConsoleGame.Scenes
                 switch (choice)
                 {
                     case "1":
-                        ShowItemsForSale(ItemType.Weapon);
+                        ShowItemActions(ItemType.Weapon);
                         break;
-                    case "2":
-                        ShowItemsForSale(ItemType.Armor);
+                    case "2":                       
+                        ShowItemActions(ItemType.Armor);
                         break;
                     case "3":
                         ShowConsumables();            // 소모품 목록 출력
@@ -41,104 +41,50 @@ namespace ConsoleGame.Scenes
                         break;
                 }
 
-                Console.WriteLine("아무 키나 누르면 계속...");
-                Console.ReadKey();
+                Game.instance.inputManager.InputAnyKey();
             }
         }
 
-     
-
-        private void ShowItemsForSale(ItemType itemType)
-        {
-            List<Item> itemsForSale = item.ItemInfos
-                                                .Where(item => item.Type == itemType && !item.IsBound)
-                                                .ToList();
-
-            ShowItems(itemType, itemsForSale);
-        }
-
-        private void ShowItems(ItemType itemType, List<Item> itemsForSale)
-        {
-            string itemTypeString = itemType switch
-            {
-                ItemType.Weapon => "Weapon",
-                ItemType.Armor => "Armor",
-                ItemType.Potion => "Potion",
-                ItemType.Scroll => "Scroll",
-                ItemType.Consumable => "Consumable",
-                ItemType.Defense => "Defense"
-            };
-
-            Console.WriteLine($"상점 - {itemTypeString} 상점");
-            Console.WriteLine();
-
-            // 보유한 골드 출력
-            Console.WriteLine("[보유 골드]");
-            Console.WriteLine($"{player.Gold} G");
-            Console.WriteLine();
-
-            // 상점 아이템 목록 출력
-            Console.WriteLine("[아이템 목록]");
-
-            int index = 1;
-            foreach (var item in itemsForSale)
-            {
-                Console.WriteLine($"- {index}. {item.Name} : {item.Price} G");
-                index++;
-            }
-
-            Console.WriteLine();
-
-            // 아이템 구매 및 판매 기능
-            ShowItemActions(itemType);
-        }
 
         private void ShowItemActions(ItemType itemType)
         {
-            Console.WriteLine("1. 아이템 구매");
-            Console.WriteLine("2. 아이템 판매");
-            Console.WriteLine("0. 나가기");
-            Console.Write("원하시는 행동을 선택해주세요.\n>> ");
-
-            string input = Console.ReadLine();
-            switch (input)
+            while (true)
             {
-                case "1":
-                    BuyItem(itemType);
-                    break;
-                case "2":
-                    SellItem();
-                    break;
-                case "0":
-                    break;
-                default:
-                    Console.WriteLine("잘못된 입력입니다.");
-                    break;
+                Game.instance.uiManager.ShowItemsForSale(itemType);
+
+                int inputKey = Game.instance.inputManager.GetValidSelectedIndex(2);
+
+                switch (inputKey)
+                {
+                    case 1:
+                        BuyItem(itemType);
+                        break;
+                    case 2:
+                        SellItem();
+                        break;
+                    case 0:
+                        return;
+                    default:
+                        Console.WriteLine("잘못된 입력입니다.");
+                        break;
+                }
             }
+
         }
 
         private void BuyItem(ItemType itemType)
         {
+            Game.instance.uiManager.ShowItemsForSale(itemType);
             Console.WriteLine("구매할 아이템 번호를 선택해주세요. (취소: 0)");
+            //
+            var itemsToBuy = item.ItemInfos.Where(i => i.Type == itemType).ToList();
 
-            int choice;
-            if (!int.TryParse(Console.ReadLine(), out choice) || choice < 0)
-            {
-                Console.WriteLine("잘못된 입력입니다.");
-                return;
-            }
+            int choice = Game.instance.inputManager.GetValidSelectedIndex(itemsToBuy.Count);
 
             if (choice == 0)
             {
                 Console.WriteLine("구매가 취소되었습니다.");
-                return;
-            }
-
-            var itemsToBuy = item.ItemInfos.Where(i => i.Type == itemType && !i.Purchased).ToList();
-
-            if (choice > itemsToBuy.Count || choice < 1)
-            {
-                Console.WriteLine("잘못된 선택입니다.");
+                Thread.Sleep(1000);
                 return;
             }
 
@@ -147,6 +93,7 @@ namespace ConsoleGame.Scenes
             if (player.Gold < selectedToBuy.Price)
             {
                 Console.WriteLine("골드가 부족합니다.");
+                Thread.Sleep(1000);
                 return;
             }
 
@@ -157,6 +104,7 @@ namespace ConsoleGame.Scenes
             player.InventoryManager.AddItem(new Item(selectedToBuy.Name, selectedToBuy.Type, selectedToBuy.Price, selectedToBuy.StatBonus, selectedToBuy.Description, false));
 
             Console.WriteLine($"{selectedToBuy.Name}을(를) 구매했습니다.");
+            Thread.Sleep(1000);
         }
 
 
@@ -167,28 +115,26 @@ namespace ConsoleGame.Scenes
             if (inventoryManager.Inventory.Count == 0)
             {
                 Console.WriteLine("인벤토리가 비어 있습니다.");
+                Thread.Sleep(1000);
                 return;
             }
-
-            Console.WriteLine("판매할 아이템을 선택하세요. (취소: 0)");
 
             int index = 1;
             foreach (var item in inventoryManager.Inventory)
             {
-                Console.WriteLine($"{index}. {item.Name} ({item.Type}) : {(int)(item.Price * 0.85)} G");
-                index++;
+                Console.WriteLine($"{index++}. {item.Name} ({item.Type}) : {(int)(item.Price * 0.85)} G");
             }
 
-            int choice;
-            if (!int.TryParse(Console.ReadLine(), out choice) || choice < 0 || choice > index - 1)
-            {
-                Console.WriteLine("잘못된 입력입니다.");
-                return;
-            }
+            Console.WriteLine("판매할 아이템을 선택하세요. (취소: 0)");
+
+
+
+            int choice = Game.instance.inputManager.GetValidSelectedIndex(index);
 
             if (choice == 0)
             {
                 Console.WriteLine("판매가 취소되었습니다.");
+                Thread.Sleep(1000);
                 return;
             }
 
@@ -202,10 +148,11 @@ namespace ConsoleGame.Scenes
                 if (confirm != "Y")
                 {
                     Console.WriteLine("판매가 취소되었습니다.");
+                    Thread.Sleep(1000);
                     return;
                 }
-
-                player.InventoryManager.UnequipItem(choice);
+                player.InventoryManager.RemoveItemStatBonus(selectedItem);
+                player.InventoryManager.RemoveItem(selectedItem);
             }
 
             int sellPrice = (int)(selectedItem.Price * 0.85);
@@ -213,6 +160,7 @@ namespace ConsoleGame.Scenes
             inventoryManager.RemoveItem(selectedItem);
 
             Console.WriteLine($"{selectedItem.Name}을(를) {sellPrice} G에 판매했습니다.");
+            Thread.Sleep(1000);
         }
 
         private void ShowConsumables()
@@ -220,10 +168,9 @@ namespace ConsoleGame.Scenes
             Console.WriteLine("[소모품 목록]");
 
             int index = 1;
-            foreach (var item in item.ItemInfos.Where(item => item.Type == ItemType.Consumable && !item.Purchased))
+            foreach (var item in item.ItemInfos.Where(item => item.Type == ItemType.Consumable))
             {
-                Console.WriteLine($"- {index}. {item.Name} : {item.Price} G");
-                index++;
+                Console.WriteLine($"- {index++}. {item.Name} : {item.Price} G");
             }
 
             if (index == 1)
@@ -232,6 +179,7 @@ namespace ConsoleGame.Scenes
             }
 
             Console.WriteLine();
+
         }
 
         private void BuyConsumable()
@@ -239,7 +187,7 @@ namespace ConsoleGame.Scenes
             Console.Write("구매할 아이템 번호를 입력하세요: ");
             if (int.TryParse(Console.ReadLine(), out int itemIndex))
             {
-                var consumables = item.ItemInfos.Where(item => item.Type == ItemType.Consumable && !item.Purchased).ToList();
+                var consumables = item.ItemInfos.Where(item => item.Type == ItemType.Consumable).ToList();
 
                 if (itemIndex >= 1 && itemIndex <= consumables.Count)
                 {
@@ -281,6 +229,7 @@ namespace ConsoleGame.Scenes
             {
                 Console.WriteLine("잘못된 입력입니다.");
             }
+            Thread.Sleep(1000);
         }
 
     }
