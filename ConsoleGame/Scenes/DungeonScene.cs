@@ -21,141 +21,72 @@ namespace ConsoleGame.Scenes
         // 던전 입장 조건
         public void EnterDungeon()
         {
-            Console.WriteLine("===================");
-            Console.WriteLine("1. 쉬운 던전     | 누구나 가능");
-            Console.WriteLine("2. 일반 던전     | 방어력 12 이상 권장");
-            Console.WriteLine("3. 어려운 던전    | 방어력 24 이상 권장");
-            Console.WriteLine("0. 나가기");
-            Console.Write("원하시는 행동을 입력해주세요.\n>> ");
-
-            int InputKey = Game.instance.inputManager.GetValidSelectedIndex((int)Difficulty.Max - 1);//, (int)Difficulty.Easy);
-            dungeon = new Dungeon((Difficulty)InputKey);
             while (true)
             {
-                switch (InputKey)
+                Console.Clear();
+                Console.WriteLine("===================");
+                Console.WriteLine("1. 쉬운 던전     | 누구나 가능");
+                Console.WriteLine("2. 일반 던전     | 방어력 12 이상 권장");
+                Console.WriteLine("3. 어려운 던전    | 방어력 24 이상 권장");
+                Console.WriteLine("0. 나가기");
+                Console.Write("원하시는 행동을 입력해주세요.\n>> ");
+                int InputKey = Game.instance.inputManager.GetValidSelectedIndex((int)Difficulty.Max - 1);//, (int)Difficulty.Easy);
+                dungeon = new Dungeon((Difficulty)InputKey);
+
+                if (InputKey == 0)
+                    return;
+
+                if (dungeon.requiredDefense < player.DefensePower)
                 {
-                    case 0:
-                        Game.instance.Run();
-                        break;
-                    case 1:
-                        if (player.DefensePower > 0)
-                        {
-                            Start(dungeon.difficulty);
-                            DropSpecialItem(dungeon.difficulty);
-                        }
-                        break;
-                    case 2:
-                        if (player.DefensePower >= 12)
-                        {
-                            Start(dungeon.difficulty);
-                            DropSpecialItem(dungeon.difficulty);
-                        }
-                        else
-                        {
-                            Console.WriteLine($"방어력이 12 이상이어야 {dungeon.difficulty} 던전에 입장할 수 있습니다.");
-                            Game.instance.inputManager.InputAnyKey();
-                            Console.Clear();
-                            Game.instance.DungeonRun();
-                        }
-                        break;
-                    case 3:
-                        if (player.DefensePower >= 24)
-                        {
-                            Start(dungeon.difficulty);
-                            DropSpecialItem(dungeon.difficulty);
-                        }
-                        else
-                        {
-                            Console.WriteLine($"방어력이 24 이상이어야 {dungeon.difficulty} 던전에 입장할 수 있습니다.");
-                            Game.instance.inputManager.InputAnyKey();
-                            Console.Clear();
-                            Game.instance.DungeonRun();
-                        }
-                        break;
+                    Start(dungeon.difficulty);
+                    DropSpecialItem(dungeon.difficulty);
+                }
+                else
+                {
+                    Console.WriteLine($"방어력이 {dungeon.requiredDefense} 이상이어야 {dungeon.difficulty} 던전에 입장할 수 있습니다.");
+                    Game.instance.inputManager.InputAnyKey();
+                    Console.Clear();
                 }
             }
         }
 
-        List<Enemy> deadMonsters = new List<Enemy>(); // 죽은 몬스터 수
-        Dictionary<int, string> deadMonsterIndex = new Dictionary<int, string>(); // 죽은 몬스터 번호
+        List<Enemy> selectedMonsters;
         public void Start(Difficulty difficulty)
         {
             Console.WriteLine("");
             Console.WriteLine("===================");
             Console.WriteLine($"{difficulty} 던전 입장 성공!");
             Console.WriteLine("===================");
-            List<Enemy> selectedMonsters = SelectMonsters(difficulty);
+            selectedMonsters = SelectMonsters(difficulty);
             // 몬스터 선택
             // UIManager의 ShowBattle 메서드 호출
-            Game.instance.uiManager.BattleScene(difficulty, dungeon, selectedMonsters, false, player); // --
-            int inputKey = Game.instance.inputManager.GetValidSelectedIndex(3);
+
             while (true)
             {
-                switch (inputKey)
+                Game.instance.uiManager.BattleScene(selectedMonsters, player); // --
+                int inputKey = Game.instance.inputManager.GetValidSelectedIndex(selectedMonsters.Count + 1);
+
+                if (inputKey == 0)
                 {
-                    case 0:
-                        Game.instance.Run(); // 취소
-                        break;
-                    case 1: // 공격
-                        while (deadMonsters.Count < 3 && player.Health > 0) // 내가 또는 몬스터 한 마리가 살아있을 때
-                        {
-                            Game.instance.uiManager.BattleScene(difficulty, dungeon, selectedMonsters, true, player); // 1 2
-                            inputKey = int.Parse(Console.ReadLine());
-                            switch (inputKey)
-                            {
-                                case 0: // 취소
-                                    Console.WriteLine("===================");
-                                    Console.WriteLine("이대로 던전을 나가시겠습니까?");
-                                    Console.WriteLine("0. 네");
-                                    Console.WriteLine("1. 아니오");
-                                    int nextKey = int.Parse(Console.ReadLine());
-                                    if (nextKey == 0)
-                                        Game.instance.Run(); // 취소
-                                    else if (nextKey == 1)
-                                        break;
-                                    else
-                                    {
-                                        Console.WriteLine("===================");
-                                        Console.WriteLine("잘못된 입력입니다");
-                                        inputKey = int.Parse(Console.ReadLine());
-                                    }
-                                    break;
-                                case 1: // 첫번째 몬스터
-                                case 2: // 두번째 몬스터
-                                case 3: // 세번째 몬스터
-                                    if (inputKey <= selectedMonsters.Count && !deadMonsters.Contains(selectedMonsters[inputKey - 1]))
-                                    {
-                                        Battle(selectedMonsters[inputKey - 1]);
-                                        if (player.Health <= 0)
-                                            LoseScene();
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("===================");
-                                        Console.WriteLine("잘못된 입력입니다");
-                                        inputKey = int.Parse(Console.ReadLine());
-                                    }
-                                    break;
-                                default:
-                                    Console.WriteLine("===================");
-                                    Console.WriteLine("잘못된 입력입니다");
-                                    inputKey = int.Parse(Console.ReadLine());
-                                    break;
-                            }
-                        }
-                        if (player.Health <= 0)
-                            LoseScene();
-                        else if (deadMonsters.Count >= 3)
-                            ClearDungeon();
-                        break;
-                    case 3: // 아이템 사용
-                        UseItem();
-                        break;
-                    default:
-                        Console.WriteLine("===================");
-                        Console.WriteLine("잘못된 입력입니다");
-                        inputKey = int.Parse(Console.ReadLine());
-                        break;
+                    Console.WriteLine("===================");
+                    Console.WriteLine("이대로 던전을 나가시겠습니까?");
+                    Console.WriteLine("0. 네");
+                    Console.WriteLine("1. 아니오");
+                    int nextKey = int.Parse(Console.ReadLine());
+                    if (nextKey == 0)
+                        return;
+                }                
+                Battle(inputKey);
+                UseItem();                        
+                if (player.Health <= 0)
+                {
+                    LoseScene();
+                    return;
+                }
+                else if (selectedMonsters.Count == 0)
+                {
+                    ClearDungeon();
+                    return;
                 }
             }
         }
@@ -205,60 +136,28 @@ namespace ConsoleGame.Scenes
             return selectedMonsters;
         }
 
-        private void Battle(Enemy enemy)
+        private void Battle(int EnemyNum)
         {
-            while (!deadMonsters.Contains(enemy) && player.Health > 0) // 몬스터와 나 둘 다 생존시
+            player.Attack(selectedMonsters[EnemyNum]); // 플레이어 공격
+            if (selectedMonsters[EnemyNum].Health <= 0)
             {
-                if (!useItem) // 아이템 미사용
-                {
-                    player.Attack(enemy); // 플레이어 공격
+                selectedMonsters.RemoveAt(EnemyNum);
+            }                
 
-                    if (enemy.Health <= 0)
-                    {
-                        deadMonsters.Add(enemy); // 몬스터 사망시 죽은 몬스터 리스트에 넣기
-                        enemy.isDead = true;
-                        break;
-                    }
-                    else if (enemy.Health > 0)
-                    {
-                        enemy.EnemyAttack(player); // 몬스터 공격
-                        if (Game.instance.inputManager.GetValidSelectedIndex(1) == 1) // 아이템 사용 여부
-                        {
-                            useItem = true;
-                            UseItem();
-                        }
-                    }
-                }
-                else // 아이템 사용
-                {
-                    enemy.EnemyAttack(player); // 몬스터 공격
-                    if (Game.instance.inputManager.GetValidSelectedIndex(1) == 1) // 아이템 사용 여부
-                    {
-                        useItem = true;
-                        UseItem();
-                    }
-                }
-            }
+            for (int i = 0; i < selectedMonsters.Count; i++)
+                selectedMonsters[i].EnemyAttack(player); // 몬스터 공격
+            
         }
 
         private void LoseScene()
         {
             Console.WriteLine("===================");
-            Console.WriteLine("");
-            Console.WriteLine("Battle!! - Result");
-            Console.WriteLine("");
-            Console.WriteLine("You Lose.");
-            Console.WriteLine("");
-            Console.WriteLine("전투에서 패배하였습니다.");
-            Console.WriteLine("");
-            Console.WriteLine($"Lv.{player.Level} {player.Name}");
+            Console.WriteLine("\nBattle!! - Result");
+            Console.WriteLine("\nYou Lose.");
+            Console.WriteLine("\n전투에서 패배하였습니다.");
+            Console.WriteLine($"\nLv.{player.Level} {player.Name}");
             Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
-            Console.WriteLine("");
-            Console.WriteLine("0. 다음");
-            Console.WriteLine("");
-            int nextKey = Game.instance.inputManager.GetValidSelectedIndex(0);
-            if (nextKey == 0)
-                Game.instance.Run();
+            //대기
         }
 
         private void UseCharacterSkill(Character player, Enemy enemy)
@@ -272,19 +171,18 @@ namespace ConsoleGame.Scenes
             Console.WriteLine("===================");
             Console.WriteLine("사용할 아이템을 선택하세요.");
             // 아이템 사용 로직은 구현하지 못했습니다
+            //할지말지 + 뭐 사용할지
         }
 
         private void ClearDungeon()
         {
+            //최대체력바꾸기
             int damage = player.MaxHealth - player.Health;
             Console.WriteLine("===================");
             Console.WriteLine($"던전 클리어! 체력 {damage} 소모됨.");
             Console.WriteLine($"남은 체력: {player.Health}");
-
-            Console.WriteLine("");
-            Console.WriteLine("0. 다음");
-            Console.WriteLine("");
-            Console.Write(">>");
+            Console.WriteLine("\n0. 다음");
+            Console.Write("\n>>");
 
             player.Exp += 1;       // 적을 물리칠 때마다 경험치 1 증가
             Console.WriteLine($"경험치획득: {player.Exp}");
