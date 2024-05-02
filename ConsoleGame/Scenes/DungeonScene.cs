@@ -18,13 +18,35 @@ namespace ConsoleGame.Scenes
             random = new Random();
         }
 
+        public void EnterDungeon()
+        {
+            Console.WriteLine("1. ½¬¿î ´øÀü     | ¹æ¾î·Â 5 ÀÌ»ó ±ÇÀå");
+            Console.WriteLine("2. ÀÏ¹İ ´øÀü     | ¹æ¾î·Â 11 ÀÌ»ó ±ÇÀå");
+            Console.WriteLine("3. ¾î·Á¿î ´øÀü    | ¹æ¾î·Â 17 ÀÌ»ó ±ÇÀå");
+            Console.WriteLine("0. ³ª°¡±â");
+            Console.Write("¿øÇÏ½Ã´Â Çàµ¿À» ÀÔ·ÂÇØÁÖ¼¼¿ä.\n>> ");
 
+            int InputKey = Game.instance.inputManager.GetValidSelectedIndex((int)Difficulty.Max, (int)Difficulty.Easy);
+            dungeon = new Dungeon((Difficulty)InputKey);
+
+            if (!player.HasRequiredDefense(dungeon.requiredDefense))
+            {
+                Console.WriteLine($"¹æ¾î·ÂÀÌ {dungeon.requiredDefense} ÀÌ»óÀÌ¾î¾ß {dungeon.difficulty} ´øÀü¿¡ ÀÔÀåÇÒ ¼ö ÀÖ½À´Ï´Ù.");
+                return;
+            }
+
+            Start(dungeon.difficulty);
+
+            DropNormalItem(dungeon.difficulty);
+            DropSpecialItem(dungeon.difficulty);
+
+        }
 
         private int CalculateAdditionalReward(int attackPower)
         {
-            double percentage = random.Next(10, 21) / 100.0; // 10% ~ 20% ëœë¤ ê°’
+            double percentage = random.Next(10, 21) / 100.0; // 10% ~ 20% ·£´ı °ª
 
-            int additionalReward = (int)(attackPower * percentage);  // double ê°’ì„ intë¡œ ìºìŠ¤íŒ…
+            int additionalReward = (int)(attackPower * percentage);  // double °ªÀ» int·Î Ä³½ºÆÃ
 
             return additionalReward;
         }
@@ -42,7 +64,7 @@ namespace ConsoleGame.Scenes
         {
             if (!player.HasRequiredDefense(dungeon.requiredDefense))
             {
-                Console.WriteLine($"ë°©ì–´ë ¥ì´ {dungeon.requiredDefense} ì´ìƒì´ì–´ì•¼ {difficulty} ë˜ì „ì— ì…ì¥í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.");
+                Console.WriteLine($"¹æ¾î·ÂÀÌ {dungeon.requiredDefense} ÀÌ»óÀÌ¾î¾ß {difficulty} ´øÀü¿¡ ÀÔÀåÇÒ ¼ö ÀÖ½À´Ï´Ù.");
                 return;
             }
 
@@ -50,23 +72,23 @@ namespace ConsoleGame.Scenes
 
             if (!success)
             {
-                Console.WriteLine($"{difficulty} ë˜ì „ ì…ì¥ ì‹¤íŒ¨! ë³´ìŠ¤ë¥¼ ì²˜ì¹˜í•˜ë©´ ë³´ìƒì´ ì—†ìœ¼ë©° ì²´ë ¥ì´ ì ˆë°˜ìœ¼ë¡œ ê°ì†Œí•©ë‹ˆë‹¤.");
+                Console.WriteLine($"{difficulty} ´øÀü ÀÔÀå ½ÇÆĞ! º¸½º¸¦ Ã³Ä¡ÇÏ¸é º¸»óÀÌ ¾øÀ¸¸ç Ã¼·ÂÀÌ Àı¹İÀ¸·Î °¨¼ÒÇÕ´Ï´Ù.");
                 player.Health /= 2;
                 return;
             }
 
-            Console.WriteLine($"{difficulty} ë˜ì „ ì…ì¥ ì„±ê³µ!");
+            Console.WriteLine($"{difficulty} ´øÀü ÀÔÀå ¼º°ø!");
 
             Enemy enemy = GenerateEnemy(difficulty);
 
-            Console.WriteLine($"[ì  ì •ë³´: {enemy.Name}, ë ˆë²¨ {enemy.Level}, ì²´ë ¥ {enemy.Health}, ê³µê²©ë ¥ {enemy.AttackPower}]");
+            Console.WriteLine($"[Àû Á¤º¸: {enemy.Name}, ·¹º§ {enemy.Level}, Ã¼·Â {enemy.Health}, °ø°İ·Â {enemy.AttackPower}]");
 
             while (player.Health > 0 && enemy.Health > 0)
             {
-                Console.WriteLine("\ní„´ì„ ì„ íƒí•˜ì„¸ìš”:");
-                Console.WriteLine("1. ê³µê²©");
-                Console.WriteLine("2. ìŠ¤í‚¬");
-                Console.WriteLine("3. ì•„ì´í…œ ì‚¬ìš©");
+                Console.WriteLine("\nÅÏÀ» ¼±ÅÃÇÏ¼¼¿ä:");
+                Console.WriteLine("1. °ø°İ");
+                Console.WriteLine("2. ½ºÅ³");
+                Console.WriteLine("3. ¾ÆÀÌÅÛ »ç¿ë");
                 Console.Write(">> ");
 
                 string choice = Console.ReadLine();
@@ -77,13 +99,13 @@ namespace ConsoleGame.Scenes
                         player.Attack(enemy);
                         break;
                     case "2":
-                    UseCharacterSkill(player, enemy);
+                        UseCharacterSkill(player, enemy);
                         break;
                     case "3":
                         UseItem();
                         break;
                     default:
-                        Console.WriteLine("ì˜ëª»ëœ ì„ íƒì…ë‹ˆë‹¤.");
+                        Console.WriteLine("Àß¸øµÈ ¼±ÅÃÀÔ´Ï´Ù.");
                         break;
                 }
 
@@ -95,24 +117,27 @@ namespace ConsoleGame.Scenes
 
             if (player.Health <= 0)
             {
-                Console.WriteLine("ë‹¹ì‹ ì€ íŒ¨ë°°í–ˆìŠµë‹ˆë‹¤.");
+                Console.WriteLine("´ç½ÅÀº ÆĞ¹èÇß½À´Ï´Ù.");
             }
             else
             {
-                Console.WriteLine("ì ì„ ë¬¼ë¦¬ì³¤ìŠµë‹ˆë‹¤!");
+                Console.WriteLine("ÀûÀ» ¹°¸®ÃÆ½À´Ï´Ù!");
                 int additionalReward = CalculateAdditionalReward(player.AttackPower);
 
-                Console.WriteLine($"ê¸°ë³¸ ë³´ìƒ: {dungeon.baseReward} G");
-                Console.WriteLine($"ê³µê²©ë ¥ìœ¼ë¡œ ì¸í•œ ì¶”ê°€ ë³´ìƒ: {additionalReward} G");
+                Console.WriteLine($"±âº» º¸»ó: {dungeon.baseReward} G");
+                Console.WriteLine($"°ø°İ·ÂÀ¸·Î ÀÎÇÑ Ãß°¡ º¸»ó: {additionalReward} G");
 
                 int totalReward = dungeon.baseReward + additionalReward;
-                Console.WriteLine($"ì´ ë³´ìƒ: {totalReward} Gë¥¼ íšë“í•˜ì˜€ìŠµë‹ˆë‹¤.");
+                Console.WriteLine($"ÃÑ º¸»ó: {totalReward} G¸¦ È¹µæÇÏ¿´½À´Ï´Ù.");
 
                 player.Gold += totalReward;
 
-                if (random.Next(1, 101) <= 20) // 15~20% í™•ë¥ ë¡œ ë“œë¡­
+                if (random.Next(1, 101) <= 20) // 15~20% È®·ü·Î µå·Ó
                 {
-                    
+
+
+                    // DropHighTierItem();
+
                 }
             }
 
@@ -120,6 +145,11 @@ namespace ConsoleGame.Scenes
         }
 
 
+        private void UseCharacterSkill(Character player, Enemy enemy)
+        {
+            // ½ºÅ³ »ç¿ë ¸Ş¼­µå È£Ãâ
+            player.UseSkill(enemy);
+        }
 
         private void ClearDungeon()
         {
@@ -127,99 +157,77 @@ namespace ConsoleGame.Scenes
 
             player.Health -= damage;
 
-            Console.WriteLine($"ë˜ì „ í´ë¦¬ì–´! ì²´ë ¥ {damage} ì†Œëª¨ë¨.");
-            Console.WriteLine($"ë‚¨ì€ ì²´ë ¥: {player.Health}");
+            Console.WriteLine($"´øÀü Å¬¸®¾î! Ã¼·Â {damage} ¼Ò¸ğµÊ.");
+            Console.WriteLine($"³²Àº Ã¼·Â: {player.Health}");
 
 
-            player.Exp += 1;       // ì ì„ ë¬¼ë¦¬ì¹  ë•Œë§ˆë‹¤ ê²½í—˜ì¹˜ 1 ì¦ê°€
-            Console.WriteLine($"ê²½í—˜ì¹˜íšë“: {player.Exp}");
+            player.Exp += 1;       // ÀûÀ» ¹°¸®Ä¥ ¶§¸¶´Ù °æÇèÄ¡ 1 Áõ°¡
+            Console.WriteLine($"°æÇèÄ¡È¹µæ: {player.Exp}");
 
             player.LevelUp.CheckLevelUp();
-            
 
-            if (random.Next(1, 101) <= 20) // 20% í™•ë¥ ë¡œ íŠ¹ë³„í•œ ì•„ì´í…œ ë“œë¡­
+
+            if (random.Next(1, 101) <= 20) // 20% È®·ü·Î Æ¯º°ÇÑ ¾ÆÀÌÅÛ µå·Ó
             {
-                DropSpecialItem(dungeon.difficulty); // difficultyë¥¼ ì „ë‹¬
+                DropSpecialItem(dungeon.difficulty); // difficulty¸¦ Àü´Ş
             }
 
-            // ì‚¬ìš©ì ì…ë ¥ ê¸°ë‹¤ë¦¬ê¸°
+            // »ç¿ëÀÚ ÀÔ·Â ±â´Ù¸®±â
             Console.ReadLine();
         }
 
-        public void EnterDungeon()
-        {
-            Console.WriteLine("1. ì‰¬ìš´ ë˜ì „     | ë°©ì–´ë ¥ 5 ì´ìƒ ê¶Œì¥");
-            Console.WriteLine("2. ì¼ë°˜ ë˜ì „     | ë°©ì–´ë ¥ 11 ì´ìƒ ê¶Œì¥");
-            Console.WriteLine("3. ì–´ë ¤ìš´ ë˜ì „    | ë°©ì–´ë ¥ 17 ì´ìƒ ê¶Œì¥");
-            Console.WriteLine("0. ë‚˜ê°€ê¸°");
-            Console.Write("ì›í•˜ì‹œëŠ” í–‰ë™ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.\n>> ");
 
-            int InputKey = Game.instance.inputManager.GetValidSelectedIndex((int)Difficulty.Max, (int)Difficulty.Easy);
-            dungeon = new Dungeon((Difficulty)InputKey);
-
-            if (!player.HasRequiredDefense(dungeon.requiredDefense))
-            {
-                Console.WriteLine($"ë°©ì–´ë ¥ì´ {dungeon.requiredDefense} ì´ìƒì´ì–´ì•¼ {dungeon.difficulty} ë˜ì „ì— ì…ì¥í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.");
-                return;
-            }
-
-            Start(dungeon.difficulty);
-
-            DropNormalItem(dungeon.difficulty);
-            DropSpecialItem(dungeon.difficulty);
-
-        }
         private void DropNormalItem(Difficulty difficulty)
         {
-            // ì´ì§€ ë˜ì „ì—ì„œ ê¸°ë³¸ ì•„ì´í…œ
+            // ÀÌÁö ´øÀü¿¡¼­ ±âº» ¾ÆÀÌÅÛ
             if (difficulty == Difficulty.Easy)
             {
-                // ì•„ì´í…œ ì¹´í…Œê³ ë¦¬ë³„ë¡œ ë‚˜ëˆ„ê¸°
+                // ¾ÆÀÌÅÛ Ä«Å×°í¸®º°·Î ³ª´©±â
                 var armorItems = Game.instance.itemManager.ItemInfos.Where(item => item.Type == ItemType.Armor).ToList();
                 var weaponItems = Game.instance.itemManager.ItemInfos.Where(item => item.Type == ItemType.Weapon).ToList();
                 var consumableItems = Game.instance.itemManager.ItemInfos.Where(item => item.Type == ItemType.Consumable).ToList();
 
-                // ë¬´ì‘ìœ„ë¡œ ê°‘ì˜· ë˜ëŠ” ë¬´ê¸° ì„ íƒ
+                // ¹«ÀÛÀ§·Î °©¿Ê ¶Ç´Â ¹«±â ¼±ÅÃ
                 Item droppedItem = null;
-                if (random.Next(4) == 0) // 0 ë˜ëŠ” 1ì„ ëœë¤í•˜ê²Œ ë°˜í™˜í•˜ë¯€ë¡œ 25% í™•ë¥ ë¡œ ìˆ˜ë ¨ì ê°‘ì˜·, ë‚¡ì€ ê²€, ì†Œë¹„ ì•„ì´í…œ ê° ê° í•˜ë‚˜ì”© ë“œë
+                if (random.Next(4) == 0) // 0 ¶Ç´Â 1À» ·£´ıÇÏ°Ô ¹İÈ¯ÇÏ¹Ç·Î 25% È®·ü·Î ¼ö·ÃÀÚ °©¿Ê, ³°Àº °Ë, ¼Òºñ ¾ÆÀÌÅÛ °¢ °¢ ÇÏ³ª¾¿ µå¶ø
                 {
-                    droppedItem = armorItems[random.Next(new Item("ìˆ˜ë ¨ì ê°‘ì˜·", ItemType.Armor, 1000, 5, "ìˆ˜ë ¨ì— ë„ì›€ì„ ì£¼ëŠ” ê°‘ì˜·ì…ë‹ˆë‹¤.").Count)];
+                    droppedItem = armorItems[random.Next()];
                 }
                 else
                 {
-                    droppedItem = weaponItems[random.Next(new Item("ë‚¡ì€ ê²€", ItemType.Weapon, 600, 2, "ì‰½ê²Œ ë³¼ ìˆ˜ ìˆëŠ” ë‚¡ì€ ê²€ì…ë‹ˆë‹¤.").Count)];
+                    droppedItem = weaponItems[random.Next()];
                 }
 
-                // ë¬´ì‘ìœ„ë¡œ ë¬¼ì•½ ì„ íƒ
+                // ¹«ÀÛÀ§·Î ¹°¾à ¼±ÅÃ
                 Item consumableItem = consumableItems[random.Next(consumableItems.Count)];
 
-                // ë¬´ì‘ìœ„ë¡œ ì„ íƒëœ ì•„ì´í…œ ì¶œë ¥
-                Console.WriteLine($"ì¥ë¹„ ì•„ì´í…œì„ íšë“í•˜ì˜€ìŠµë‹ˆë‹¤: {droppedItem}");
-                Console.WriteLine($"ì†Œë¹„ ì•„ì´í…œì„ íšë“í•˜ì˜€ìŠµë‹ˆë‹¤: {consumableItem}");
-                
-                
-                // ì•„ì´í…œì„ ì¸ë²¤í† ë¦¬ì˜ ì¥ë¹„ ì¹´í…Œê³ ë¦¬ì— ì¶”ê°€
+                // ¹«ÀÛÀ§·Î ¼±ÅÃµÈ ¾ÆÀÌÅÛ Ãâ·Â
+                Console.WriteLine($"Àåºñ ¾ÆÀÌÅÛÀ» È¹µæÇÏ¿´½À´Ï´Ù: {droppedItem}");
+                Console.WriteLine($"¼Òºñ ¾ÆÀÌÅÛÀ» È¹µæÇÏ¿´½À´Ï´Ù: {consumableItem}");
+
+
+                // ¾ÆÀÌÅÛÀ» ÀÎº¥Åä¸®ÀÇ Àåºñ Ä«Å×°í¸®¿¡ Ãß°¡
                 player.InventoryManager.AddItem(droppedItem);
-                player.InventoryManager.AddItem(consumableItem);             
-            }           
+                player.InventoryManager.AddItem(consumableItem);
+            }
 
         }
 
         private void DropSpecialItem(Difficulty difficulty)
         {
-            // ë…¸ë§ ë˜ì „ë¶€í„° í•˜ë“œ ë˜ì „ê¹Œì§€ íŠ¹ë³„ ì•„ì´í…œ ë“œë¡­
+            // ³ë¸» ´øÀüºÎÅÍ ÇÏµå ´øÀü±îÁö Æ¯º° ¾ÆÀÌÅÛ µå·Ó
             if (difficulty == Difficulty.Normal ||
                 difficulty == Difficulty.Hard)
             {
-                // ë¬´ì‘ìœ„ë¡œ í•˜ë‚˜ì˜ ì•„ì´í…œ ì„ íƒ
+                // ¹«ÀÛÀ§·Î ÇÏ³ªÀÇ ¾ÆÀÌÅÛ ¼±ÅÃ
                 Item droppedItem = Game.instance.itemManager.specialItems[random.Next(Game.instance.itemManager.specialItems.Count)];
 
-                Console.WriteLine($"íŠ¹ë³„í•œ ì•„ì´í…œì„ íšë“í•˜ì˜€ìŠµë‹ˆë‹¤: {droppedItem.Name}");
+                Console.WriteLine($"Æ¯º°ÇÑ ¾ÆÀÌÅÛÀ» È¹µæÇÏ¿´½À´Ï´Ù: {droppedItem.Name}");
 
-                // ê·€ì† ì•„ì´í…œì´ë¯€ë¡œ Purchased ê°’ì„ trueë¡œ ì„¤ì •
+                // ±Í¼Ó ¾ÆÀÌÅÛÀÌ¹Ç·Î Purchased °ªÀ» true·Î ¼³Á¤
                 Game.instance.itemManager.UpdateItemPurchasedStatus(droppedItem);
 
-                // ì•„ì´í…œì„ ì¸ë²¤í† ë¦¬ì˜ ì¥ë¹„ ì¹´í…Œê³ ë¦¬ì— ì¶”ê°€
+                // ¾ÆÀÌÅÛÀ» ÀÎº¥Åä¸®ÀÇ Àåºñ Ä«Å×°í¸®¿¡ Ãß°¡
                 player.InventoryManager.AddItem(droppedItem);
             }
         }
@@ -228,7 +236,7 @@ namespace ConsoleGame.Scenes
 
         private int CalculateDamage()
         {
-            int baseDamage = random.Next(20, 36); // 20 ~ 35 ëœë¤ ê°’
+            int baseDamage = random.Next(20, 36); // 20 ~ 35 ·£´ı °ª
             int difference = player.DefensePower - dungeon.requiredDefense;
             int extraDamage = difference > 0 ? random.Next(difference + 1) : 0;
             int totalDamage = baseDamage + extraDamage;
@@ -236,7 +244,7 @@ namespace ConsoleGame.Scenes
             return totalDamage;
         }
 
-        //ëª¬ìŠ¤í„° ì‘ì—…í•˜ëŠ” ë¶„ì´ ê°€ì ¸ê°€ì•¼ í• ë“¯
+        //¸ó½ºÅÍ ÀÛ¾÷ÇÏ´Â ºĞÀÌ °¡Á®°¡¾ß ÇÒµí
         private Enemy GenerateEnemy(Difficulty difficulty)
         {
             int level;
@@ -264,13 +272,13 @@ namespace ConsoleGame.Scenes
                     throw new ArgumentException("Invalid difficulty");
             }
 
-            return new Enemy(level, health, attackPower, $"ì  ë ˆë²¨ {level}");
+            return new Enemy(level, health, attackPower, $"Àû ·¹º§ {level}");
         }
 
         private void UseItem()
         {
-            Console.WriteLine("ì‚¬ìš©í•  ì•„ì´í…œì„ ì„ íƒí•˜ì„¸ìš”.");
-            // ì•„ì´í…œ ì‚¬ìš© ë¡œì§ì€ êµ¬í˜„í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤
+            Console.WriteLine("»ç¿ëÇÒ ¾ÆÀÌÅÛÀ» ¼±ÅÃÇÏ¼¼¿ä.");
+            // ¾ÆÀÌÅÛ »ç¿ë ·ÎÁ÷Àº ±¸ÇöÇÏÁö ¸øÇß½À´Ï´Ù
         }
     }
 }

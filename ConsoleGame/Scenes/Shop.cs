@@ -111,6 +111,7 @@ namespace ConsoleGame.Scenes
                 player.InventoryManager.AddItem(selectedToBuy);
 
                 Console.WriteLine($"{selectedToBuy.Name}을(를) 구매했습니다.");
+                Thread.Sleep(1000);
             }
 
         }
@@ -209,6 +210,7 @@ namespace ConsoleGame.Scenes
 
             //개수
             BulkSelling(inventoryManager.dicInventory[index]);
+            Thread.Sleep(1000);
         }
 
         public void BulkSelling(Item item)

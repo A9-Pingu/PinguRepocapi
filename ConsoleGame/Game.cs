@@ -40,6 +40,7 @@ namespace ConsoleGame
             shopScene = new Shop(player, itemManager);
             restScene = new RestInTown(player);
             dungeon = new DungeonScene(player);
+            questManager = new QuestManager();
             guild = new GuildScene(player);
         }
 
@@ -76,6 +77,7 @@ namespace ConsoleGame
                     restScene.RestMenu();
                     break;
                 case (int)EScene.e_Guild:
+                    guild.GuildMenu();
                     break;
                 case (int)EScene.e_Save:
                     saveLoadManager.SaveGame(player);
