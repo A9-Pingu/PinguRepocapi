@@ -74,6 +74,11 @@ namespace ConsoleGame
                     break;
                 case (int)EScene.e_Save:
                     saveLoadManager.SaveGame(player);
+                    Console.WriteLine("게임이 저장되었습니다.");
+                    Console.ReadKey();
+                    break;
+                case (int)EScene.e_Load:
+                    player = saveLoadManager.LoadOrStartGame(inputManager);
                     break;
                 case (int)EScene.e_Load:
                     //saveLoadManager.LoadGame();

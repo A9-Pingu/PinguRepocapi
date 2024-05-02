@@ -20,8 +20,10 @@ namespace ConsoleGame.Managers
             Console.WriteLine("3. 상점");
             Console.WriteLine("4. 던전 입장");
             Console.WriteLine("5. 휴식하기");
-            Console.WriteLine("6. 저장하기");
-            Console.WriteLine("7. 게임 종료");
+            Console.WriteLine("6. 길드입장");
+            Console.WriteLine("7. 저장하기");
+            Console.WriteLine("8. 불러오기");
+            Console.WriteLine("0. 게임 종료");
             Console.WriteLine("===================");
             Console.Write("원하시는 행동을 입력해주세요: ");
         }
@@ -34,6 +36,7 @@ namespace ConsoleGame.Managers
             Console.WriteLine($"직업: {player.Job}");
             Console.WriteLine($"레벨: {player.Level}");
             Console.WriteLine($"체력: {player.Health}");
+            Console.WriteLine($"마나: {player.MP}");
             Console.WriteLine($"Gold: {player.Gold}");
             Console.WriteLine($"공격력: {(double)player.CalculateTotalAttackPower()}");
             Console.WriteLine($"방어력: {(double)player.CalculateTotalDefensePower()}");
@@ -42,12 +45,12 @@ namespace ConsoleGame.Managers
             if (player.WeaponInventoryManager.GetItemsByType(ItemType.Weapon).Count > 0 ||
                player.ArmorInventoryManager.GetItemsByType(ItemType.Armor).Count > 0)
             {
-                Console.WriteLine("[장착 아이템]");
-
-                foreach (var weapon in player.WeaponInventoryManager.GetItemsByType(ItemType.Weapon))
-                {
-                    Console.WriteLine($"- {weapon.Name} (무기) : +{weapon.StatBonus}");
-                }
+                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Weapon].Name} (무기) : +{player.InventoryManager.dicEquipItem[ItemType.Weapon].StatBonus}");
+            }
+            else
+            {
+                Console.WriteLine("장착한 무기 아이템이 없습니다.");
+            }
 
                 foreach (var armor in player.ArmorInventoryManager.GetItemsByType(ItemType.Armor))
                 {
@@ -56,9 +59,20 @@ namespace ConsoleGame.Managers
             }
             else
             {
-                Console.WriteLine("장착한 아이템이 없습니다.");
+                Console.WriteLine("장착한 방어구 아이템이 없습니다.");
             }
+
+            Game.instance.inputManager.InputAnyKey();
         }
+
+        public bool DisplayInventory(InventoryManager inventory)
+        {
+            Console.Clear();
+            if (inventory.Inventory.Count == 0)
+            {
+                Console.WriteLine("인벤토리가 비어 있습니다.");
+                return false;
+            }
 
         public void DisplayShopMenu()
         {
