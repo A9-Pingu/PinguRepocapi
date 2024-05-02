@@ -239,10 +239,10 @@ namespace ConsoleGame.Managers
                         break;
 
                     case e_ItemStatusType.AdditionalDamage:
-                        Console.Write($"캐릭터의 추가 데미지가 {player.AdditaionalDamage} 에서 ");
-                        player.AdditaionalDamage += (int)item.dicStatusBonus[e_ItemStatusType.AdditionalDamage];
+                        Console.Write($"캐릭터의 추가 데미지가 {player.AdditionalDamage} 에서 ");
+                        player.AdditionalDamage += (int)item.dicStatusBonus[e_ItemStatusType.AdditionalDamage];
                         Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.AdditionalDamage]} 만큼 증가하였습니다");
-                        Console.WriteLine($"현재 추가 데미지 : {player.AdditaionalDamage}");
+                        Console.WriteLine($"현재 추가 데미지 : {player.AdditionalDamage}");
                         break;
                 }
             }
@@ -285,10 +285,10 @@ namespace ConsoleGame.Managers
                         Console.WriteLine($"현재 마나 : {player.MP}");
                         break;
                     case e_ItemStatusType.AdditionalDamage:
-                        Console.Write($"캐릭터의 추가 데미지가 {player.AdditaionalDamage} 에서 ");
-                        player.AdditaionalDamage -= (int)item.dicStatusBonus[e_ItemStatusType.AdditionalDamage];
+                        Console.Write($"캐릭터의 추가 데미지가 {player.AdditionalDamage} 에서 ");
+                        player.AdditionalDamage -= (int)item.dicStatusBonus[e_ItemStatusType.AdditionalDamage];
                         Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.AdditionalDamage]} 만큼 감소하였습니다");
-                        Console.WriteLine($"현재 추가 데미지 : {player.AdditaionalDamage}");
+                        Console.WriteLine($"현재 추가 데미지 : {player.AdditionalDamage}");
                         break;
                 }
             }

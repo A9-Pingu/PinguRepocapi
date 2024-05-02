@@ -140,7 +140,6 @@ namespace ConsoleGame.Managers
             Console.WriteLine("0. 나가기\n");
             Console.Write("원하시는 행동을 입력해주세요.\n>> ");
         }
-<<<<<<< HEAD
 
         public void ShowGuildMenu()
         {
@@ -152,7 +151,7 @@ namespace ConsoleGame.Managers
             Console.WriteLine("2. 의뢰 게시판 확인");
             Console.WriteLine("0. 나가기\n");
             Console.Write("원하시는 행동을 입력해주세요.\n>> ");
-=======
+        }
         private Random random;
         //전투장면
         public void BattleScene(Difficulty difficulty, Dungeon dungeon, List<Enemy> selectedMonsters, bool isReadyToFight, Character player)
@@ -208,7 +207,6 @@ namespace ConsoleGame.Managers
                 Console.WriteLine("대상을 선택해주세요.");
                 Console.Write(">> ");
             }
->>>>>>> parent of ed26c59 (Revert "Merge pull request #6 from shinmegan/dev")
         }
     }
 }

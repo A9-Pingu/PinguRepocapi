@@ -106,7 +106,7 @@ namespace ConsoleGame.Managers
             else
             {
                 // 회피가 발생하지 않은 경우에만 공격을 수행합니다.
-                int damage = AttackPower;
+                int damage = Attack;
                 if (damage < 0)
                 {
                     damage = 0;
