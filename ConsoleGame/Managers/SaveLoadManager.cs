@@ -40,6 +40,7 @@ namespace ConsoleGame.Managers
 
             if (!Directory.Exists(saveFolderPath))
             {
+                Console.WriteLine("저장된 게임 파일이 없습니다.");
                 return new List<string>();
             }
 
