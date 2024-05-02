@@ -35,6 +35,7 @@ namespace ConsoleGame.Managers
             Console.WriteLine($"이름: {player.Name}");
             Console.WriteLine($"직업: {player.Job}");
             Console.WriteLine($"레벨: {player.Level}");
+            Console.WriteLine($"경험치: {player.Exp}");
             Console.WriteLine($"체력: {player.Health}");
             Console.WriteLine($"마나: {player.MP}");
             Console.WriteLine($"Gold: {player.Gold}");

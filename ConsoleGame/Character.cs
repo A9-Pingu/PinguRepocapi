@@ -17,6 +17,8 @@ namespace ConsoleGame
         public string Name { get; set; }
         public JobType Job { get; set; }
         public int Level { get; set; }
+        public int Exp { get; set; }         // 경험치 추가
+        public int MaxExp { get; set; }     // 최대 경험치
         public int AttackPower { get; set; }
         public int DefensePower { get; set; }
         public int Health { get; set; }
@@ -24,11 +26,14 @@ namespace ConsoleGame
         public int MP { get; private set; } = 50; // 기본 MP는 50
 
 
-        public int DungeonClearCount { get; private set; } = 0;  // 던전 클리어 횟수 카운트
-
         public int MaxHealth { get; private set; } = 100;  // 최대 체력 속성 추가
 
         public InventoryManager InventoryManager { get; set; }
+
+
+        public LevelUp LevelUp { get; set; }
+
+        public Character(string name, string job)
 
         public delegate void SkillAction(Character player, Enemy enemy, int skillIndex);
         private SkillAction[] SkillSet;
@@ -38,16 +43,21 @@ namespace ConsoleGame
         private readonly string[] RogueSkills = { "더블 펭펭이 - MP 10", "스프릿 대거 - MP 15" };
 
         public Character(string name, JobType job)
+
         {
             Name = name;
             Job = job;
             Level = 1;
+            Exp = 0;
             AttackPower = 10;
             DefensePower = 5;
             Health = MaxHealth;
             MP = 50;
             Gold = 1500;
 
+
+            // 최대 경험치를 초기화합니다. 예를 들어 레벨이 1일 때 최대 경험치를 설정할 수 있습니다.
+            MaxExp = CalculateMaxExp(Level);
             // InventoryManager 및 EquipmentManager 초기화
             InventoryManager = new InventoryManager();
             WeaponInventoryManager = new InventoryManager();
@@ -66,16 +76,18 @@ namespace ConsoleGame
             SkillSet[(int)JobType.마법사] = UseMageSkill;
             SkillSet[(int)JobType.도적] = UseRogueSkill;
             InventoryManager = new InventoryManager(this);
+
+            LevelUp = new LevelUp(this);
+        }
+
+        private int CalculateMaxExp(int level)
+        {
+            return level * 100;
         }
 
         public bool HasRequiredDefense(int requiredDefense)
         {
             return DefensePower >= requiredDefense;
-        }
-
-        public void ResetDungeonClearCount()
-        {
-            DungeonClearCount = 0;
         }
 
         public void Attack(Enemy enemy)
