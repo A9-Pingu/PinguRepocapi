@@ -23,36 +23,68 @@ namespace ConsoleGame.Scenes
             Random random = new Random(Guid.NewGuid().GetHashCode());
         }
 
-
-        private int CalculateAdditionalReward(int attackPower)
+        //던전 입장 조건
+        public void EnterDungeon()
         {
-            Random random= new Random(Guid.NewGuid().GetHashCode());
-            double percentage = random.Next(10, 21) / 100.0; // 10% ~ 20% 랜덤 값
+            Console.WriteLine("===================");
+            Console.WriteLine("1. 쉬운 던전     | 누구나 가능");
+            Console.WriteLine("2. 일반 던전     | 방어력 12 이상 권장");
+            Console.WriteLine("3. 어려운 던전    | 방어력 24 이상 권장");
+            Console.WriteLine("0. 나가기");
+            Console.Write("원하시는 행동을 입력해주세요.\n>> ");
 
-            int additionalReward = (int)(attackPower * percentage);  // double 값을 int로 캐스팅
-
-            return additionalReward;
-        }
-
-        private int CalculateReward(int attackPower)
-        {
-            int additionalReward = CalculateAdditionalReward(attackPower);
-
-            int totalReward = dungeon.baseReward + additionalReward;
-
-            return totalReward;
+            int InputKey = Game.instance.inputManager.GetValidSelectedIndex((int)Difficulty.Max - 1);//, (int)Difficulty.Easy);
+            dungeon = new Dungeon((Difficulty)InputKey);
+            while (true)
+            {
+                switch (InputKey)
+                {
+                    case 0:
+                        Game.instance.Run();
+                        break;
+                    case 1:
+                        if (player.DefensePower > 0)
+                        {
+                            Start(dungeon.difficulty);
+                            DropSpecialItem(dungeon.difficulty);
+                        }
+                        break;
+                    case 2:
+                        if (player.DefensePower >= 12)
+                        {
+                            Start(dungeon.difficulty);
+                            DropSpecialItem(dungeon.difficulty);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"방어력이 12 이상이어야 {dungeon.difficulty} 던전에 입장할 수 있습니다.");
+                            Game.instance.inputManager.InputAnyKey();
+                            Console.Clear();
+                            Game.instance.DungeonRun();
+                        }
+                        break;
+                    case 3:
+                        if (player.DefensePower >= 24)
+                        {
+                            Start(dungeon.difficulty);
+                            DropSpecialItem(dungeon.difficulty);
+                        }
+                        else
+                        {
+                            Console.WriteLine($"방어력이 24 이상이어야 {dungeon.difficulty} 던전에 입장할 수 있습니다.");
+                            Game.instance.inputManager.InputAnyKey();
+                            Console.Clear();
+                            Game.instance.DungeonRun();
+                        }
+                        break;
+                }
+            }
         }
 
         List<Enemy> deadMonsters = new List<Enemy>(); //죽은 몬스터 수
         Dictionary<int,string> deadMonsterIndex = new Dictionary<int,string>(); //죽은 몬스터 번호
         public void Start(Difficulty difficulty)
         {
-            if (!player.HasRequiredDefense(dungeon.requiredDefense))
-            {
-                Console.WriteLine($"방어력이 {dungeon.requiredDefense} 이상이어야 {difficulty} 던전에 입장할 수 있습니다.");
-                return;
-            }
-
             Console.WriteLine("");
             Console.WriteLine("===================");
             Console.WriteLine($"{difficulty} 던전 입장 성공!");
@@ -98,7 +130,7 @@ namespace ConsoleGame.Scenes
                                         Battle(selectedMonsters[inputKey - 1]);
                                         if (player.Health <= 0)
                                         {
-                                            LoseScene(); //....
+                                            LoseScene(); 
                                         }
                                     }
                                     else
@@ -211,20 +243,19 @@ namespace ConsoleGame.Scenes
                 new Enemy("북극곰", 4),
                 new Enemy("범고래", 5),
                 new Enemy("범고래", 5),
-                //new Enemy("범고래2", 5)
             };
 
-            // 선택한 난이도에 따라 랜덤으로 몬스터 3마리 선택
+            //난이도별 랜덤 몬스터 3마리 선택
             int difficultyIndex = difficulty switch
             {
                 Difficulty.Easy => 0,
-                Difficulty.Normal => 2,
-                Difficulty.Hard => 4,
+                Difficulty.Normal => 4,
+                Difficulty.Hard => 8,
                 _ => 0
             };
 
             List<Enemy> selectedMonsters1 = new List<Enemy>();
-
+            
             for (int i = difficultyIndex; i < difficultyIndex + 6; i++)
             {
                 selectedMonsters1.Add(allMonsters[i]);
@@ -239,33 +270,6 @@ namespace ConsoleGame.Scenes
             return selectedMonsters1;
         }
 
-        //던전 입장 조건
-        public void EnterDungeon()
-        {
-            Console.WriteLine("===================");
-            Console.WriteLine("1. 쉬운 던전     | 방어력 5 이상 권장");
-            Console.WriteLine("2. 일반 던전     | 방어력 11 이상 권장");
-            Console.WriteLine("3. 어려운 던전    | 방어력 17 이상 권장");
-            Console.WriteLine("0. 나가기");
-            Console.Write("원하시는 행동을 입력해주세요.\n>> ");
-
-            int InputKey = Game.instance.inputManager.GetValidSelectedIndex((int)Difficulty.Max-1, (int)Difficulty.Easy);
-            dungeon = new Dungeon((Difficulty)InputKey);
-            if (InputKey == 0)
-            {
-                Game.instance.Run();
-            }
-
-            if (!player.HasRequiredDefense(dungeon.requiredDefense))
-            {
-                Console.WriteLine($"방어력이 {dungeon.requiredDefense} 이상이어야 {dungeon.difficulty} 던전에 입장할 수 있습니다.");
-                return;
-            }
-
-            Start(dungeon.difficulty);
-
-            DropSpecialItem(dungeon.difficulty);
-        }
         //던전에서 공격 시작 후 전투장면
         private void Battle(Enemy enemy)
         {
@@ -325,6 +329,26 @@ namespace ConsoleGame.Scenes
                 Game.instance.Run();
         }
 
+        //던전 클리어시 공격력에 따른 추가 보상
+        private int CalculateAdditionalReward(int attackPower)
+        {
+            Random random = new Random(Guid.NewGuid().GetHashCode());
+            double percentage = random.Next(10, 21) / 100.0; // 10% ~ 20% 랜덤 값
+
+            int additionalReward = (int)(attackPower * percentage);  // double 값을 int로 캐스팅
+
+            return additionalReward;
+        }
+
+        private int CalculateReward(int attackPower)
+        {
+            int additionalReward = CalculateAdditionalReward(attackPower);
+
+            int totalReward = dungeon.baseReward + additionalReward;
+
+            return totalReward;
+        }
+
         //던전 클리어시 추가 정보 및 특별 아이템 드롭
         private void ClearDungeon()
         {
@@ -346,21 +370,6 @@ namespace ConsoleGame.Scenes
 
         private void DropHighTierItem()
         {
-            //List<Item> highTierItems = new List<Item>();
-
-            //highTierItems.AddRange(player.WeaponInventoryManager.GetItemsByType(ItemType.Weapon));
-            //highTierItems.AddRange(player.ArmorInventoryManager.GetItemsByType(ItemType.Armor));
-
-            //if (highTierItems.Count == 0)
-            //{
-            //    Console.WriteLine("상위 무기나 방어구가 없습니다.");
-            //    return;
-            //}
-
-            //Item droppedItem = highTierItems[random.Next(highTierItems.Count)];
-
-            //Console.WriteLine($"상위 아이템을 획득하였습니다: {droppedItem.Name}");
-            //player.InventoryManager.AddItem(droppedItem);
         }
 
         private void DropSpecialItem(Difficulty difficulty)
@@ -382,19 +391,6 @@ namespace ConsoleGame.Scenes
                 player.InventoryManager.AddItem(droppedItem);
             }
         }
-
-
-
-        //private int CalculateDamage()
-        //{
-        //    Random random = new Random();
-        //    int baseDamage = random.Next(20, 36); // 20 ~ 35 랜덤 값
-        //    int difference = player.DefensePower - dungeon.requiredDefense;
-        //    int extraDamage = difference > 0 ? random.Next(difference + 1) : 0;
-        //    int totalDamage = baseDamage + extraDamage;
-
-        //    return totalDamage;
-        //}
 
         private void UseItem()
         {

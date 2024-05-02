@@ -31,7 +31,8 @@ namespace ConsoleGame
                     baseReward = 3500;
                     break;
                 default:
-                    throw new ArgumentException("Invalid difficulty");
+                    Console.WriteLine("잘못된 입력입니다");
+                    break;
             }
         }
 
@@ -41,13 +42,13 @@ namespace ConsoleGame
             switch (difficulty)
             {
                 case Difficulty.Easy:
-                    return 5;
+                    return 0;
                 case Difficulty.Normal:
-                    return 15;
+                    return 12;
                 case Difficulty.Hard:
-                    return 21;
+                    return 24;
                 default:
-                    throw new ArgumentException("Invalid difficulty");
+                    return 0;
             }
         }
     }
