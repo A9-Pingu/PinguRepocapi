@@ -111,6 +111,32 @@ namespace ConsoleGame
             }
         }
 
+        public void Attack(Enemy enemy)
+        {
+            Random random = new Random();
+            double percentage = random.NextDouble() * 0.10 - 0.05; //공격력 10% 오차범위
+            int extendAttackPower = (int)(AttackPower * (1 + percentage));
+
+            int enemyMaxHP = enemy.Health;
+            if (enemy.Health <= extendAttackPower)
+            {
+                enemy.Health = 0;
+            }
+            else
+                enemy.Health -= extendAttackPower;
+            Console.WriteLine("===================");
+            Console.WriteLine($"{Name} 의 공격!");
+            Console.WriteLine($"Lv.{enemy.Level} {enemy.Name} 에게 {extendAttackPower} 데미지를 가했습니다.");
+            Console.WriteLine($"");
+            Console.WriteLine($"Lv.{enemy.Level} {enemy.Name}");
+            Console.WriteLine($"HP {enemyMaxHP} -> {enemy.Health}");
+            Console.WriteLine($"");
+            Console.WriteLine($"0. 다음");
+            Console.WriteLine($"");
+            Console.Write(">>");
+
+
+
         public void UseSkill(Enemy enemy)
         {
             Console.WriteLine("[내정보]");
@@ -239,7 +265,12 @@ namespace ConsoleGame
             }
             return skillChoice;
             Console.WriteLine($"당신이 {enemy.Name}에게 {AttackPower}의 피해를 입혔습니다.");
+<<<<<<< HEAD
             enemy.Health -= AttackPower;
+=======
+            enemy.Health -= AttackPower
+
+>>>>>>> parent of ed26c59 (Revert "Merge pull request #6 from shinmegan/dev")
         }
 
         public void UseItem(Item item, int count = 1)
