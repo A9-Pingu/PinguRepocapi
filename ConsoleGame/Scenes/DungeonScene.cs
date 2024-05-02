@@ -65,7 +65,8 @@ namespace ConsoleGame.Scenes
             {
                 Console.WriteLine("\n턴을 선택하세요:");
                 Console.WriteLine("1. 공격");
-                Console.WriteLine("2. 아이템 사용");
+                Console.WriteLine("2. 스킬");
+                Console.WriteLine("3. 아이템 사용");
                 Console.Write(">> ");
 
                 string choice = Console.ReadLine();
@@ -76,6 +77,9 @@ namespace ConsoleGame.Scenes
                         player.Attack(enemy);
                         break;
                     case "2":
+                    UseCharacterSkill(player, enemy);
+                        break;
+                    case "3":
                         UseItem();
                         break;
                     default:
@@ -108,11 +112,41 @@ namespace ConsoleGame.Scenes
 
                 if (random.Next(1, 101) <= 20) // 15~20% 확률로 드롭
                 {
-                
+
+
+                   // DropHighTierItem();
+
                 }
             }
 
             ClearDungeon();
+        }
+
+
+
+        private void UseCharacterSkill(Character player, Enemy enemy)
+        {
+            // 스킬 사용 메서드 호출
+            player.UseSkill(enemy);
+        }
+
+        private void DropHighTierItem()
+        {
+            //List<Item> highTierItems = new List<Item>();
+
+            //highTierItems.AddRange(player.WeaponInventoryManager.GetItemsByType(ItemType.Weapon));
+            //highTierItems.AddRange(player.ArmorInventoryManager.GetItemsByType(ItemType.Armor));
+
+            //if (highTierItems.Count == 0)
+            //{
+            //    Console.WriteLine("상위 무기나 방어구가 없습니다.");
+            //    return;
+            //}
+
+            //Item droppedItem = highTierItems[random.Next(highTierItems.Count)];
+
+            //Console.WriteLine($"상위 아이템을 획득하였습니다: {droppedItem.Name}");
+            //player.InventoryManager.AddItem(droppedItem);
         }
 
 
@@ -136,6 +170,9 @@ namespace ConsoleGame.Scenes
             {
                 DropSpecialItem(dungeon.difficulty); // difficulty를 전달
             }
+
+            // 사용자 입력 기다리기
+            Console.ReadLine();
         }
 
         public void EnterDungeon()
