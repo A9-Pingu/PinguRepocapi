@@ -23,17 +23,17 @@ namespace ConsoleGame
         public int DefensePower { get; set; }
         public int Health { get; set; }
         public int Gold { get; set; }
-        public int AdditaionalDamage { get; set; } = 0;
-        public int DungeonClearCount { get; private set; } = 0;  // 던전 클리어 횟수 카운트
-        public int MP { get; set; } = 50; // 기본 MP는 50
+        public int MP { get; private set; } = 50; // 기본 MP는 50
 
 
-        public int MaxHealth { get; set; } = 100;  // 최대 체력 속성 추가
+        public int MaxHealth { get; private set; } = 100;  // 최대 체력 속성 추가
 
         public InventoryManager InventoryManager { get; set; }
 
 
         public LevelUp LevelUp { get; set; }
+
+        public Character(string name, string job)
 
         public delegate void SkillAction(Character player, Enemy enemy, int skillIndex);
         private SkillAction[] SkillSet;
@@ -51,16 +51,20 @@ namespace ConsoleGame
             Exp = 0;
             AttackPower = 10;
             DefensePower = 5;
-            Gold = 1500;
             Health = MaxHealth;
             MP = 50;
+            Gold = 1500;
 
 
             // 최대 경험치를 초기화합니다. 예를 들어 레벨이 1일 때 최대 경험치를 설정할 수 있습니다.
             MaxExp = CalculateMaxExp(Level);
             // InventoryManager 및 EquipmentManager 초기화
-            InventoryManager = new InventoryManager(this);
-
+            InventoryManager = new InventoryManager();
+            WeaponInventoryManager = new InventoryManager();
+            ArmorInventoryManager = new InventoryManager();
+            ConsumableInventoryManager = new InventoryManager();
+            WeaponEquipmentManager = new EquipmentManager(this);
+            ArmorEquipmentManager = new EquipmentManager(this);
 
             InitializeSkillSet();
         }
@@ -88,8 +92,9 @@ namespace ConsoleGame
 
         public void Attack(Enemy enemy)
         {
-            Console.WriteLine($"당신이 {enemy.Name}에게 {AttackPower + AdditaionalDamage}의 피해를 입혔습니다.");
-            enemy.Health -= AttackPower + AdditaionalDamage;
+            int damage = CalculateTotalAttackPower();
+            Console.WriteLine($"당신이 {enemy.Name}에게 {damage}의 피해를 입혔습니다.");
+            enemy.Health -= damage;
 
             // 치명타가 발생할 확률을 확인합니다.
             Random random = new Random();
@@ -228,7 +233,7 @@ namespace ConsoleGame
 
 
 
-        private int ChooseSkillIndex(Enemy enemy)
+        private int ChooseSkillIndex(Character player)
         {
             Console.Write("\n원하시는 행동을 입력해주세요: ");
             int skillChoice;
@@ -239,16 +244,7 @@ namespace ConsoleGame
             }
             return skillChoice;
             Console.WriteLine($"당신이 {enemy.Name}에게 {AttackPower}의 피해를 입혔습니다.");
-            enemy.Health -= AttackPower;
+            enemy.Health -= AttackPower
         }
-
-        public void UseItem(Item item, int count = 1)
-        {
-            if(item.Type != ItemType.Consumable) return;
-            InventoryManager.AddItemStatBonus(item);
-            InventoryManager.RemoveItem(item, count);
-            Console.WriteLine($"{item.Name}을 {count}개를 사용하였습니다.");
-        }
-
     }
 }

@@ -46,7 +46,7 @@ namespace ConsoleGame.Managers
             // 장착한 아이템 정보 출력
             if (player.InventoryManager.dicEquipItem[ItemType.Weapon] != null)
             {
-                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Weapon].Name} (무기) : +{player.InventoryManager.dicEquipItem[ItemType.Weapon].dicStatusBonus[e_ItemStatusType.Attack]}");
+                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Weapon].Name} (무기) : +{player.InventoryManager.dicEquipItem[ItemType.Weapon].StatBonus}");
             }
             else
             {
@@ -55,7 +55,7 @@ namespace ConsoleGame.Managers
 
             if (player.InventoryManager.dicEquipItem[ItemType.Armor] != null)
             {
-                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Armor].Name} (방어구) : +{player.InventoryManager.dicEquipItem[ItemType.Armor].dicStatusBonus[e_ItemStatusType.Defense]}");           
+                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Armor].Name} (방어구) : +{player.InventoryManager.dicEquipItem[ItemType.Armor].StatBonus}");           
             }
             else
             {
@@ -68,19 +68,19 @@ namespace ConsoleGame.Managers
         public bool DisplayInventory(InventoryManager inventory)
         {
             Console.Clear();
-            if (inventory.dicInventory.Count == 0)
+            if (inventory.Inventory.Count == 0)
             {
                 Console.WriteLine("인벤토리가 비어 있습니다.");
                 return false;
             }
 
             Console.WriteLine("인벤토리");
-            Console.WriteLine($"아이템 개수: {inventory.dicInventory.Count}\n");
+            Console.WriteLine($"아이템 개수: {inventory.Inventory.Count}\n");
 
             int index = 1;
-            foreach (var item in inventory.dicInventory)
+            foreach (var item in inventory.Inventory)
             {
-                Console.WriteLine($"- {index++}. {item.Value.Name} ({item.Value.Type}) : {(item.Value.Equipped ? "장착됨" : "미장착")}  |  * {item.Value.Count}");
+                Console.WriteLine($"- {index++}. {item.Name} ({item.Type}) : {(item.Equipped ? "장착됨" : "미장착")}");
             }
 
             Console.WriteLine();
@@ -126,27 +126,18 @@ namespace ConsoleGame.Managers
             int index = 1;
             Game.instance.itemManager.ItemInfos.FindAll(obj => obj.Type == itemType).ForEach(obj => Console.WriteLine($"- {index++}. {obj.Name} : {obj.Price} G"));
 
-
+            Console.WriteLine("\n1. 아이템 구매");
+            Console.WriteLine("2. 아이템 판매");
+            Console.WriteLine("0. 나가기");
+            Console.Write("원하시는 행동을 선택해주세요.\n>> ");
         }
 
         public void ShowRestMenu()
         {
             Console.Clear();
-            Console.WriteLine("휴식하기");
+            Console.WriteLine($"휴식하기");
             Console.WriteLine($"500 G 를 내면 체력을 회복할 수 있습니다. (보유 골드 : {Game.instance.player.Gold} G)");
             Console.WriteLine("\n1. 휴식하기");
-            Console.WriteLine("0. 나가기\n");
-            Console.Write("원하시는 행동을 입력해주세요.\n>> ");
-        }
-
-        public void ShowGuildMenu()
-        {
-            Console.Clear();
-            Console.WriteLine("< 모험가 길드 빙하 지부 >");
-            Console.WriteLine("이곳에서는 의뢰를 받고 달성을 통해 보상을 받을 수 있습니다.");
-            Console.WriteLine($"\n[길드 접수원]\n안녕하세요 {Game.instance.player.Name}님 모험가 길드에 오신걸 환영합니다.\n어떤 일로 방문 하셨나요?");
-            Console.WriteLine("\n1. 현재 의뢰 내용 확인");
-            Console.WriteLine("2. 의뢰 게시판 확인");
             Console.WriteLine("0. 나가기\n");
             Console.Write("원하시는 행동을 입력해주세요.\n>> ");
         }
