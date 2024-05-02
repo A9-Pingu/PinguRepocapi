@@ -20,9 +20,38 @@ namespace ConsoleGame.Managers
             dicEquipItem[ItemType.Armor] = null;
             dicEquipItem[ItemType.Consumable] = null;
             dicEquipItem[ItemType.All] = null;
-
-
         }
+
+        // 인벤토리 출력 및 아이템 장착/해제 기능
+        public void ShowInventory()
+        {
+            while (true)
+            {
+                bool isEmpty = Game.instance.uiManager.DisplayInventory(this);
+                if (!isEmpty)
+                {
+                    Game.instance.inputManager.InputAnyKey();
+                    return;
+                }
+
+                int actionIndex = Game.instance.inputManager.GetValidSelectedIndex(1);
+
+                switch (actionIndex)
+                {
+                    case 0:
+                        Console.WriteLine("인벤토리에서 나갑니다.");
+                        Game.instance.inputManager.InputAnyKey();
+                        return;
+                    case 1:
+                        ManagedEquip();
+                        break;
+                    default:
+                        break;
+                }
+                Game.instance.inputManager.InputAnyKey();
+            }
+        }
+
         // 아이템 타입에 따른 아이템 목록 반환
         public Item GetItemsByType(ItemType itemType)
         {
@@ -74,36 +103,6 @@ namespace ConsoleGame.Managers
         public Item GetItem(int index)
         {
             return dicInventory[index];
-        }
-
-        // 인벤토리 출력 및 아이템 장착/해제 기능
-        public void ShowInventory()
-        {
-            while (true)
-            {
-                bool isEmpty = Game.instance.uiManager.DisplayInventory(this);
-                if (!isEmpty)
-                {
-                    Game.instance.inputManager.InputAnyKey();
-                    return;
-                }
-
-                int actionIndex = Game.instance.inputManager.GetValidSelectedIndex(1);
-
-                switch (actionIndex)
-                {
-                    case 0:
-                        Console.WriteLine("인벤토리에서 나갑니다.");
-                        Game.instance.inputManager.InputAnyKey();
-                        return;
-                    case 1:
-                        ManagedEquip();
-                        break;
-                    default:
-                        break;
-                }
-                Game.instance.inputManager.InputAnyKey();
-            }
         }
 
         private void ManagedEquip()
@@ -189,35 +188,108 @@ namespace ConsoleGame.Managers
             Thread.Sleep(1000);
         }
 
+
         public void AddItemStatBonus(Item item)
         {
-            switch (item.Type)
+            foreach (var key in item.dicStatusBonus.Keys)
             {
-                case ItemType.Weapon:
-                    player.AttackPower += item.StatBonus;
-                    break;
+                switch (key) 
+                {
+                    case e_ItemStatusType.Attack :
+                        Console.Write($"캐릭터의 공격력이 {player.AttackPower} 에서");
+                        player.AttackPower += (int)item.dicStatusBonus[e_ItemStatusType.Attack];
+                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.Attack]} 만큼 증가하였습니다");
+                        Console.WriteLine($"현재 공격력 : {player.AttackPower}");
+                        break;
 
-                case ItemType.Armor:
-                    player.DefensePower += item.StatBonus;
-                    break;
-                default:
-                    return;
+                    case e_ItemStatusType.Defense:
+                        Console.Write($"캐릭터의 방어력이 {player.DefensePower} 에서");
+                        player.DefensePower += (int)item.dicStatusBonus[e_ItemStatusType.Defense];
+                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.Defense]} 만큼 증가하였습니다");
+                        Console.WriteLine($"현재 방어력 : {player.DefensePower}");
+                        break;
+
+                    case e_ItemStatusType.MaxHealth:
+                        Console.Write($"캐릭터의 최대 체력이 {player.MaxHealth} 에서");
+                        player.MaxHealth += (int)item.dicStatusBonus[e_ItemStatusType.MaxHealth];
+                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.MaxHealth]} 만큼 증가하였습니다");
+                        Console.WriteLine($"현재 최대 체력 : {player.MaxHealth}");
+                        break;
+
+                    case e_ItemStatusType.RecoveryHp:
+                        Console.Write($"캐릭터의 체력을 {player.Health} 에서 ");
+                        if ((player.Health + (int)item.dicStatusBonus[e_ItemStatusType.RecoveryHp]) < player.MaxHealth)
+                        {
+                            player.Health += (int)item.dicStatusBonus[e_ItemStatusType.RecoveryHp];
+                        }
+                        else
+                        {
+                            player.Health = player.MaxHealth;
+                        }                            
+                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.RecoveryHp]} 만큼 회복하였습니다");
+                        Console.WriteLine($"현재 체력 : {player.Health}");
+                        break;
+
+                    case e_ItemStatusType.RecoveryMp:
+                        Console.Write($"캐릭터의 마나를 {player.MP} 에서 ");
+                        player.MP += (int)item.dicStatusBonus[e_ItemStatusType.RecoveryMp];
+                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.RecoveryMp]} 만큼 회복하였습니다");
+                        Console.WriteLine($"현재 마나 : {player.MP}");
+                        break;
+
+                    case e_ItemStatusType.AdditionalDamage:
+                        Console.Write($"캐릭터의 추가 데미지가 {player.AdditaionalDamage} 에서 ");
+                        player.AdditaionalDamage += (int)item.dicStatusBonus[e_ItemStatusType.AdditionalDamage];
+                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.AdditionalDamage]} 만큼 증가하였습니다");
+                        Console.WriteLine($"현재 추가 데미지 : {player.AdditaionalDamage}");
+                        break;
+                }
             }
         }
 
         public void RemoveItemStatBonus(Item item)
         {
-            switch (item.Type)
+            foreach (var key in item.dicStatusBonus.Keys)
             {
-                case ItemType.Weapon:
-                    player.AttackPower -= item.StatBonus;
-                    break;
-
-                case ItemType.Armor:
-                    player.DefensePower -= item.StatBonus;
-                    break;
-                default:
-                    return;
+                switch (key)
+                {
+                    case e_ItemStatusType.Attack:
+                        Console.Write($"캐릭터의 공격력이 {player.AttackPower} 에서");
+                        player.AttackPower -= (int)item.dicStatusBonus[e_ItemStatusType.Attack];
+                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.Attack]} 만큼 감소하였습니다");
+                        Console.WriteLine($"현재 공격력 : {player.AttackPower}");
+                        break;
+                    case e_ItemStatusType.Defense:
+                        Console.Write($"캐릭터의 방어력이 {player.DefensePower} 에서");
+                        player.DefensePower -= (int)item.dicStatusBonus[e_ItemStatusType.Defense];
+                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.Defense]} 만큼 감소하였습니다");
+                        Console.WriteLine($"현재 방어력 : {player.DefensePower}");
+                        break;
+                    case e_ItemStatusType.MaxHealth:
+                        Console.Write($"캐릭터의 최대 체력이 {player.MaxHealth} 에서");
+                        player.MaxHealth -= (int)item.dicStatusBonus[e_ItemStatusType.MaxHealth];
+                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.MaxHealth]} 만큼 감소하였습니다");
+                        Console.WriteLine($"현재 최대 체력 : {player.MaxHealth}");
+                        break;
+                    case e_ItemStatusType.RecoveryHp:
+                        Console.Write($"캐릭터의 체력을 {player.Health} 에서 ");
+                        player.Health -= (int)item.dicStatusBonus[e_ItemStatusType.RecoveryHp];
+                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.RecoveryHp]} 만큼 회복하였습니다");
+                        Console.WriteLine($"현재 체력 : {player.Health}");
+                        break;
+                    case e_ItemStatusType.RecoveryMp:
+                        Console.Write($"캐릭터의 마나를 {player.MP} 에서 ");
+                        player.MP -= (int)item.dicStatusBonus[e_ItemStatusType.RecoveryMp];
+                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.RecoveryMp]} 만큼 감소하였습니다");
+                        Console.WriteLine($"현재 마나 : {player.MP}");
+                        break;
+                    case e_ItemStatusType.AdditionalDamage:
+                        Console.Write($"캐릭터의 추가 데미지가 {player.AdditaionalDamage} 에서 ");
+                        player.AdditaionalDamage -= (int)item.dicStatusBonus[e_ItemStatusType.AdditionalDamage];
+                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.AdditionalDamage]} 만큼 감소하였습니다");
+                        Console.WriteLine($"현재 추가 데미지 : {player.AdditaionalDamage}");
+                        break;
+                }
             }
         }
     }

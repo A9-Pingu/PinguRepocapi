@@ -234,7 +234,7 @@ namespace ConsoleGame.Scenes
             }
         }
 
-        //호출 시 -1해서 매개변수넣을것
+        //호출 시 -1해서 매개변수넣을것?
         public bool ReleasedAndSellingEquipment(int index, int count)
         {
             if (player.InventoryManager.dicInventory[index].Equipped && player.InventoryManager.dicInventory[index].Count - count == 0)
