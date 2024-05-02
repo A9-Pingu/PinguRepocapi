@@ -80,9 +80,6 @@ namespace ConsoleGame
                 case (int)EScene.e_Load:
                     player = saveLoadManager.LoadOrStartGame(inputManager);
                     break;
-                case (int)EScene.e_Load:
-                    //saveLoadManager.LoadGame();
-                    break;
                 default:
                     Console.WriteLine("잘못된 선택입니다.");
                     break;

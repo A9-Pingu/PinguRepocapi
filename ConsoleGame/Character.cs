@@ -54,16 +54,12 @@ namespace ConsoleGame
             Gold = 1500;
 
             // InventoryManager 및 EquipmentManager 초기화
-<<<<<<< Updated upstream
             InventoryManager = new InventoryManager();
             WeaponInventoryManager = new InventoryManager();
             ArmorInventoryManager = new InventoryManager();
             ConsumableInventoryManager = new InventoryManager();
             WeaponEquipmentManager = new EquipmentManager(this);
             ArmorEquipmentManager = new EquipmentManager(this);
-
-=======
-            InventoryManager = new InventoryManager(this);
 
             InitializeSkillSet();
         }
@@ -74,7 +70,6 @@ namespace ConsoleGame
             SkillSet[(int)JobType.전사] = UseWarriorSkill;
             SkillSet[(int)JobType.마법사] = UseMageSkill;
             SkillSet[(int)JobType.도적] = UseRogueSkill;
->>>>>>> Stashed changes
         }
 
         public bool HasRequiredDefense(int requiredDefense)
@@ -153,11 +148,10 @@ namespace ConsoleGame
 
         public void Attack(Enemy enemy)
         {
-<<<<<<< Updated upstream
             int damage = CalculateTotalAttackPower();
             Console.WriteLine($"당신이 {enemy.Name}에게 {damage}의 피해를 입혔습니다.");
             enemy.Health -= damage;
-=======
+
             // 치명타가 발생할 확률을 확인합니다.
             Random random = new Random();
             // 15% 확률로 치명타 발생
@@ -224,7 +218,6 @@ namespace ConsoleGame
             };
         }
 
-        // 전사 스킬 사용 부분
         // 전사 스킬 사용 부분
         private void UseWarriorSkill(Character player, Enemy enemy, int skillIndex)
         {
@@ -306,7 +299,6 @@ namespace ConsoleGame
                 Console.Write("원하시는 행동을 입력해주세요: ");
             }
             return skillChoice;
->>>>>>> Stashed changes
         }
     }
 }

@@ -23,18 +23,12 @@ namespace ConsoleGame.Managers
         }
         public void EnemyAttack(Character player)
         {
-<<<<<<< Updated upstream
-            int damage = AttackPower - player.CalculateTotalDefensePower();
-            if (damage < 0)
-=======
             // 회피할 확률을 확인합니다.
             Random random = new Random();
-            // 10% 확률로 회피 발생
-            bool isDodged = random.Next(1, 101) <= 10;
+            bool isDodged = random.Next(1, 101) <= 10; // 10% 확률로 회피 발생
 
             // 회피가 발생한 경우
             if (isDodged && Name != "스킬") // 스킬은 회피할 수 없음
->>>>>>> Stashed changes
             {
                 Console.WriteLine($"{Name}이(가) 당신의 공격을 회피했습니다.");
             }
@@ -50,5 +44,6 @@ namespace ConsoleGame.Managers
                 player.Health -= damage;
             }
         }
+
     }
 }
