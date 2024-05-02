@@ -53,7 +53,9 @@ namespace ConsoleGame.Scenes
             }
 
             Console.WriteLine("");
+            Console.WriteLine("===================");
             Console.WriteLine($"{difficulty} 던전 입장 성공!");
+            Console.WriteLine("===================");
             List<Enemy> selectedMonsters = SelectMonsters(difficulty);
             // 몬스터 선택
             // UIManager의 ShowBattle 메서드 호출
@@ -73,6 +75,7 @@ namespace ConsoleGame.Scenes
                             switch (inputKey)
                             {
                                 case 0://취소
+                                    Console.WriteLine("===================");
                                     Console.WriteLine("이대로 던전을 나가시겠습니까?");
                                     Console.WriteLine("0. 네");
                                     Console.WriteLine("1. 아니오");
@@ -93,18 +96,7 @@ namespace ConsoleGame.Scenes
                                         Battle(selectedMonsters[inputKey - 1]);
                                         if (player.Health <= 0)
                                         {
-                                            Console.WriteLine("");
-                                            Console.WriteLine("Battle!! - Result");
-                                            Console.WriteLine("");
-                                            Console.WriteLine("You Lose.");
-                                            Console.WriteLine("");
-                                            Console.WriteLine($"Lv.{player.Level} {player.Name}");
-                                            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
-                                            Console.WriteLine("0. 다음");
-                                            Console.WriteLine("");
-                                            nextKey = Game.instance.inputManager.GetValidSelectedIndex(0);
-                                            if (nextKey == 0)
-                                                Game.instance.Run();
+                                            LoseScene();
                                         }
                                     }
                                     else
@@ -119,18 +111,7 @@ namespace ConsoleGame.Scenes
                                         Battle(selectedMonsters[inputKey - 1]);
                                         if (player.Health <= 0)
                                         {
-                                            Console.WriteLine("");
-                                            Console.WriteLine("Battle!! - Result");
-                                            Console.WriteLine("");
-                                            Console.WriteLine("You Lose.");
-                                            Console.WriteLine("");
-                                            Console.WriteLine($"Lv.{player.Level} {player.Name}");
-                                            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
-                                            Console.WriteLine("0. 다음");
-                                            Console.WriteLine("");
-                                            nextKey = Game.instance.inputManager.GetValidSelectedIndex(0);
-                                            if (nextKey == 0)
-                                                Game.instance.Run();
+                                            LoseScene();
                                         }
                                     }
                                     else
@@ -145,18 +126,7 @@ namespace ConsoleGame.Scenes
                                         Battle(selectedMonsters[inputKey - 1]);
                                         if (player.Health <= 0)
                                         {
-                                            Console.WriteLine("");
-                                            Console.WriteLine("Battle!! - Result");
-                                            Console.WriteLine("");
-                                            Console.WriteLine("You Lose.");
-                                            Console.WriteLine("");
-                                            Console.WriteLine($"Lv.{player.Level} {player.Name}");
-                                            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
-                                            Console.WriteLine("0. 다음");
-                                            Console.WriteLine("");
-                                            nextKey = Game.instance.inputManager.GetValidSelectedIndex(0);
-                                            if (nextKey == 0)
-                                                Game.instance.Run();
+                                            LoseScene();
                                         }
                                     }
                                     else
@@ -173,18 +143,7 @@ namespace ConsoleGame.Scenes
                         }
                         if (player.Health <= 0)
                         {
-                            Console.WriteLine("");
-                            Console.WriteLine("Battle!! - Result");
-                            Console.WriteLine("");
-                            Console.WriteLine("You Lose.");
-                            Console.WriteLine("");
-                            Console.WriteLine($"Lv.{player.Level} {player.Name}");
-                            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
-                            Console.WriteLine("0. 다음");
-                            Console.WriteLine("");
-                            int nextKey = Game.instance.inputManager.GetValidSelectedIndex(0);
-                            if (nextKey == 0)
-                                Game.instance.Run();
+                            LoseScene();
                         }
                         else if (deadMonsters.Count >= 3)
                         {
@@ -272,28 +231,10 @@ namespace ConsoleGame.Scenes
             return selectedMonsters1;
         }
 
-        //던전 클리어시 추가 정보 및 특별 아이템 드롭
-        private void ClearDungeon()
-        {
-
-            int damage = player.MaxHealth - player.Health;
-
-            Console.WriteLine($"던전 클리어! 체력 {damage} 소모됨.");
-            Console.WriteLine($"남은 체력: {player.Health}");
-            Console.WriteLine("");
-            Console.WriteLine("0. 다음");
-            Console.WriteLine("");
-            Console.Write(">>");
-            Random random = new Random();
-            if (random.Next(1, 101) <= 20) // 20% 확률로 특별한 아이템 드롭
-            {
-                DropSpecialItem(dungeon.difficulty); // difficulty를 전달
-            }
-        }
-
         //던전 입장 조건
         public void EnterDungeon()
         {
+            Console.WriteLine("===================");
             Console.WriteLine("1. 쉬운 던전     | 방어력 5 이상 권장");
             Console.WriteLine("2. 일반 던전     | 방어력 11 이상 권장");
             Console.WriteLine("3. 어려운 던전    | 방어력 17 이상 권장");
@@ -348,6 +289,44 @@ namespace ConsoleGame.Scenes
                         UseItem();
                     }
                 }
+            }
+        }
+        //전투 패배 결과 장면
+        private void LoseScene()
+        {
+            Console.WriteLine("");
+            Console.WriteLine("Battle!! - Result");
+            Console.WriteLine("");
+            Console.WriteLine("You Lose.");
+            Console.WriteLine("");
+            Console.WriteLine("전투에서 패배하였습니다.");
+            Console.WriteLine("");
+            Console.WriteLine($"Lv.{player.Level} {player.Name}");
+            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
+            Console.WriteLine("");
+            Console.WriteLine("0. 다음");
+            Console.WriteLine("");
+            int nextKey = Game.instance.inputManager.GetValidSelectedIndex(0);
+            if (nextKey == 0)
+                Game.instance.Run();
+        }
+
+        //던전 클리어시 추가 정보 및 특별 아이템 드롭
+        private void ClearDungeon()
+        {
+
+            int damage = player.MaxHealth - player.Health;
+
+            Console.WriteLine($"던전 클리어! 체력 {damage} 소모됨.");
+            Console.WriteLine($"남은 체력: {player.Health}");
+            Console.WriteLine("");
+            Console.WriteLine("0. 다음");
+            Console.WriteLine("");
+            Console.Write(">>");
+            Random random = new Random();
+            if (random.Next(1, 101) <= 20) // 20% 확률로 특별한 아이템 드롭
+            {
+                DropSpecialItem(dungeon.difficulty); // difficulty를 전달
             }
         }
 
