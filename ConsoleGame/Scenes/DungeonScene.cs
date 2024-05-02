@@ -1,4 +1,4 @@
-﻿using ConsoleGame.Managers;
+using ConsoleGame.Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,7 +65,8 @@ namespace ConsoleGame.Scenes
             {
                 Console.WriteLine("\n턴을 선택하세요:");
                 Console.WriteLine("1. 공격");
-                Console.WriteLine("2. 아이템 사용");
+                Console.WriteLine("2. 스킬");
+                Console.WriteLine("3. 아이템 사용");
                 Console.Write(">> ");
 
                 string choice = Console.ReadLine();
@@ -76,6 +77,9 @@ namespace ConsoleGame.Scenes
                         player.Attack(enemy);
                         break;
                     case "2":
+                    UseCharacterSkill(player, enemy);
+                        break;
+                    case "3":
                         UseItem();
                         break;
                     default:
@@ -116,6 +120,7 @@ namespace ConsoleGame.Scenes
         }
 
 
+
         private void ClearDungeon()
         {
             int damage = CalculateDamage();
@@ -125,10 +130,20 @@ namespace ConsoleGame.Scenes
             Console.WriteLine($"던전 클리어! 체력 {damage} 소모됨.");
             Console.WriteLine($"남은 체력: {player.Health}");
 
+
+            player.Exp += 1;       // 적을 물리칠 때마다 경험치 1 증가
+            Console.WriteLine($"경험치획득: {player.Exp}");
+
+            player.LevelUp.CheckLevelUp();
+            
+
             if (random.Next(1, 101) <= 20) // 20% 확률로 특별한 아이템 드롭
             {
                 DropSpecialItem(dungeon.difficulty); // difficulty를 전달
             }
+
+            // 사용자 입력 기다리기
+            Console.ReadLine();
         }
 
         public void EnterDungeon()
@@ -139,7 +154,7 @@ namespace ConsoleGame.Scenes
             Console.WriteLine("0. 나가기");
             Console.Write("원하시는 행동을 입력해주세요.\n>> ");
 
-            int InputKey = Game.instance.inputManager.GetValidSelectedIndex((int)Difficulty.Max - 1, (int)Difficulty.Easy);
+            int InputKey = Game.instance.inputManager.GetValidSelectedIndex((int)Difficulty.Max, (int)Difficulty.Easy);
             dungeon = new Dungeon((Difficulty)InputKey);
 
             if (!player.HasRequiredDefense(dungeon.requiredDefense))
@@ -150,7 +165,43 @@ namespace ConsoleGame.Scenes
 
             Start(dungeon.difficulty);
 
+            DropNormalItem(dungeon.difficulty);
             DropSpecialItem(dungeon.difficulty);
+
+        }
+        private void DropNormalItem(Difficulty difficulty)
+        {
+            // 이지 던전에서 기본 아이템
+            if (difficulty == Difficulty.Easy)
+            {
+                // 아이템 카테고리별로 나누기
+                var armorItems = Game.instance.itemManager.ItemInfos.Where(item => item.Type == ItemType.Armor).ToList();
+                var weaponItems = Game.instance.itemManager.ItemInfos.Where(item => item.Type == ItemType.Weapon).ToList();
+                var consumableItems = Game.instance.itemManager.ItemInfos.Where(item => item.Type == ItemType.Consumable).ToList();
+
+                // 무작위로 갑옷 또는 무기 선택
+                Item droppedItem = null;
+                if (random.Next(4) == 0) // 0 또는 1을 랜덤하게 반환하므로 25% 확률로 수련자 갑옷, 낡은 검, 소비 아이템 각 각 하나씩 드랍
+                {
+                    droppedItem = armorItems[random.Next(new Item("수련자 갑옷", ItemType.Armor, 1000, 5, "수련에 도움을 주는 갑옷입니다.").Count)];
+                }
+                else
+                {
+                    droppedItem = weaponItems[random.Next(new Item("낡은 검", ItemType.Weapon, 600, 2, "쉽게 볼 수 있는 낡은 검입니다.").Count)];
+                }
+
+                // 무작위로 물약 선택
+                Item consumableItem = consumableItems[random.Next(consumableItems.Count)];
+
+                // 무작위로 선택된 아이템 출력
+                Console.WriteLine($"장비 아이템을 획득하였습니다: {droppedItem}");
+                Console.WriteLine($"소비 아이템을 획득하였습니다: {consumableItem}");
+                
+                
+                // 아이템을 인벤토리의 장비 카테고리에 추가
+                player.InventoryManager.AddItem(droppedItem);
+                player.InventoryManager.AddItem(consumableItem);             
+            }           
 
         }
 
@@ -195,7 +246,7 @@ namespace ConsoleGame.Scenes
             switch (difficulty)
             {
                 case Difficulty.Easy:
-                    level = player.Level - 1;
+                    level = player.Level + 1;
                     health = 50 + (level * 10);
                     attackPower = 5 + (level * 2);
                     break;
