@@ -196,7 +196,6 @@ namespace ConsoleGame.Managers
             else
             {
                 Console.WriteLine("\n1. 공격");
-                Console.WriteLine("2. 아이템 사용");
                 Console.WriteLine("\n원하시는 행동을 입력해주세요.");
             }
             Console.Write(">> ");

@@ -36,8 +36,8 @@ namespace ConsoleGame.Scenes
                 Console.Clear();
                 Console.WriteLine("===================");
                 Console.WriteLine("1. 쉬운 던전     | 누구나 가능");
-                Console.WriteLine("2. 일반 던전     | 방어력 12 이상 권장");
-                Console.WriteLine("3. 어려운 던전    | 방어력 24 이상 권장");
+                Console.WriteLine("2. 일반 던전     | 방어력 30 이상 권장");
+                Console.WriteLine("3. 어려운 던전    | 방어력 50 이상 권장");
                 Console.WriteLine("0. 나가기");
                 Console.Write("원하시는 행동을 입력해주세요.\n>> ");
 
@@ -49,8 +49,7 @@ namespace ConsoleGame.Scenes
 
                 else if (InputKey != 0 && dungeon.requiredDefense < player.DefensePower)
                 {
-                    Start(dungeon.difficulty);
-                    DropSpecialItem(dungeon.difficulty);
+                    Start(dungeon.difficulty);;
                 }
                 else
                 {
@@ -176,6 +175,8 @@ namespace ConsoleGame.Scenes
             Console.WriteLine("\n전투에서 패배하였습니다.");
             Console.WriteLine($"\nLv.{player.Level} {player.Name}");
             Console.WriteLine($"HP {origin.Health} -> Dead\n"); ////////던전에 깊은 복사
+            Console.WriteLine("0. 다음\n");
+            Game.instance.inputManager.GetValidSelectedIndex(0);
             //대기
         }
 
