@@ -64,6 +64,7 @@ namespace ConsoleGame.Managers
                 Console.WriteLine("장착한 방어구아이템이 없습니다.");
             }
 
+
             Game.instance.inputManager.InputAnyKey();
         }
 

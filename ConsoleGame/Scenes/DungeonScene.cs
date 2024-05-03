@@ -71,7 +71,7 @@ namespace ConsoleGame.Scenes
             while (true)
             {
                 Game.instance.uiManager.BattleScene(difficulty, selectedMonsters, player, true);
-                int inputKey = Game.instance.inputManager.GetValidSelectedIndex(selectedMonsters.Count);
+                int inputKey = Game.instance.inputManager.GetValidSelectedIndex(selectedMonsters.Count + 1);
                 if (inputKey == 0)
                 {
                     Console.WriteLine("===================");
@@ -155,6 +155,7 @@ namespace ConsoleGame.Scenes
             {
                 deadMonsters.Add(selectedMonsters[EnemyNum - 1]);
                 selectedMonsters[EnemyNum - 1].isDead = true; //Dead회색표시
+                Game.instance.questManager.dicQuestInfos[1].OnCheckEvent(1, 1);
             }
             for (int i = 0; i < selectedMonsters.Count; i++)
             {
