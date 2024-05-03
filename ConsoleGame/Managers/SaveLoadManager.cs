@@ -74,7 +74,7 @@ namespace ConsoleGame.Managers
                 Array.Sort(files, (a, b) => File.GetLastWriteTime(a).CompareTo(File.GetLastWriteTime(b)));
 
                 // 오래된 파일부터 삭제
-                for (int i = 0; i < files.Length - 9; i++)
+                for (int i = 0; i < files.Length - 6; i++)
                 {
                     File.Delete(files[i]);
                     Console.WriteLine($"게임 파일 {Path.GetFileName(files[i])}을(를) 삭제하였습니다.");

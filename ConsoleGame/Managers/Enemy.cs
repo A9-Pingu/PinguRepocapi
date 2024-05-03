@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ConsoleGame.Managers
 {
@@ -15,6 +17,7 @@ namespace ConsoleGame.Managers
         public int Attack { get; set; }
 
         public bool isDead { get; set; }
+        public bool isUseItem { get; set; } = false;
 
         public Enemy(string name, int level, bool isDead = false)
         {
@@ -31,19 +34,19 @@ namespace ConsoleGame.Managers
             switch (Name)
             {
                 case "도둑갈매기":
-                    return 30 + level * 4;
+                    return 30;
                 case "야생들개":
-                    return 40 + level * 4;
+                    return 40;
                 case "여우":
-                    return 45 + level * 4;
+                    return 45;
                 case "바다표범":
-                    return 80 + level * 5;
+                    return 80;
                 case "늑대":
-                    return 60 + level * 5;
+                    return 60;
                 case "북극곰":
-                    return 100 + level * 6;
+                    return 100;
                 case "범고래":
-                    return 150 + level * 6;
+                    return 150;
                 default:
                     return 0;
             }
@@ -57,9 +60,9 @@ namespace ConsoleGame.Managers
                 case "도둑갈매기":
                     return 4 + level;
                 case "야생들개":
-                    return 6 + level;
+                    return 5 + level;
                 case "여우":
-                    return 6 + level;
+                    return 5 + level;
                 case "바다표범":
                     return 10 + level * 2;
                 case "늑대":
@@ -73,26 +76,12 @@ namespace ConsoleGame.Managers
                     return 0;
             }
         }
-        public void EnemyAttack(Character player)
+        int damage;
+        public void EnemyAttack(Character player) //몬스터 공격
         {
-
-            if (player.Health < Attack)
-            {
-                player.Health = 0;
-            }
-            else
-                player.Health -= Attack;
             Console.WriteLine("===================");
-            Console.WriteLine($"{Name} 의 공격!");
-            Console.WriteLine($"Lv.{player.Level} {player.Name} 에게 {Attack} 데미지를 가했습니다.");
-            Console.WriteLine($"");
-            Console.WriteLine($"Lv.{player.Level} {player.Name}");
-            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
-            Console.WriteLine($"");
-            Console.WriteLine($"0. 다음");
-            Console.WriteLine($"1. 아이템사용");
-            Console.WriteLine($"");
-            Console.Write(">>");
+            Console.WriteLine($"{Name} 의 공격!\n");
+            int playerPreHP = player.Health; //기존 체력
 
             // 회피할 확률을 확인합니다.
             Random random = new Random();
@@ -101,21 +90,49 @@ namespace ConsoleGame.Managers
             // 회피가 발생한 경우
             if (isDodged && Name != "스킬") // 스킬은 회피할 수 없음
             {
-                Console.WriteLine($"{Name}이(가) 당신의 공격을 회피했습니다.");
+                Console.WriteLine($"{player.Name}이(가) 몬스터의 공격을 회피했습니다.");
             }
             else
             {
-                // 회피가 발생하지 않은 경우에만 공격을 수행합니다.
-                int damage = Attack;
-                if (damage < 0)
-                {
-                    damage = 0;
-                }
-                Console.WriteLine($"{Name}이(가) 당신에게 {damage}의 피해를 입혔습니다.");
-                player.Health -= damage;
+                Console.WriteLine($"Lv.{player.Level} {player.Name} 에게 {Attack}의 피해를 입혔습니다.");
+                player.Health -= Attack;
             }
-
+            Console.WriteLine($"\nLv.{player.Level} {player.Name}");
+            if (player.Health <= 0)
+            {
+                Console.WriteLine($"HP {playerPreHP} -> Dead\n");
+            }
+            else
+                Console.WriteLine($"HP {playerPreHP} -> {player.Health}\n");
+            Console.WriteLine($"1. 아이템 사용");
+            Console.WriteLine($"0. 다음");
+            Console.Write(">>");
+            int input = Game.instance.inputManager.GetValidSelectedIndex(1);
+            if (input == 1)
+            {
+                UseItem();
+                isUseItem = true;
+            }
+            else
+                isUseItem = false;
+        }
+        public void UseItem()
+        {
+            Console.WriteLine("===================");
+            Console.WriteLine("아이템을 사용하였습니다.");
+            Console.WriteLine("다시 몬스터 공격 차례입니다.");
+            Console.WriteLine($"\n0. 다음");
+            Console.Write(">>");
+            Game.instance.inputManager.GetValidSelectedIndex(0);
+            // 아이템 사용 로직은 구현하지 못했습니다
         }
 
+        public bool IsUseItem()
+        {
+            if (isUseItem)
+                return true;
+            else
+                return false;
+        }
     }
 }
