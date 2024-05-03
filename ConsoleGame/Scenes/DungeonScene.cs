@@ -24,7 +24,6 @@ namespace ConsoleGame.Scenes
             player = character;
             origin = player.DeepCopy();
             origin.Health = player.Health;
-            Random random = new Random(Guid.NewGuid().GetHashCode());
         }
 
         //던전 입장 조건
