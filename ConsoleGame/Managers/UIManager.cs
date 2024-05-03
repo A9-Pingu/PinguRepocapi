@@ -82,7 +82,7 @@ namespace ConsoleGame.Managers
             int index = 1;
             foreach (var item in inventory.dicInventory)
             {
-                Console.WriteLine($"- {index++}. {item.Value.Name} ({item.Value.Type}) : {(item.Value.Equipped ? "장착됨" : "미장착")}  |  * {item.Value.Count}");
+                Console.WriteLine($"- {index++}. {item.Value.Name} ({item.Value.Type}) : {(item.Value.Type == ItemType.Consumable ? "" : item.Value.Equipped ? "장착됨" : "미장착")}  |  * {item.Value.Count} | {item.Value.Description}");
             }
 
             Console.WriteLine();
@@ -126,7 +126,7 @@ namespace ConsoleGame.Managers
             Console.WriteLine("\n[아이템 목록]");
 
             int index = 1;
-            Game.instance.itemManager.ItemInfos.FindAll(obj => obj.Type == itemType).ForEach(obj => Console.WriteLine($"- {index++}. {obj.Name} : {obj.Price} G"));
+            Game.instance.itemManager.ItemInfos.FindAll(obj => obj.Type == itemType).ForEach(obj => Console.WriteLine($"- {index++}. {obj.Name} : {obj.Price} G | {obj.Description}"));
 
 
         }
@@ -147,8 +147,7 @@ namespace ConsoleGame.Managers
             Console.WriteLine("< 모험가 길드 빙하 지부 >");
             Console.WriteLine("이곳에서는 의뢰를 받고 달성을 통해 보상을 받을 수 있습니다.");
             Console.WriteLine($"\n[길드 접수원]\n안녕하세요 {Game.instance.player.Name}님 모험가 길드에 오신걸 환영합니다.\n어떤 일로 방문 하셨나요?");
-            Console.WriteLine("\n1. 현재 의뢰 내용 확인");
-            Console.WriteLine("2. 의뢰 게시판 확인");
+            Console.WriteLine("\n1. 의뢰 게시판 확인");
             Console.WriteLine("0. 나가기\n");
             Console.Write("원하시는 행동을 입력해주세요.\n>> ");
         }
@@ -163,7 +162,7 @@ namespace ConsoleGame.Managers
             Console.WriteLine("===================");
             Console.WriteLine("\n     Battle!!     \n");
             int index = 1;
-
+            
             foreach (var monster in selectedMonsters)
             {
                 if (isReadyToFight) // 1. 공격 선택
@@ -196,6 +195,7 @@ namespace ConsoleGame.Managers
             else
             {
                 Console.WriteLine("\n1. 공격");
+                Console.WriteLine("2. 아이템 사용");
                 Console.WriteLine("\n원하시는 행동을 입력해주세요.");
             }
             Console.Write(">> ");

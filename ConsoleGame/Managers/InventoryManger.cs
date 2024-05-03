@@ -1,4 +1,4 @@
-﻿using System;
+﻿ausing System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -48,7 +48,7 @@ namespace ConsoleGame.Managers
                     default:
                         break;
                 }
-                Game.instance.inputManager.InputAnyKey();
+                Thread.Sleep(1000);
             }
         }
 
@@ -115,7 +115,15 @@ namespace ConsoleGame.Managers
             }
 
             int index = GetItemKey(inputKey);
-            EquipItem(dicInventory[index]);
+            if (dicInventory[index].Type == ItemType.Consumable || dicInventory[index].Type == ItemType.All)
+            {
+                AddItemStatBonus(dicInventory[index]);
+                RemoveItem(dicInventory[index]);
+            }
+            else
+            {
+                EquipItem(dicInventory[index]);
+            }
         }
 
         public int GetItemKey(int inputKey)
@@ -182,6 +190,7 @@ namespace ConsoleGame.Managers
                 }
                 dicEquipItem[item.Type] = item;
                 item.Equipped = true;
+                Game.instance.questManager.dicQuestInfos[1].OnCheckEvent(1, 1);
                 AddItemStatBonus(item);
             }
             Console.WriteLine("\t[아이템]{0}을/를 장착{1}하였습니다.", item.Name, CheckedEquipItem(item) ? " " : " 해제");
@@ -246,6 +255,7 @@ namespace ConsoleGame.Managers
                         break;
                 }
             }
+            Game.instance.questManager.dicQuestInfos[2].OnCheckEvent(2, player.AttackPower, player.DefensePower);
         }
 
         public void RemoveItemStatBonus(Item item)

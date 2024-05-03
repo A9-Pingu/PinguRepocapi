@@ -325,5 +325,29 @@ namespace ConsoleGame
             Game.instance.inputManager.GetValidSelectedIndex(0);
             player.MP -= requiredMP;
         }
+
+        private int ChooseSkillIndex(Enemy enemy)
+        {
+            Console.Write("\n원하시는 행동을 입력해주세요: ");
+            int skillChoice;
+            while (!int.TryParse(Console.ReadLine(), out skillChoice) || (skillChoice < 0 || skillChoice > 2))
+            {
+                Console.WriteLine("잘못된 입력입니다. 다시 입력해주세요.");
+                Console.Write("원하시는 행동을 입력해주세요: ");               
+            }
+
+            Console.WriteLine($"당신이 {enemy.Name}에게 {AttackPower}의 피해를 입혔습니다.");
+            enemy.Health -= AttackPower;
+            return skillChoice;
+        }
+
+        public void UseItem(Item item, int count = 1)
+        {
+            if (item.Type != ItemType.Consumable) return;
+            InventoryManager.AddItemStatBonus(item);
+            InventoryManager.RemoveItem(item, count);
+            Console.WriteLine($"{item.Name}을 {count}개를 사용하였습니다.");
+        }
+
     }
 }

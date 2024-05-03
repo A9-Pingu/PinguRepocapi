@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Reflection;
 using System.Numerics;
 using System.Text;
 using System.Threading;
@@ -95,6 +96,9 @@ namespace ConsoleGame.Scenes
                     ClearDungeon();
                     return;
                 }
+                //위치 바뀌어야함
+                UseItem();
+                Game.instance.inputManager.InputAnyKey();
             }
         }
         private List<Enemy> SelectMonsters(Difficulty difficulty)
@@ -167,9 +171,41 @@ namespace ConsoleGame.Scenes
             Console.WriteLine("\nYou Lose.");
             Console.WriteLine("\n전투에서 패배하였습니다.");
             Console.WriteLine($"\nLv.{player.Level} {player.Name}");
-            Console.WriteLine($"HP {player.OriginHealth} -> Dead\n");
-            Console.WriteLine("0. 다음\n");
-            Game.instance.inputManager.GetValidSelectedIndex(0);
+            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
+            //대기
+        }
+
+        private void UseCharacterSkill(Character player, Enemy enemy)
+        {
+            // 스킬 사용 메서드 호출
+            player.UseSkill(enemy);
+        }
+
+        private void UseItem()
+        {
+            Console.WriteLine("===================");
+            Console.WriteLine("사용할 아이템을 선택하세요.");
+            List<Item> consumable = new List<Item>();
+            foreach (var item in player.InventoryManager.dicInventory)
+            {
+                if (item.Value.Type == ItemType.Consumable)
+                {
+                    consumable.Add(item.Value);
+                }
+            }
+            
+            int itemIndex = 1;
+            foreach (var item in consumable) 
+            {
+                Console.WriteLine($"- {itemIndex++}. {item.Name} * {item.Count} | {item.Description}");
+            }
+
+            int inputkey = Game.instance.inputManager.GetValidSelectedIndex(consumable.Count);
+            if (inputkey == 0)
+                return;
+            player.InventoryManager.AddItemStatBonus(consumable[inputkey - 1]);
+            player.InventoryManager.RemoveItem(consumable[inputkey - 1]);
+            Thread.Sleep(2000);
         }
 
         //전투 승리 화면
