@@ -11,14 +11,13 @@ namespace ConsoleGame.Managers
 {
     public class Enemy
     {
-
+        Character player;
         public string Name { get; set; }
         public int Level { get; set; }
         public int Health { get; set; }
         public int Attack { get; set; }
 
         public bool isDead { get; set; }
-        public bool isUseItem { get; set; } = false;
 
         public Enemy(string name, int level, bool isDead = false)
         {
@@ -28,17 +27,6 @@ namespace ConsoleGame.Managers
             Attack = CalculateAttack(level);
             this.isDead = isDead;
         }
-        public Enemy DeepCopy()
-        {
-            Enemy enemy = new Enemy(Name,Level,isDead);
-            enemy.Name = Name;
-            enemy.Level = Level;
-            enemy.Health = Health;
-            enemy.Attack = Attack;
-            enemy.isDead = isDead;
-            return enemy;
-        }
-        
 
         //플레이어 레벨 반영하여 몬스터 체력 조정
         private int CalculateHealth(int level)
@@ -91,6 +79,7 @@ namespace ConsoleGame.Managers
         int damage;
         public void EnemyAttack(Character player) //몬스터 공격
         {
+            Game.instance.dungeon.isUseItem = false;//----------------------------------------------------------추가
             Console.WriteLine("===================");
             Console.WriteLine($"{Name} 의 공격!\n");
             int playerPreHP = player.Health; //기존 체력
@@ -109,42 +98,45 @@ namespace ConsoleGame.Managers
                 Console.WriteLine($"Lv.{player.Level} {player.Name} 에게 {Attack}의 피해를 입혔습니다.");
                 player.Health -= Attack;
             }
+
             Console.WriteLine($"\nLv.{player.Level} {player.Name}");
             if (player.Health <= 0)
             {
+                player.Health = 0; //------------------------------------------------------------------------추가 및 수정
                 Console.WriteLine($"HP {playerPreHP} -> Dead\n");
+                Console.WriteLine($"0. 다음");
+                Console.Write(">>");
+                Game.instance.inputManager.GetValidSelectedIndex(0);
             }
             else
-                Console.WriteLine($"HP {playerPreHP} -> {player.Health}\n");
-            Console.WriteLine($"1. 아이템 사용");
-            Console.WriteLine($"0. 다음");
-            Console.Write(">>");
-            int input = Game.instance.inputManager.GetValidSelectedIndex(1);
-            if (input == 1)
             {
-                UseItem();
-                isUseItem = true;
+                Console.WriteLine($"HP {playerPreHP} -> {player.Health}\n");
+                Console.WriteLine($"1. 아이템 사용");
+                Console.WriteLine($"0. 다음");
+                Console.Write(">>");
+                int input = Game.instance.inputManager.GetValidSelectedIndex(1);
+                if (input == 1)
+                {
+                    Game.instance.dungeon.isUseItem = true;
+                    Game.instance.dungeon.UseItem();
+                }
+                else
+                    Game.instance.dungeon.isUseItem = false; //------------------------------------------------추가 및 수정
             }
-            else
-                isUseItem = false;
+                
         }
-        public void UseItem()
-        {
-            Console.WriteLine("===================");
-            Console.WriteLine("아이템을 사용하였습니다.");
-            Console.WriteLine("다시 몬스터 공격 차례입니다.");
-            Console.WriteLine($"\n0. 다음");
-            Console.Write(">>");
-            Game.instance.inputManager.GetValidSelectedIndex(0);
-            // 아이템 사용 로직은 구현하지 못했습니다
-        }
+        //public void UseItem()
+        //{
+        //    isUseItem = true;
+        //    Console.WriteLine("===================");
+        //    Console.WriteLine("아이템을 사용하였습니다.");
+        //    Console.WriteLine("다시 몬스터 공격 차례입니다.");
+        //    Console.WriteLine($"\n0. 다음");
+        //    Console.Write(">>");
+        //    Game.instance.inputManager.GetValidSelectedIndex(0);
+        //    // 아이템 사용 로직은 구현하지 못했습니다
+        //}
 
-        public bool IsUseItem()
-        {
-            if (isUseItem)
-                return true;
-            else
-                return false;
-        }
+        
     }
 }

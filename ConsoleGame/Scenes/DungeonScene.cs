@@ -1,4 +1,4 @@
-﻿using ConsoleGame.Managers;
+using ConsoleGame.Managers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -14,16 +14,18 @@ namespace ConsoleGame.Scenes
     public class DungeonScene
     {
         private Character player;
-        public Character origin;
         private Random random;
         private Random random2 = new Random();
+        public Character origin; 
         private Dungeon dungeon;
+        public bool isUseItem { get; set; }//-------------------------------------------------------------수정
 
-        public DungeonScene(Character character)
+    public DungeonScene(Character character)
         {
             player = character;
-            origin = player.DeepCopy();
-            origin.Health = player.Health;
+            origin = player.DeepCopy(); 
+            origin.Health = player.Health; 
+            Random random = new Random(Guid.NewGuid().GetHashCode());
         }
 
         //던전 입장 조건
@@ -59,18 +61,20 @@ namespace ConsoleGame.Scenes
             }
         }
 
+
         List<Enemy> deadMonsters = new List<Enemy>(); //죽은 몬스터 수
         List<Enemy> selectedMonsters;
         public void Start(Difficulty difficulty)
         {
+            player.OriginHealth = player.Health; //플레이어 초기 체력
             selectedMonsters = SelectMonsters(difficulty);
 
             Game.instance.uiManager.BattleScene(difficulty, selectedMonsters, player, false); //초기화면
-            Game.instance.inputManager.GetValidSelectedIndex(1,1);
+            Game.instance.inputManager.GetValidSelectedIndex(1, 1);
             while (true)
             {
                 Game.instance.uiManager.BattleScene(difficulty, selectedMonsters, player, true);
-                int inputKey = Game.instance.inputManager.GetValidSelectedIndex(selectedMonsters.Count);
+                int inputKey = Game.instance.inputManager.GetValidSelectedIndex(selectedMonsters.Count + 1);
                 if (inputKey == 0)
                 {
                     Console.WriteLine("===================");
@@ -84,6 +88,7 @@ namespace ConsoleGame.Scenes
                         continue;
                 }
                 Battle(inputKey); //배틀 시작
+                //UseItem();
                 if (player.Health <= 0) //플레이어 사망
                 {
                     LoseScene();
@@ -94,6 +99,9 @@ namespace ConsoleGame.Scenes
                     ClearDungeon();
                     return;
                 }
+                //위치 바뀌어야함
+                //UseItem(); //----------------------------------------------------------------------제거
+                //Game.instance.inputManager.InputAnyKey();//----------------------------------------제거
             }
         }
         private List<Enemy> SelectMonsters(Difficulty difficulty)
@@ -145,11 +153,12 @@ namespace ConsoleGame.Scenes
         //던전에서 공격 시작 후 전투장면
         private void Battle(int EnemyNum)
         {
-            player.Attack(selectedMonsters[EnemyNum-1]); //플레이어 공격
-            if (selectedMonsters[EnemyNum-1].Health <= 0)
+            player.Attack(selectedMonsters[EnemyNum - 1]); //플레이어 공격
+            if (selectedMonsters[EnemyNum - 1].Health <= 0)
             {
                 deadMonsters.Add(selectedMonsters[EnemyNum - 1]);
                 selectedMonsters[EnemyNum - 1].isDead = true; //Dead회색표시
+                Game.instance.questManager.dicQuestInfos[1].OnCheckEvent(1, 1);
             }
             for (int i = 0; i < selectedMonsters.Count; i++)
             {
@@ -161,15 +170,13 @@ namespace ConsoleGame.Scenes
         //전투 패배 장면
         private void LoseScene()
         {
-            deadMonsters.Clear();
             Console.WriteLine("===================");
             Console.WriteLine("\nBattle!! - Result");
             Console.WriteLine("\nYou Lose.");
             Console.WriteLine("\n전투에서 패배하였습니다.");
             Console.WriteLine($"\nLv.{player.Level} {player.Name}");
-            Console.WriteLine($"HP {origin.Health} -> Dead\n");
-            Console.WriteLine("0. 다음\n");
-            Game.instance.inputManager.GetValidSelectedIndex(0);
+            Console.WriteLine($"HP {origin.Health} -> Dead\n"); ////////던전에 깊은 복사
+            //대기
         }
 
         private void UseCharacterSkill(Character player, Enemy enemy)
@@ -178,44 +185,18 @@ namespace ConsoleGame.Scenes
             player.UseSkill(enemy);
         }
 
-        private void UseItem()
-        {
-            Console.WriteLine("===================");
-            Console.WriteLine("사용할 아이템을 선택하세요.");
-            List<Item> consumable = new List<Item>();
-            foreach (var item in player.InventoryManager.dicInventory)
-            {
-                if (item.Value.Type == ItemType.Consumable)
-                {
-                    consumable.Add(item.Value);
-                }
-            }
-            
-            int itemIndex = 1;
-            foreach (var item in consumable) 
-            {
-                Console.WriteLine($"- {itemIndex++}. {item.Name} * {item.Count} | {item.Description}");
-            }
-
-            int inputkey = Game.instance.inputManager.GetValidSelectedIndex(consumable.Count);
-            if (inputkey == 0)
-                return;
-            player.InventoryManager.AddItemStatBonus(consumable[inputkey - 1]);
-            player.InventoryManager.RemoveItem(consumable[inputkey - 1]);
-            Thread.Sleep(2000);
-        }
-
         //전투 승리 화면
         private void ClearDungeon()
         {
             deadMonsters.Clear();
-            int damage = origin.Health - player.Health;
+
+            int damage = player.OriginHealth - player.Health;
             Console.WriteLine("===================");
             Console.WriteLine("\nBattle!! - Result");
             Console.WriteLine("\nVictory");
             Console.WriteLine("\n던전에서 몬스터 3마리를 잡았습니다.");
             Console.WriteLine($"\nLv.{player.Level} {player.Name}");
-            Console.WriteLine($"HP {origin.Health} -> {player.Health}");
+            Console.WriteLine($"HP {origin.Health} -> {player.Health}");////////던전에 깊은 복사
             Console.WriteLine($"\n기본 보상: {dungeon.baseReward} G");
             Console.WriteLine($"\n던전 클리어! 체력 {damage} 소모됨.");
             Console.WriteLine($"남은 체력: {player.Health}\n");
@@ -266,6 +247,48 @@ namespace ConsoleGame.Scenes
                 // 아이템을 인벤토리의 장비 카테고리에 추가
                 player.InventoryManager.AddItem(droppedItem);
             }
+        }
+        public void UseItem() //-----------------------------------------------------------------------------추가 및 수정
+        {
+            Console.WriteLine("===================");
+            Console.WriteLine("사용할 아이템을 선택하세요.");
+            List<Item> consumable = new List<Item>();
+            foreach (var item in player.InventoryManager.dicInventory)
+            {
+                if (item.Value.Type == ItemType.Consumable)
+                {
+                    consumable.Add(item.Value);
+                }
+            }
+            if (consumable.Count > 0)
+            {
+                int itemIndex = 1;
+                foreach (var item in consumable)
+                {
+                    Console.WriteLine($"- {itemIndex++}. {item.Name} * {item.Count} | {item.Description}");
+                }
+
+                int inputkey = Game.instance.inputManager.GetValidSelectedIndex(consumable.Count);
+                if (inputkey == 0)
+                    return;
+                player.InventoryManager.AddItemStatBonus(consumable[inputkey - 1]);
+                player.InventoryManager.RemoveItem(consumable[inputkey - 1]);
+                Thread.Sleep(2000);
+                Console.WriteLine("몬스터의 공격 차례입니다.");
+                Console.WriteLine($"\n0. 다음");
+                Console.Write(">>");
+                Game.instance.inputManager.GetValidSelectedIndex(0);
+            }
+            else
+            {
+                isUseItem = false; 
+                Console.WriteLine("사용할 아이템이 없습니다.");
+                Console.WriteLine($"\n0. 다음");
+                Console.Write(">>");
+                Game.instance.inputManager.GetValidSelectedIndex(0);//---------------------------------------추가 및 수정
+            }
+
+            
         }
     }
 }
