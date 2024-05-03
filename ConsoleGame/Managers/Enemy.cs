@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Reflection.Emit;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace ConsoleGame.Managers
@@ -50,7 +48,7 @@ namespace ConsoleGame.Managers
                 case "도둑갈매기":
                     return 30;
                 case "야생들개":
-                    return 40; 
+                    return 40;
                 case "여우":
                     return 45;
                 case "바다표범":
@@ -58,7 +56,7 @@ namespace ConsoleGame.Managers
                 case "늑대":
                     return 60;
                 case "북극곰":
-                    return 100; 
+                    return 100;
                 case "범고래":
                     return 150;
                 default:
@@ -94,7 +92,7 @@ namespace ConsoleGame.Managers
         public void EnemyAttack(Character player) //몬스터 공격
         {
             Console.WriteLine("===================");
-            Console.WriteLine($"{Name} 의 공격!\n"); 
+            Console.WriteLine($"{Name} 의 공격!\n");
             int playerPreHP = player.Health; //기존 체력
 
             // 회피할 확률을 확인합니다.

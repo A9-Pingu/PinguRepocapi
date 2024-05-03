@@ -118,10 +118,11 @@ namespace ConsoleGame.Scenes
 
         private void ShowConsumables()
         {
+            Console.Clear();
             Console.WriteLine("[소모품 목록]");
 
             int index = 1;
-            foreach (var item in item.ItemInfos.Where(item => item.Type == ItemType.Consumable))
+            foreach (var item in item.ItemInfos.Where(item => item.Type == ItemType.Consumable || item.Type == ItemType.All))
             {
                 Console.WriteLine($"- {index++}. {item.Name} : {item.Price} G");
             }
@@ -138,7 +139,7 @@ namespace ConsoleGame.Scenes
             Console.Write("구매할 아이템 번호를 입력하세요: ");
             if (int.TryParse(Console.ReadLine(), out int itemIndex))
             {
-                var consumables = item.ItemInfos.Where(item => item.Type == ItemType.Consumable).ToList();
+                var consumables = item.ItemInfos.Where(item => item.Type == ItemType.Consumable || item.Type == ItemType.All).ToList();
 
                 if (itemIndex >= 1 && itemIndex <= consumables.Count)
                 {

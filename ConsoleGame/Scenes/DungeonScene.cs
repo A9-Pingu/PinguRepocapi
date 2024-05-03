@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Reflection;
 using System.Numerics;
 using System.Text;
 using System.Threading;
@@ -15,6 +16,7 @@ namespace ConsoleGame.Scenes
         private Character player;
         public Character origin;
         private Random random;
+        private Random random2 = new Random();
         private Dungeon dungeon;
 
         public DungeonScene(Character character)
@@ -22,6 +24,7 @@ namespace ConsoleGame.Scenes
             player = character;
             origin = player.DeepCopy();
             origin.Health = player.Health;
+            Random random = new Random(Guid.NewGuid().GetHashCode());
         }
 
         //던전 입장 조건
@@ -56,6 +59,8 @@ namespace ConsoleGame.Scenes
                 }
             }
         }
+
+
         List<Enemy> deadMonsters = new List<Enemy>(); //죽은 몬스터 수
         List<Enemy> selectedMonsters;
         public void Start(Difficulty difficulty)
@@ -81,8 +86,6 @@ namespace ConsoleGame.Scenes
                         continue;
                 }
                 Battle(inputKey); //배틀 시작
-                
-                //UseItem();
                 if (player.Health <= 0) //플레이어 사망
                 {
                     LoseScene();
@@ -126,7 +129,7 @@ namespace ConsoleGame.Scenes
             };
 
             List<Enemy> selectedMonsters1 = new List<Enemy>();
-            
+
             for (int i = difficultyIndex; i < difficultyIndex + 6; i++)
             {
                 selectedMonsters1.Add(allMonsters[i]);
@@ -202,6 +205,83 @@ namespace ConsoleGame.Scenes
             Game.instance.inputManager.GetValidSelectedIndex(0);
         }
 
+        //전투 패배 장면
+        private void LoseScene()
+        {
+            Console.WriteLine("===================");
+            Console.WriteLine("\nBattle!! - Result");
+            Console.WriteLine("\nYou Lose.");
+            Console.WriteLine("\n전투에서 패배하였습니다.");
+            Console.WriteLine($"\nLv.{player.Level} {player.Name}");
+            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
+            //대기
+        }
+
+        private void UseCharacterSkill(Character player, Enemy enemy)
+        {
+            // 스킬 사용 메서드 호출
+            player.UseSkill(enemy);
+        }
+
+        private void UseItem()
+        {
+            Console.WriteLine("===================");
+            Console.WriteLine("사용할 아이템을 선택하세요.");
+            List<Item> consumable = new List<Item>();
+            foreach (var item in player.InventoryManager.dicInventory)
+            {
+                if (item.Value.Type == ItemType.Consumable)
+                {
+                    consumable.Add(item.Value);
+                }
+            }
+            
+            int itemIndex = 1;
+            foreach (var item in consumable) 
+            {
+                Console.WriteLine($"- {itemIndex++}. {item.Name} * {item.Count} | {item.Description}");
+            }
+
+            int inputkey = Game.instance.inputManager.GetValidSelectedIndex(consumable.Count);
+            if (inputkey == 0)
+                return;
+            player.InventoryManager.AddItemStatBonus(consumable[inputkey - 1]);
+            player.InventoryManager.RemoveItem(consumable[inputkey - 1]);
+            Thread.Sleep(2000);
+        }
+
+        //전투 승리 화면
+        private void ClearDungeon()
+        {
+            deadMonsters.Clear();
+
+            int damage = player.OriginHealth - player.Health;
+            Console.WriteLine("===================");
+            Console.WriteLine("\nBattle!! - Result");
+            Console.WriteLine("\nVictory");
+            Console.WriteLine("\n던전에서 몬스터 3마리를 잡았습니다.");
+            Console.WriteLine($"\nLv.{player.Level} {player.Name}");
+            Console.WriteLine($"HP {player.OriginHealth} -> {player.Health}");
+            Console.WriteLine($"\n기본 보상: {dungeon.baseReward} G");
+            Console.WriteLine($"\n던전 클리어! 체력 {damage} 소모됨.");
+            Console.WriteLine($"남은 체력: {player.Health}\n");
+
+            player.Exp += 5;       // 적을 물리칠 때마다 경험치 1 증가
+            Console.WriteLine($"\n경험치획득: {player.Exp}");
+
+            player.LevelUp.CheckLevelUp();
+
+            Random random = new Random(Guid.NewGuid().GetHashCode());
+            if (random.Next(1, 101) <= 20) //15~20% 확률로 아이템 드롭
+            {
+                DropHighTierItem();
+                DropSpecialItem(dungeon.difficulty);
+            }
+            Console.WriteLine("0. 다음\n");
+            Console.Write(">>");
+            Game.instance.inputManager.GetValidSelectedIndex(0);
+        }
+
         private int DropHighTierItem()
         {
             Random random = new Random(Guid.NewGuid().GetHashCode());
@@ -212,54 +292,19 @@ namespace ConsoleGame.Scenes
             return additionalReward;
         }
 
-        private void DropNormalItem(Difficulty difficulty)
-        {
-            // 이지 던전에서 기본 아이템
-            if (difficulty == Difficulty.Easy)
-            {
-                // 아이템 카테고리별로 나누기
-                var armorItems = Game.instance.itemManager.ItemInfos.Where(item => item.Type == ItemType.Armor).ToList();
-                var weaponItems = Game.instance.itemManager.ItemInfos.Where(item => item.Type == ItemType.Weapon).ToList();
-                var consumableItems = Game.instance.itemManager.ItemInfos.Where(item => item.Type == ItemType.Consumable).ToList();
-
-                // 무작위로 갑옷 또는 무기 선택
-                Item droppedItem = null;
-                Random random = new Random();
-                if (random.Next(4) == 0) // 0 또는 1을 랜덤하게 반환하므로 25% 확률로 수련자 갑옷, 낡은 검, 소비 아이템 각 각 하나씩 드랍
-                {
-                    droppedItem = armorItems[random.Next(new Item("수련자 갑옷", ItemType.Armor, 1000, 5, "수련에 도움을 주는 갑옷입니다.").Count)];
-                }
-                else
-                {
-                    droppedItem = weaponItems[random.Next(new Item("낡은 검", ItemType.Weapon, 600, 2, "쉽게 볼 수 있는 낡은 검입니다.").Count)];
-                }
-
-                // 무작위로 물약 선택
-                Item consumableItem = consumableItems[random.Next(consumableItems.Count)];
-
-                // 무작위로 선택된 아이템 출력
-                Console.WriteLine($"장비 아이템을 획득하였습니다: {droppedItem}");
-                Console.WriteLine($"소비 아이템을 획득하였습니다: {consumableItem}");
-                
-                
-                // 아이템을 인벤토리의 장비 카테고리에 추가
-                player.InventoryManager.AddItem(droppedItem);
-                player.InventoryManager.AddItem(consumableItem);             
-            }           
-
-        }
-
         private void DropSpecialItem(Difficulty difficulty)
         {
             // 노말 던전부터 하드 던전까지 특별 아이템 드롭
             if (difficulty == Difficulty.Normal ||
                 difficulty == Difficulty.Hard)
             {
+                int rand =  random2.Next(Game.instance.itemManager.specialItems.Count);
                 // 무작위로 하나의 아이템 선택
-                Item droppedItem = Game.instance.itemManager.specialItems[random.Next(Game.instance.itemManager.specialItems.Count)];
+                Item droppedItem = Game.instance.itemManager.specialItems[rand];
 
                 Console.WriteLine("===================");
                 Console.WriteLine($"특별한 아이템을 획득하였습니다: {droppedItem.Name}");
+                Console.ReadKey();
 
                 // 귀속 아이템이므로 Purchased 값을 true로 설정
                 Game.instance.itemManager.UpdateItemPurchasedStatus(droppedItem);

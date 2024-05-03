@@ -23,8 +23,11 @@ namespace ConsoleGame
         public int AttackPower { get; set; }
         public int DefensePower { get; set; }
         public int Health { get; set; }
-        public int Gold { get; set; }
-        public int MP { get; private set; } = 50; // 기본 MP는 50
+        public int OriginHealth { get; set; }  // 기본 체력
+
+        public int AdditionalDamage { get; set; } = 0;
+        public int DungeonClearCount { get; private set; } = 0;
+        public int MP { get; set; } = 50;
 
         public int MaxHealth { get; private set; } = 100;  // 최대 체력 속성 추가
         //public Character origin { get; set; }  // 기본 체력
@@ -40,6 +43,7 @@ namespace ConsoleGame
         private readonly string[] MageSkills = { "펭귄 행진곡 (MP 15)", "아르페지오 (MP 20)" };
         private readonly string[] RogueSkills = { "더블 펭펭이 (MP 10)", "스프릿 대거 (MP 15)" };
 
+
         public Character(string name, JobType job)
         {
             Name = name;
@@ -48,6 +52,7 @@ namespace ConsoleGame
             Exp = 0;
             AttackPower = 10;
             DefensePower = 5;
+            Gold = 35000;
             Health = MaxHealth;
             MP = 50;
             Gold = 1500;
@@ -78,13 +83,11 @@ namespace ConsoleGame
             SkillSet[(int)JobType.전사] = UseWarriorSkill;
             SkillSet[(int)JobType.마법사] = UseMageSkill;
             SkillSet[(int)JobType.도적] = UseRogueSkill;
-            InventoryManager = new InventoryManager(this);
-
-            LevelUp = new LevelUp(this);
-        }
+         }
 
         private int CalculateMaxExp(int level)
         {
+            LevelUp = new LevelUp(this);
             return level * 100;
         }
 
@@ -115,6 +118,20 @@ namespace ConsoleGame
                 int action = Game.instance.inputManager.GetValidSelectedIndex(2,1);
                 //일반공격
                 if (action == 1) 
+                {
+                    Random random = new Random();
+                    double percentage = random.NextDouble() * 0.10 - 0.05; //공격력 10% 오차범위
+                    int extendAttackPower = (int)(AttackPower * (1 + percentage));
+                    isSkillFail = false;
+            if (!enemy.IsUseItem())
+            {
+                Console.WriteLine("===================");
+                Console.WriteLine("1. 일반공격");
+                Console.WriteLine("2. 스킬공격");
+                Console.WriteLine("===================");
+                int action = Game.instance.inputManager.GetValidSelectedIndex(2, 1);
+                //일반공격
+                if (action == 1)
                 {
                     Random random = new Random();
                     double percentage = random.NextDouble() * 0.10 - 0.05; //공격력 10% 오차범위
@@ -338,6 +355,29 @@ namespace ConsoleGame
             Console.Write(">>");
             Game.instance.inputManager.GetValidSelectedIndex(0);
             player.MP -= requiredMP;
+        }
+
+        private int ChooseSkillIndex(Enemy enemy)
+        {
+            Console.Write("\n원하시는 행동을 입력해주세요: ");
+            int skillChoice;
+            while (!int.TryParse(Console.ReadLine(), out skillChoice) || (skillChoice < 0 || skillChoice > 2))
+            {
+                Console.WriteLine("잘못된 입력입니다. 다시 입력해주세요.");
+                Console.Write("원하시는 행동을 입력해주세요: ");               
+            }
+
+            Console.WriteLine($"당신이 {enemy.Name}에게 {AttackPower}의 피해를 입혔습니다.");
+            enemy.Health -= AttackPower;
+            return skillChoice;
+        }
+
+        public void UseItem(Item item, int count = 1)
+        {
+            if (item.Type != ItemType.Consumable) return;
+            InventoryManager.AddItemStatBonus(item);
+            InventoryManager.RemoveItem(item, count);
+            Console.WriteLine($"{item.Name}을 {count}개를 사용하였습니다.");
         }
     }
 }

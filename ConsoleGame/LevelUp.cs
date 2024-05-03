@@ -16,7 +16,7 @@ namespace ConsoleGame
             {            
             int defeatedMonsterLevel = 1;                                  // 전투에서 이긴 몬스터의 레벨로 가정
             int earnedExp = defeatedMonsterLevel;                         // 몬스터 레벨당 경험치 1로 가정
-            int requiredExp = CalculateRequiredExp(character.Level);     // 필요한 경험치 계산
+            int requiredExp = CalculateRequiredExp(character.Level);     // 필요한 경험치 계산  
 
             // 경험치가 최대치에 도달하거나 필요한 경험치보다 크거나 같으면 레벨업 가능
             if (character.Exp >= requiredExp || character.Exp >= character.MaxExp)

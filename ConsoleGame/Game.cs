@@ -36,6 +36,9 @@ namespace ConsoleGame
             shopScene = new Shop(player, itemManager);
             restScene = new RestInTown(player);
             dungeon = new DungeonScene(player);
+            questManager = new QuestManager();
+            questManager.InitQuest();
+            guild = new GuildScene(player);
         }
 
         public void Run()
@@ -47,6 +50,7 @@ namespace ConsoleGame
                 isPlaying = SelectScene(choice);
             }
         }
+
 
         bool SelectScene(int choice)
         {
