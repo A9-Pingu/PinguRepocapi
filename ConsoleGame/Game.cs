@@ -41,6 +41,7 @@ namespace ConsoleGame
             restScene = new RestInTown(player);
             dungeon = new DungeonScene(player);
             questManager = new QuestManager();
+            questManager.InitQuest();
             guild = new GuildScene(player);
         }
 

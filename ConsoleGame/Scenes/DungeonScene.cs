@@ -2,6 +2,7 @@ using ConsoleGame.Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace ConsoleGame.Scenes
 {
@@ -64,7 +65,7 @@ namespace ConsoleGame.Scenes
             while (true)
             {
                 Game.instance.uiManager.BattleScene(selectedMonsters, player); // --
-                int inputKey = Game.instance.inputManager.GetValidSelectedIndex(selectedMonsters.Count + 1);
+                int inputKey = Game.instance.inputManager.GetValidSelectedIndex(selectedMonsters.Count + 2);
 
                 if (inputKey == 0)
                 {
@@ -76,8 +77,7 @@ namespace ConsoleGame.Scenes
                     if (nextKey == 0)
                         return;
                 }                
-                Battle(inputKey);
-                UseItem();                        
+                Battle(inputKey);                        
                 if (player.Health <= 0)
                 {
                     LoseScene();
@@ -88,6 +88,9 @@ namespace ConsoleGame.Scenes
                     ClearDungeon();
                     return;
                 }
+                //위치 바뀌어야함
+                UseItem();
+                Game.instance.inputManager.InputAnyKey();
             }
         }
 
@@ -142,6 +145,7 @@ namespace ConsoleGame.Scenes
             if (selectedMonsters[EnemyNum].Health <= 0)
             {
                 selectedMonsters.RemoveAt(EnemyNum);
+                Game.instance.questManager.dicQuestInfos[0].OnCheckEvent(0,1);
             }                
 
             for (int i = 0; i < selectedMonsters.Count; i++)
@@ -170,8 +174,27 @@ namespace ConsoleGame.Scenes
         {
             Console.WriteLine("===================");
             Console.WriteLine("사용할 아이템을 선택하세요.");
-            // 아이템 사용 로직은 구현하지 못했습니다
-            //할지말지 + 뭐 사용할지
+            List<Item> consumable = new List<Item>();
+            foreach (var item in player.InventoryManager.dicInventory)
+            {
+                if (item.Value.Type == ItemType.Consumable)
+                {
+                    consumable.Add(item.Value);
+                }
+            }
+            
+            int itemIndex = 1;
+            foreach (var item in consumable) 
+            {
+                Console.WriteLine($"- {itemIndex++}. {item.Name} * {item.Count} | {item.Description}");
+            }
+
+            int inputkey = Game.instance.inputManager.GetValidSelectedIndex(consumable.Count);
+            if (inputkey == 0)
+                return;
+            player.InventoryManager.AddItemStatBonus(consumable[inputkey - 1]);
+            player.InventoryManager.RemoveItem(consumable[inputkey - 1]);
+            Thread.Sleep(2000);
         }
 
         private void ClearDungeon()
@@ -202,7 +225,7 @@ namespace ConsoleGame.Scenes
             if (difficulty == Difficulty.Normal || difficulty == Difficulty.Hard)
             {
                 // 무작위로 하나의 아이템 선택
-                Item droppedItem = Game.instance.itemManager.specialItems[random.Next(Game.instance.itemManager.specialItems.Count)];
+                Item droppedItem = Game.instance.itemManager.specialItems[random.Next(0, Game.instance.itemManager.specialItems.Count)];
 
                 Console.WriteLine("===================");
                 Console.WriteLine($"특별한 아이템을 획득하였습니다: {droppedItem.Name}");
