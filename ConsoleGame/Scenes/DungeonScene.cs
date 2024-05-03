@@ -16,12 +16,15 @@ namespace ConsoleGame.Scenes
         private Character player;
         private Random random;
         private Random random2 = new Random();
+        public Character origin; ////////던전에 깊은 복사
         private Dungeon dungeon;
         bool useItem = false;
 
         public DungeonScene(Character character)
         {
             player = character;
+            origin = player.DeepCopy(); ////////던전에 깊은 복사
+            origin.Health = player.Health; ////////던전에 깊은 복사
             Random random = new Random(Guid.NewGuid().GetHashCode());
         }
 
@@ -172,7 +175,7 @@ namespace ConsoleGame.Scenes
             Console.WriteLine("\nYou Lose.");
             Console.WriteLine("\n전투에서 패배하였습니다.");
             Console.WriteLine($"\nLv.{player.Level} {player.Name}");
-            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
+            Console.WriteLine($"HP {origin.Health} -> Dead\n"); ////////던전에 깊은 복사
             //대기
         }
 
@@ -220,7 +223,7 @@ namespace ConsoleGame.Scenes
             Console.WriteLine("\nVictory");
             Console.WriteLine("\n던전에서 몬스터 3마리를 잡았습니다.");
             Console.WriteLine($"\nLv.{player.Level} {player.Name}");
-            Console.WriteLine($"HP {player.OriginHealth} -> {player.Health}");
+            Console.WriteLine($"HP {origin.Health} -> {player.Health}");////////던전에 깊은 복사
             Console.WriteLine($"\n기본 보상: {dungeon.baseReward} G");
             Console.WriteLine($"\n던전 클리어! 체력 {damage} 소모됨.");
             Console.WriteLine($"남은 체력: {player.Health}\n");
