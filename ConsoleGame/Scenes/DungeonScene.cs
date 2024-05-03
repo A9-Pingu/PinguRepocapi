@@ -60,7 +60,6 @@ namespace ConsoleGame.Scenes
             }
         }
 
-
         List<Enemy> deadMonsters = new List<Enemy>(); //죽은 몬스터 수
         List<Enemy> selectedMonsters;
         public void Start(Difficulty difficulty)
@@ -174,49 +173,6 @@ namespace ConsoleGame.Scenes
             Game.instance.inputManager.GetValidSelectedIndex(0);
         }
 
-        //전투 승리 화면
-        private void ClearDungeon()
-        {
-            deadMonsters.Clear();
-            int damage = origin.Health - player.Health;
-            Console.WriteLine("===================");
-            Console.WriteLine("\nBattle!! - Result");
-            Console.WriteLine("\nVictory");
-            Console.WriteLine("\n던전에서 몬스터 3마리를 잡았습니다.");
-            Console.WriteLine($"\nLv.{player.Level} {player.Name}");
-            Console.WriteLine($"HP {origin.Health} -> {player.Health}");
-            Console.WriteLine($"\n기본 보상: {dungeon.baseReward} G");
-            Console.WriteLine($"\n던전 클리어! 체력 {damage} 소모됨.");
-            Console.WriteLine($"남은 체력: {player.Health}\n");
-
-            player.Exp += 1;       // 적을 물리칠 때마다 경험치 1 증가
-            Console.WriteLine($"\n경험치획득: {player.Exp}");
-
-            player.LevelUp.CheckLevelUp();
-
-            Random random = new Random(Guid.NewGuid().GetHashCode());
-            if (random.Next(1, 101) <= 100) //15~20% 확률로 아이템 드롭
-            {
-                DropNormalItem(dungeon.difficulty);
-                DropSpecialItem(dungeon.difficulty);
-            }
-            Console.WriteLine("0. 다음\n");
-            Console.Write(">>");
-            Game.instance.inputManager.GetValidSelectedIndex(0);
-        }
-
-        //전투 패배 장면
-        private void LoseScene()
-        {
-            Console.WriteLine("===================");
-            Console.WriteLine("\nBattle!! - Result");
-            Console.WriteLine("\nYou Lose.");
-            Console.WriteLine("\n전투에서 패배하였습니다.");
-            Console.WriteLine($"\nLv.{player.Level} {player.Name}");
-            Console.WriteLine($"HP {player.MaxHealth} -> {player.Health}");
-            //대기
-        }
-
         private void UseCharacterSkill(Character player, Enemy enemy)
         {
             // 스킬 사용 메서드 호출
@@ -254,14 +210,13 @@ namespace ConsoleGame.Scenes
         private void ClearDungeon()
         {
             deadMonsters.Clear();
-
-            int damage = player.OriginHealth - player.Health;
+            int damage = origin.Health - player.Health;
             Console.WriteLine("===================");
             Console.WriteLine("\nBattle!! - Result");
             Console.WriteLine("\nVictory");
             Console.WriteLine("\n던전에서 몬스터 3마리를 잡았습니다.");
             Console.WriteLine($"\nLv.{player.Level} {player.Name}");
-            Console.WriteLine($"HP {player.OriginHealth} -> {player.Health}");
+            Console.WriteLine($"HP {origin.Health} -> {player.Health}");
             Console.WriteLine($"\n기본 보상: {dungeon.baseReward} G");
             Console.WriteLine($"\n던전 클리어! 체력 {damage} 소모됨.");
             Console.WriteLine($"남은 체력: {player.Health}\n");

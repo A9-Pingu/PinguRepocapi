@@ -29,6 +29,8 @@ namespace ConsoleGame
         public int DungeonClearCount { get; private set; } = 0;
         public int MP { get; set; } = 50;
 
+        public int Gold { get; set; }
+
         public int MaxHealth { get; private set; } = 100;  // 최대 체력 속성 추가
         //public Character origin { get; set; }  // 기본 체력
         public InventoryManager InventoryManager { get; set; }
@@ -55,7 +57,6 @@ namespace ConsoleGame
             Gold = 35000;
             Health = MaxHealth;
             MP = 50;
-            Gold = 1500;
 
             // 최대 경험치를 초기화합니다. 예를 들어 레벨이 1일 때 최대 경험치를 설정할 수 있습니다.
             MaxExp = CalculateMaxExp(Level);
@@ -118,20 +119,6 @@ namespace ConsoleGame
                 int action = Game.instance.inputManager.GetValidSelectedIndex(2,1);
                 //일반공격
                 if (action == 1) 
-                {
-                    Random random = new Random();
-                    double percentage = random.NextDouble() * 0.10 - 0.05; //공격력 10% 오차범위
-                    int extendAttackPower = (int)(AttackPower * (1 + percentage));
-                    isSkillFail = false;
-            if (!enemy.IsUseItem())
-            {
-                Console.WriteLine("===================");
-                Console.WriteLine("1. 일반공격");
-                Console.WriteLine("2. 스킬공격");
-                Console.WriteLine("===================");
-                int action = Game.instance.inputManager.GetValidSelectedIndex(2, 1);
-                //일반공격
-                if (action == 1)
                 {
                     Random random = new Random();
                     double percentage = random.NextDouble() * 0.10 - 0.05; //공격력 10% 오차범위
