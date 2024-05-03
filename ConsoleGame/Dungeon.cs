@@ -44,9 +44,9 @@ namespace ConsoleGame
                 case Difficulty.Easy:
                     return 0;
                 case Difficulty.Normal:
-                    return 12;
+                    return 30;
                 case Difficulty.Hard:
-                    return 24;
+                    return 50;
                 default:
                     return 0;
             }

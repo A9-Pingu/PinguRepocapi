@@ -1,4 +1,4 @@
-﻿using System;
+﻿ausing System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -11,7 +11,7 @@ namespace ConsoleGame.Managers
         public Dictionary<ItemType, Item> dicEquipItem = new Dictionary<ItemType, Item>();
         public Character player;
         public Dictionary<int, Item> dicInventory = new Dictionary<int, Item>();
-        
+
         // 인벤토리 초기화
         public InventoryManager(Character character)
         {
@@ -168,7 +168,14 @@ namespace ConsoleGame.Managers
 
         public void EquipItem(Item item)
         {
-            if(CheckedEquipItem(item))
+            if (item.Type == ItemType.Consumable || item.Type == ItemType.All)
+            {
+                Console.WriteLine("장착 아이템이 아닙니다.");
+                Thread.Sleep(1000);
+                return;
+            }
+
+            if (CheckedEquipItem(item))
             {
                 RemoveItemStatBonus(item);
                 item.Equipped = false;
@@ -195,9 +202,9 @@ namespace ConsoleGame.Managers
         {
             foreach (var key in item.dicStatusBonus.Keys)
             {
-                switch (key) 
+                switch (key)
                 {
-                    case e_ItemStatusType.Attack :
+                    case e_ItemStatusType.Attack:
                         Console.Write($"캐릭터의 공격력이 {player.AttackPower} 에서");
                         player.AttackPower += (int)item.dicStatusBonus[e_ItemStatusType.Attack];
                         Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.Attack]} 만큼 증가하였습니다");
@@ -229,7 +236,7 @@ namespace ConsoleGame.Managers
                         {
                             Console.WriteLine($"{player.MaxHealth - player.Health} 만큼 회복하였습니다");
                             player.Health = player.MaxHealth;
-                        }                                                 
+                        }
                         Console.WriteLine($"현재 체력 : {player.Health}");
                         break;
 

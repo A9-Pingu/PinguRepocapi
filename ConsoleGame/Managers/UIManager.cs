@@ -57,7 +57,7 @@ namespace ConsoleGame.Managers
 
             if (player.InventoryManager.dicEquipItem[ItemType.Armor] != null)
             {
-                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Armor].Name} (방어구) : +{player.InventoryManager.dicEquipItem[ItemType.Armor].dicStatusBonus[e_ItemStatusType.Defense]}");           
+                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Armor].Name} (방어구) : +{player.InventoryManager.dicEquipItem[ItemType.Armor].dicStatusBonus[e_ItemStatusType.Defense]}");
             }
             else
             {
@@ -134,9 +134,9 @@ namespace ConsoleGame.Managers
         public void ShowRestMenu()
         {
             Console.Clear();
-            Console.WriteLine("휴식하기");
+            Console.WriteLine("이글루");
             Console.WriteLine($"500 G 를 내면 체력을 회복할 수 있습니다. (보유 골드 : {Game.instance.player.Gold} G)");
-            Console.WriteLine("\n1. 휴식하기");
+            Console.WriteLine("\n1. 잠자기");
             Console.WriteLine("0. 나가기\n");
             Console.Write("원하시는 행동을 입력해주세요.\n>> ");
         }
@@ -153,39 +153,54 @@ namespace ConsoleGame.Managers
         }
         private Random randomnew = new Random();
         //전투장면
-        public void BattleScene(List<Enemy> selectedMonsters, Character player)
+        public void BattleScene(Difficulty difficulty, List<Enemy> selectedMonsters, Character player, bool isReadyToFight)
         {
             Console.Clear();
+            bool isFighting = false;
+            Console.WriteLine("\n===================");
+            Console.WriteLine($"{difficulty} 던전 입장 성공!");
+            Console.WriteLine("===================");
             Console.WriteLine("\n     Battle!!     \n");
-
             int index = 1;
             
             foreach (var monster in selectedMonsters)
             {
-                if (monster.isDead)
+                if (isReadyToFight) // 1. 공격 선택
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.WriteLine($"- {index++} Lv.{monster.Level} {monster.Name} Dead");
-                    Console.ResetColor();
+                    isFighting = true;
+                    if (monster.isDead)
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.WriteLine($" {index++} Lv.{monster.Level} {monster.Name} Dead");
+                        Console.ResetColor();
+                    }
+                    else
+                    {
+                        Console.WriteLine($" {index++} Lv.{monster.Level} {monster.Name} HP {monster.Health} ATK {monster.Attack}");
+                    }
                 }
-                else
-                    Console.WriteLine($"- {index++} Lv.{monster.Level} {monster.Name} HP {monster.Health} ATK {monster.Attack}");
+                else // 배틀 초기화면
+                {
+                    Console.WriteLine($" Lv.{monster.Level} {monster.Name} HP {monster.Health} ATK {monster.Attack}");
+                }
             }
-
-
             Console.WriteLine("\n[플레이어 정보]");
             Console.WriteLine($"Lv.{player.Level} {player.Name} ({player.Job})");
             Console.WriteLine($"HP {player.Health}/{player.MaxHealth}");
-            Console.WriteLine("\n0. 취소");
-            Console.WriteLine("\n대상을 선택해주세요.");
+            if (isFighting)
+            {
+                Console.WriteLine("\n0. 취소");
+                Console.WriteLine("\n대상을 선택해주세요.");
+            }
+            else
+            {
+                Console.WriteLine("\n1. 공격");
+                Console.WriteLine("2. 아이템 사용");
+                Console.WriteLine("\n원하시는 행동을 입력해주세요.");
+            }
             Console.Write(">> ");
-
-            //머지후 수정 필요
-            Console.WriteLine($"{index}. 아이템 사용");
-            Console.WriteLine("2. 아이템 사용");
         }
     }
 }
-
 
 
