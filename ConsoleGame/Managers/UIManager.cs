@@ -13,7 +13,6 @@ namespace ConsoleGame.Managers
 {
     public class UIManager
     {
-
         public void DisplayMainMenu()
         {
             Console.Clear();
@@ -48,7 +47,7 @@ namespace ConsoleGame.Managers
             // 장착한 아이템 정보 출력
             if (player.InventoryManager.dicEquipItem[ItemType.Weapon] != null)
             {
-                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Weapon].Name} (무기) : +{player.InventoryManager.dicEquipItem[ItemType.Weapon].dicStatusBonus[e_ItemStatusType.Attack]}");
+                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Weapon].Name} (무기) : +{player.InventoryManager.dicEquipItem[ItemType.Weapon].StatBonus}");
             }
             else
             {
@@ -57,7 +56,7 @@ namespace ConsoleGame.Managers
 
             if (player.InventoryManager.dicEquipItem[ItemType.Armor] != null)
             {
-                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Armor].Name} (방어구) : +{player.InventoryManager.dicEquipItem[ItemType.Armor].dicStatusBonus[e_ItemStatusType.Defense]}");           
+                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Armor].Name} (방어구) : +{player.InventoryManager.dicEquipItem[ItemType.Armor].StatBonus}");           
             }
             else
             {
@@ -70,19 +69,19 @@ namespace ConsoleGame.Managers
         public bool DisplayInventory(InventoryManager inventory)
         {
             Console.Clear();
-            if (inventory.dicInventory.Count == 0)
+            if (inventory.Inventory.Count == 0)
             {
                 Console.WriteLine("인벤토리가 비어 있습니다.");
                 return false;
             }
 
             Console.WriteLine("인벤토리");
-            Console.WriteLine($"아이템 개수: {inventory.dicInventory.Count}\n");
+            Console.WriteLine($"아이템 개수: {inventory.Inventory.Count}\n");
 
             int index = 1;
-            foreach (var item in inventory.dicInventory)
+            foreach (var item in inventory.Inventory)
             {
-                Console.WriteLine($"- {index++}. {item.Value.Name} ({item.Value.Type}) : {(item.Value.Equipped ? "장착됨" : "미장착")}  |  * {item.Value.Count}");
+                Console.WriteLine($"- {index++}. {item.Name} ({item.Type}) : {(item.Equipped ? "장착됨" : "미장착")}");
             }
 
             Console.WriteLine();
@@ -128,76 +127,70 @@ namespace ConsoleGame.Managers
             int index = 1;
             Game.instance.itemManager.ItemInfos.FindAll(obj => obj.Type == itemType).ForEach(obj => Console.WriteLine($"- {index++}. {obj.Name} : {obj.Price} G"));
 
-
+            Console.WriteLine("\n1. 아이템 구매");
+            Console.WriteLine("2. 아이템 판매");
+            Console.WriteLine("0. 나가기");
+            Console.Write("원하시는 행동을 선택해주세요.\n>> ");
         }
 
         public void ShowRestMenu()
         {
             Console.Clear();
-            Console.WriteLine("휴식하기");
+            Console.WriteLine($"휴식하기");
             Console.WriteLine($"500 G 를 내면 체력을 회복할 수 있습니다. (보유 골드 : {Game.instance.player.Gold} G)");
             Console.WriteLine("\n1. 휴식하기");
             Console.WriteLine("0. 나가기\n");
             Console.Write("원하시는 행동을 입력해주세요.\n>> ");
         }
 
-        public void ShowGuildMenu()
-        {
-            Console.Clear();
-            Console.WriteLine("< 모험가 길드 빙하 지부 >");
-            Console.WriteLine("이곳에서는 의뢰를 받고 달성을 통해 보상을 받을 수 있습니다.");
-            Console.WriteLine($"\n[길드 접수원]\n안녕하세요 {Game.instance.player.Name}님 모험가 길드에 오신걸 환영합니다.\n어떤 일로 방문 하셨나요?");
-            Console.WriteLine("\n1. 현재 의뢰 내용 확인");
-            Console.WriteLine("2. 의뢰 게시판 확인");
-            Console.WriteLine("0. 나가기\n");
-            Console.Write("원하시는 행동을 입력해주세요.\n>> ");
-        }
-        private Random random;
-        //전투장면
-        public void BattleScene(Difficulty difficulty, Dungeon dungeon, List<Enemy> selectedMonsters, bool isReadyToFight, Character player)
-        {
-            Console.Clear();
-            random = new Random();
-            Console.WriteLine("");
-            Console.WriteLine("     Battle!!     ");
-            Console.WriteLine("");
 
-            //배틀용 몬스터 리스트
-            if (isReadyToFight)
+        //전투장면
+        public void BattleScene(Difficulty difficulty, List<Enemy> selectedMonsters, Character player, bool isReadyToFight)
+        {
+            Console.Clear();
+            bool isFighting = false;
+            Console.WriteLine("\n===================");
+            Console.WriteLine($"{difficulty} 던전 입장 성공!");
+            Console.WriteLine("===================");
+            Console.WriteLine("\n     Battle!!     \n");
+            int index = 1;
+
+            foreach (var monster in selectedMonsters)
             {
-                int index = 1;
-                foreach (var monster in selectedMonsters)
+                if (isReadyToFight) // 1. 공격 선택
                 {
+                    isFighting = true;
                     if (monster.isDead)
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGray;
-                        Console.WriteLine($"- {index++} Lv.{monster.Level} {monster.Name} Dead");
+                        Console.WriteLine($" {index++} Lv.{monster.Level} {monster.Name} Dead");
                         Console.ResetColor();
                     }
                     else
-                        Console.WriteLine($"- {index++} Lv.{monster.Level} {monster.Name} HP {monster.Health} ATK {monster.Attack}");
+                    {
+                        Console.WriteLine($" {index++} Lv.{monster.Level} {monster.Name} HP {monster.Health} ATK {monster.Attack}");
+                    }
                 }
-                Console.WriteLine("\n[플레이어 정보]");
-                Console.WriteLine($"Lv.{player.Level} {player.Name} ({player.Job})");
-                Console.WriteLine($"HP {player.Health}/{player.MaxHealth}");
+                else // 배틀 초기화면
+                {
+                    Console.WriteLine($" Lv.{monster.Level} {monster.Name} HP {monster.Health} ATK {monster.Attack}");
+                }
+            }
+            Console.WriteLine("\n[플레이어 정보]");
+            Console.WriteLine($"Lv.{player.Level} {player.Name} ({player.Job})");
+            Console.WriteLine($"HP {player.Health}/{Game.instance.dungeon.origin.Health}");
+            if (isFighting)
+            {
                 Console.WriteLine("\n0. 취소");
                 Console.WriteLine("\n대상을 선택해주세요.");
-                Console.Write(">> ");
             }
             else
             {
-                foreach(var monster in selectedMonsters)
-                {
-                    Console.WriteLine($"Lv.{monster.Level} {monster.Name} HP {monster.Health} ATK {monster.Attack}");
-                }
-                Console.WriteLine("\n[플레이어 정보]");
-                Console.WriteLine($"Lv.{player.Level} {player.Name} ({player.Job})");
-                Console.WriteLine($"HP {player.Health}/{player.MaxHealth}");
-                Console.WriteLine("\n0. 취소");
-                Console.WriteLine("1. 공격");
-                Console.WriteLine("대상을 선택해주세요.");
-                Console.Write(">> ");
+                Console.WriteLine("\n1. 공격");
+                Console.WriteLine("\n원하시는 행동을 입력해주세요.");
             }
+            Console.Write(">> ");
+            //dfasfasdfadf 
         }
     }
 }
