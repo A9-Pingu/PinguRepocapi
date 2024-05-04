@@ -1,4 +1,4 @@
-using ConsoleGame.Managers;
+﻿using ConsoleGame.Managers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -49,7 +49,7 @@ namespace ConsoleGame.Scenes
 
                 else if (InputKey != 0 && dungeon.requiredDefense < player.DefensePower)
                 {
-                    Start(dungeon.difficulty);;
+                    Start(dungeon.difficulty);
                 }
                 else
                 {
@@ -65,7 +65,7 @@ namespace ConsoleGame.Scenes
         List<Enemy> selectedMonsters;
         public void Start(Difficulty difficulty)
         {
-            player.OriginHealth = player.Health; //플레이어 초기 체력
+            origin.Health = player.Health; //플레이어 초기 체력
             selectedMonsters = SelectMonsters(difficulty);
 
             Game.instance.uiManager.BattleScene(difficulty, selectedMonsters, player, false); //초기화면
@@ -176,7 +176,7 @@ namespace ConsoleGame.Scenes
             Console.WriteLine($"\nLv.{player.Level} {player.Name}");
             Console.WriteLine($"HP {origin.Health} -> Dead\n"); ////////던전에 깊은 복사
             Console.WriteLine("0. 다음\n");
-            Game.instance.inputManager.GetValidSelectedIndex(0)
+            Game.instance.inputManager.GetValidSelectedIndex(0);
             //대기
         }
 
@@ -198,9 +198,9 @@ namespace ConsoleGame.Scenes
                     consumable.Add(item.Value);
                 }
             }
-            
+
             int itemIndex = 1;
-            foreach (var item in consumable) 
+            foreach (var item in consumable)
             {
                 Console.WriteLine($"- {itemIndex++}. {item.Name} * {item.Count} | {item.Description}");
             }
@@ -218,7 +218,7 @@ namespace ConsoleGame.Scenes
         {
             deadMonsters.Clear();
 
-            int damage = player.OriginHealth - player.Health;
+            int damage = origin.Health - player.Health;
             Console.WriteLine("===================");
             Console.WriteLine("\nBattle!! - Result");
             Console.WriteLine("\nVictory");
@@ -261,7 +261,7 @@ namespace ConsoleGame.Scenes
             if (difficulty == Difficulty.Normal ||
                 difficulty == Difficulty.Hard)
             {
-                int rand =  random2.Next(Game.instance.itemManager.specialItems.Count);
+                int rand = random2.Next(Game.instance.itemManager.specialItems.Count);
                 // 무작위로 하나의 아이템 선택
                 Item droppedItem = Game.instance.itemManager.specialItems[rand];
 
