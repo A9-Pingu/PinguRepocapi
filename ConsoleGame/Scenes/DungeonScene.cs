@@ -14,18 +14,38 @@ namespace ConsoleGame.Scenes
     public class DungeonScene
     {
         private Character player;
-        private Random random;
+        private Random random = new Random();
         private Random random2 = new Random();
         public Character origin; ////////던전에 깊은 복사
         private Dungeon dungeon;
         bool useItem = false;
+        int monsterIndex = 0;
+        // 몬스터 도감
+        List<Enemy> allMonsters = new List<Enemy>
+        {
+            new Enemy("도둑갈매기", 2),
+            new Enemy("야생들개", 2),
+            new Enemy("여우", 2),
+            new Enemy("바다표범", 3),
+            new Enemy("늑대", 3),
+            new Enemy("북극곰", 4),
+            new Enemy("범고래", 5),
+        };
+        List<Enemy> deadMonsters = new List<Enemy>(); //던전에 깊은 복사
+        List<Enemy> selectedMonsters = new List<Enemy>();
+        Enemy[] enemies = new Enemy[4]
+        {
+            new Enemy(),
+            new Enemy(),
+            new Enemy(),
+            new Enemy()
+        };
 
         public DungeonScene(Character character)
         {
             player = character;
-            origin = player.DeepCopy(); ////////던전에 깊은 복사
-            origin.Health = player.Health; ////////던전에 깊은 복사
-            Random random = new Random(Guid.NewGuid().GetHashCode());
+            origin = player.DeepCopy(); //던전에 깊은 복사
+            origin.Health = player.Health; //던전에 깊은 복사
         }
 
         //던전 입장 조건
@@ -61,13 +81,11 @@ namespace ConsoleGame.Scenes
         }
 
 
-        List<Enemy> deadMonsters = new List<Enemy>(); //죽은 몬스터 수
-        List<Enemy> selectedMonsters;
+
         public void Start(Difficulty difficulty)
         {
             origin.Health = player.Health; //플레이어 초기 체력
-            selectedMonsters = SelectMonsters(difficulty);
-
+            SelectMonsters(difficulty);
             Game.instance.uiManager.BattleScene(difficulty, selectedMonsters, player, false); //초기화면
             Game.instance.inputManager.GetValidSelectedIndex(1, 1);
             while (true)
@@ -87,13 +105,12 @@ namespace ConsoleGame.Scenes
                         continue;
                 }
                 Battle(inputKey); //배틀 시작
-                //UseItem();
                 if (player.Health <= 0) //플레이어 사망
                 {
                     LoseScene();
                     return;
                 }
-                else if (deadMonsters.Count == 3) //모든 몬스터 사망
+                else if (deadMonsters.Count == monsterIndex) //모든 몬스터 사망 시
                 {
                     ClearDungeon();
                     return;
@@ -103,50 +120,29 @@ namespace ConsoleGame.Scenes
                 Game.instance.inputManager.InputAnyKey();
             }
         }
-        private List<Enemy> SelectMonsters(Difficulty difficulty)
+
+
+
+        private void SelectMonsters(Difficulty difficulty)
         {
-            // 모든 몬스터
-            List<Enemy> allMonsters = new List<Enemy>
-            {
-                new Enemy("도둑갈매기", 2),
-                new Enemy("도둑갈매기", 2),
-                new Enemy("야생들개", 2),
-                new Enemy("야생들개", 2),
-                new Enemy("여우", 2),
-                new Enemy("여우", 2),
-                new Enemy("바다표범", 3),
-                new Enemy("바다표범", 3),
-                new Enemy("늑대", 3),
-                new Enemy("늑대", 3),
-                new Enemy("북극곰", 4),
-                new Enemy("북극곰", 4),
-                new Enemy("범고래", 5),
-                new Enemy("범고래", 5),
-            };
-
+            selectedMonsters.Clear();
             //난이도별 랜덤 몬스터 3마리 선택
-            int difficultyIndex = difficulty switch
+            (int,int) difficultyIndex = difficulty switch
             {
-                Difficulty.Easy => 0,
-                Difficulty.Normal => 4,
-                Difficulty.Hard => 8,
-                _ => 0
+                Difficulty.Easy => (0, 4),
+                Difficulty.Normal => (2, 6),
+                Difficulty.Hard => (4, 7),
+                _ => (0, 0)
             };
 
-            List<Enemy> selectedMonsters1 = new List<Enemy>();
-
-            for (int i = difficultyIndex; i < difficultyIndex + 6; i++)
+            monsterIndex = random.Next(1, 5);
+            int rand = 0;
+            for (int i = 0; i < monsterIndex; i++)
             {
-                selectedMonsters1.Add(allMonsters[i]);
-                Random random = new Random();
-                if (selectedMonsters1.Count > 5)
-                {
-                    selectedMonsters1.Remove(selectedMonsters1[random.Next(0, 5)]);
-                    selectedMonsters1.Remove(selectedMonsters1[random.Next(0, 4)]);
-                    selectedMonsters1.Remove(selectedMonsters1[random.Next(0, 3)]);
-                }
+                selectedMonsters.Add(enemies[i]);
+                rand = random.Next(difficultyIndex.Item1, difficultyIndex.Item2);
+                selectedMonsters[i].InitEnemy(allMonsters[rand]);
             }
-            return selectedMonsters1;
         }
 
         //던전에서 공격 시작 후 전투장면
@@ -200,10 +196,20 @@ namespace ConsoleGame.Scenes
             }
 
             int itemIndex = 1;
-            foreach (var item in consumable)
+            if (consumable.Count > 0)
             {
-                Console.WriteLine($"- {itemIndex++}. {item.Name} * {item.Count} | {item.Description}");
+                foreach (var item in consumable)
+                {
+                    Console.WriteLine($"- {itemIndex++}. {item.Name} * {item.Count} | {item.Description}");
+                }
             }
+            else
+            {
+                Console.WriteLine("사용할 수 있는 아이템이 없습니다..");
+                Thread.Sleep(500);
+                return;
+            }
+
 
             int inputkey = Game.instance.inputManager.GetValidSelectedIndex(consumable.Count);
             if (inputkey == 0)

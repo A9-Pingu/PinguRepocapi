@@ -28,6 +28,18 @@ namespace ConsoleGame.Managers
             this.isDead = isDead;
         }
 
+        public Enemy() { }
+
+        public void InitEnemy(Enemy enemy)
+        {
+            Name = enemy.Name;
+            Level = enemy.Level;
+            Health = enemy.Health;
+            Attack = enemy.Attack;
+            isDead = enemy.isDead;
+            isUseItem = enemy.isUseItem;
+        }
+
         //플레이어 레벨 반영하여 몬스터 체력 조정
         private int CalculateHealth(int level)
         {
