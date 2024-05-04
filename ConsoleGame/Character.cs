@@ -25,11 +25,8 @@ namespace ConsoleGame
         public int Health { get; set; }
         public int MaxHealth { get; set; } = 100;
         public int Gold { get; set; }
-        public int OriginHealth { get; set; }  // 기본 체력
 
         public int AdditionalDamage { get; set; } = 0;
-
-        public int DungeonClearCount { get; private set; } = 0;
         public int MP { get; set; } = 50;
 
         public InventoryManager InventoryManager { get; set; }
