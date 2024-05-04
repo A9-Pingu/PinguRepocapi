@@ -116,35 +116,6 @@ namespace ConsoleGame.Managers
             }
             else
                 Console.WriteLine($"HP {playerPreHP} -> {player.Health}\n");
-            Console.WriteLine($"1. 아이템 사용");
-            Console.WriteLine($"0. 다음");
-            Console.Write(">>");
-            int input = Game.instance.inputManager.GetValidSelectedIndex(1);
-            if (input == 1)
-            {
-                UseItem();
-                isUseItem = true;
-            }
-            else
-                isUseItem = false;
-        }
-        public void UseItem()
-        {
-            Console.WriteLine("===================");
-            Console.WriteLine("아이템을 사용하였습니다.");
-            Console.WriteLine("다시 몬스터 공격 차례입니다.");
-            Console.WriteLine($"\n0. 다음");
-            Console.Write(">>");
-            Game.instance.inputManager.GetValidSelectedIndex(0);
-            // 아이템 사용 로직은 구현하지 못했습니다
-        }
-
-        public bool IsUseItem()
-        {
-            if (isUseItem)
-                return true;
-            else
-                return false;
         }
     }
 }

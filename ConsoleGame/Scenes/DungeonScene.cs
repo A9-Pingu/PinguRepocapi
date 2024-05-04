@@ -91,7 +91,7 @@ namespace ConsoleGame.Scenes
             while (true)
             {
                 Game.instance.uiManager.BattleScene(difficulty, selectedMonsters, player, true);
-                int inputKey = Game.instance.inputManager.GetValidSelectedIndex(selectedMonsters.Count + 1);
+                int inputKey = Game.instance.inputManager.GetValidSelectedIndex(selectedMonsters.Count + 2);
                 if (inputKey == 0)
                 {
                     Console.WriteLine("===================");
@@ -115,9 +115,6 @@ namespace ConsoleGame.Scenes
                     ClearDungeon();
                     return;
                 }
-                //위치 바뀌어야함
-                UseItem();
-                Game.instance.inputManager.InputAnyKey();
             }
         }
 
@@ -148,17 +145,28 @@ namespace ConsoleGame.Scenes
         //던전에서 공격 시작 후 전투장면
         private void Battle(int EnemyNum)
         {
-            player.Attack(selectedMonsters[EnemyNum - 1]); //플레이어 공격
-            if (selectedMonsters[EnemyNum - 1].Health <= 0)
+            if (EnemyNum == selectedMonsters.Count + 1)
             {
-                deadMonsters.Add(selectedMonsters[EnemyNum - 1]);
-                selectedMonsters[EnemyNum - 1].isDead = true; //Dead회색표시
-                Game.instance.questManager.dicQuestInfos[1].OnCheckEvent(1, 1);
+                UseItem();
             }
+            else
+            {
+                player.Attack(selectedMonsters[EnemyNum - 1]); //플레이어 공격
+                if (selectedMonsters[EnemyNum - 1].Health <= 0)
+                {
+                    deadMonsters.Add(selectedMonsters[EnemyNum - 1]);
+                    selectedMonsters[EnemyNum - 1].isDead = true; //Dead회색표시
+                    Game.instance.questManager.dicQuestInfos[1].OnCheckEvent(1, 1);
+                }
+            }
+
             for (int i = 0; i < selectedMonsters.Count; i++)
             {
                 if (!deadMonsters.Contains(selectedMonsters[i]) && !player.SkillFail()) //몬스터생존 + 플레이어 스킬공격 또는 일반공격 유효
                     selectedMonsters[i].EnemyAttack(player); //몬스터 공격
+                Console.WriteLine($"\n0. 다음");
+                Console.Write(">>");
+                Game.instance.inputManager.GetValidSelectedIndex(0);
             }
         }
 
@@ -210,12 +218,10 @@ namespace ConsoleGame.Scenes
                 return;
             }
 
-
             int inputkey = Game.instance.inputManager.GetValidSelectedIndex(consumable.Count);
             if (inputkey == 0)
                 return;
-            player.InventoryManager.AddItemStatBonus(consumable[inputkey - 1]);
-            player.InventoryManager.RemoveItem(consumable[inputkey - 1]);
+            player.UseItem(consumable[inputkey - 1]);
             Thread.Sleep(2000);
         }
 

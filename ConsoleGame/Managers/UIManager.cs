@@ -190,7 +190,8 @@ namespace ConsoleGame.Managers
             Console.WriteLine($"HP {player.Health}/{Game.instance.dungeon.origin.Health}"); ///////던전 깊은 복사n
             if (isFighting)
             {
-                Console.WriteLine("\n0. 취소");
+                Console.WriteLine($"\n{index++}. 아이템 사용");
+                Console.WriteLine("0. 취소");
                 Console.WriteLine("\n대상을 선택해주세요.");
             }
             else
