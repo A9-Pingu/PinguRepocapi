@@ -59,6 +59,21 @@ namespace ConsoleGame
             InitializeSkillSet();
         }
 
+        public Character DeepCopy() //////깊은 복사
+        {
+            Character newcopy = new Character(Name, Job);
+            newcopy.Level = Level;
+            newcopy.Exp = Exp;
+            newcopy.MaxExp = MaxExp;
+            newcopy.AttackPower = AttackPower;
+            newcopy.DefensePower = DefensePower;
+            newcopy.Health = Health;
+            newcopy.MaxHealth = MaxHealth;
+            newcopy.Gold = Gold;
+            newcopy.MP = MP;
+            return newcopy;
+        } //////깊은 복사
+
         private void InitializeSkillSet()
         {
             // 각 직업에 따라 스킬을 선택하고 사용합니다.
@@ -151,7 +166,7 @@ namespace ConsoleGame
             Console.WriteLine($"Lv.{enemy.Level} {enemy.Name} HP {enemy.Health} ATK {enemy.Attack}");
             Console.WriteLine("\n[내정보]");
             Console.WriteLine($"Lv.{Level} {Name} ({Job})");
-            Console.WriteLine($"HP {Health}/{MaxHealth}");
+            Console.WriteLine($"HP {Health}/{Game.instance.dungeon.origin.Health}");
             Console.WriteLine($"MP {MP}/50");
 
             Console.WriteLine("\n[스킬]");
