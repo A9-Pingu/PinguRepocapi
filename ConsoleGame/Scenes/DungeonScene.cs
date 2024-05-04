@@ -20,18 +20,18 @@ namespace ConsoleGame.Scenes
         private Dungeon dungeon;
         bool useItem = false;
         int monsterIndex = 0;
-        // ���� ������
+        // 몬스터 도감
         List<Enemy> allMonsters = new List<Enemy>
         {
-            new Enemy("���ϰ��ű�", 2),
-            new Enemy("�߻��鰳", 2),
-            new Enemy("����", 2),
-            new Enemy("�ٴ�ǥ��", 3),
-            new Enemy("����", 3),
-            new Enemy("�ϱذ�", 4),
-            new Enemy("������", 5),
+            new Enemy("도둑갈매기", 2),
+            new Enemy("야생들개", 2),
+            new Enemy("여우", 2),
+            new Enemy("바다표범", 3),
+            new Enemy("늑대", 3),
+            new Enemy("북극곰", 4),
+            new Enemy("범고래", 5),
         };
-        List<Enemy> deadMonsters = new List<Enemy>(); //���� ������ ��
+        List<Enemy> deadMonsters = new List<Enemy>(); //던전에 깊은 복사
         List<Enemy> selectedMonsters = new List<Enemy>();
         Enemy[] enemies = new Enemy[4]
         {
@@ -44,8 +44,8 @@ namespace ConsoleGame.Scenes
         public DungeonScene(Character character)
         {
             player = character;
-            origin = player.DeepCopy(); ////////������ ���� ����
-            origin.Health = player.Health; ////////������ ���� ����
+            origin = player.DeepCopy(); //던전에 깊은 복사
+            origin.Health = player.Health; //던전에 깊은 복사
         }
 
         //던전 입장 조건
@@ -106,12 +106,11 @@ namespace ConsoleGame.Scenes
                 }
                 Battle(inputKey); //배틀 시작
                 if (player.Health <= 0) //플레이어 사망
-=======
                 {
                     LoseScene();
                     return;
                 }
-                else if (deadMonsters.Count == monsterIndex) //���� ������ ����
+                else if (deadMonsters.Count == monsterIndex) //모든 몬스터 사망 시
                 {
                     ClearDungeon();
                     return;
@@ -206,7 +205,7 @@ namespace ConsoleGame.Scenes
             }
             else
             {
-                Console.WriteLine("������ �������� �����ϴ�.");
+                Console.WriteLine("사용할 수 있는 아이템이 없습니다..");
                 Thread.Sleep(500);
                 return;
             }
