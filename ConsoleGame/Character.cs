@@ -104,56 +104,53 @@ namespace ConsoleGame
         //플레이어공격(일반,스킬)
         public void Attack(Enemy enemy)
         {
-            if (!enemy.IsUseItem())
+            Console.WriteLine("===================");
+            Console.WriteLine("1. 일반공격");
+            Console.WriteLine("2. 스킬공격");
+            Console.WriteLine("===================");
+            int action = Game.instance.inputManager.GetValidSelectedIndex(2, 1);
+            //일반공격
+            if (action == 1)
             {
+                Random random = new Random();
+                double percentage = random.NextDouble() * 0.10 - 0.05; //공격력 10% 오차범위
+                int extendAttackPower = (int)(AttackPower * (1 + percentage));
+                isSkillFail = false;
+
+                // 15% 확률로 치명타 발생
+                bool isCritical = random.Next(1, 101) <= 15;
+
                 Console.WriteLine("===================");
-                Console.WriteLine("1. 일반공격");
-                Console.WriteLine("2. 스킬공격");
-                Console.WriteLine("===================");
-                int action = Game.instance.inputManager.GetValidSelectedIndex(2, 1);
-                //일반공격
-                if (action == 1)
+                Console.WriteLine($"{Name} 의 공격!");
+                int enemyPreHP = enemy.Health;
+
+                // 치명타가 발생한 경우
+                if (isCritical)
                 {
-                    Random random = new Random();
-                    double percentage = random.NextDouble() * 0.10 - 0.05; //공격력 10% 오차범위
-                    int extendAttackPower = (int)(AttackPower * (1 + percentage));
-                    isSkillFail = false;
-
-                    // 15% 확률로 치명타 발생
-                    bool isCritical = random.Next(1, 101) <= 15;
-
-                    Console.WriteLine("===================");
-                    Console.WriteLine($"{Name} 의 공격!");
-                    int enemyPreHP = enemy.Health;
-
-                    // 치명타가 발생한 경우
-                    if (isCritical)
-                    {
-                        // 160% 데미지
-                        int criticalDamage = (int)(AttackPower * 1.6);
-                        Console.WriteLine($"Lv.{enemy.Level} {enemy.Name}에게 {criticalDamage}의 피해를 입혔습니다. - 치명타 공격!!");
-                        enemy.Health -= criticalDamage;
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Lv.{enemy.Level} {enemy.Name} 에게 {extendAttackPower}의 피해를 입혔습니다. ");
-                        enemy.Health -= extendAttackPower;
-                    }
-                    Console.WriteLine($"\nLv.{enemy.Level} {enemy.Name}");
-                    if (enemy.Health <= 0)
-                    {
-                        Console.WriteLine($"HP {enemyPreHP} -> Dead");
-                    }
-                    else
-                        Console.WriteLine($"HP {enemyPreHP} -> {enemy.Health}");
-                    Console.WriteLine($"\n0. 다음");
-                    Console.Write(">>");
-                    Game.instance.inputManager.GetValidSelectedIndex(0);
+                    // 160% 데미지
+                    int criticalDamage = (int)(AttackPower * 1.6);
+                    Console.WriteLine($"Lv.{enemy.Level} {enemy.Name}에게 {criticalDamage}의 피해를 입혔습니다. - 치명타 공격!!");
+                    enemy.Health -= criticalDamage;
                 }
-                //스킬공격
                 else
-                    UseSkill(enemy);
+                {
+                    Console.WriteLine($"Lv.{enemy.Level} {enemy.Name} 에게 {extendAttackPower}의 피해를 입혔습니다. ");
+                    enemy.Health -= extendAttackPower;
+                }
+                Console.WriteLine($"\nLv.{enemy.Level} {enemy.Name}");
+                if (enemy.Health <= 0)
+                {
+                    Console.WriteLine($"HP {enemyPreHP} -> Dead");
+                }
+                else
+                    Console.WriteLine($"HP {enemyPreHP} -> {enemy.Health}");
+                Console.WriteLine($"\n0. 다음");
+                Console.Write(">>");
+                Game.instance.inputManager.GetValidSelectedIndex(0);
             }
+            //스킬공격
+            else
+                UseSkill(enemy);
         }
 
         //스킬공격
@@ -359,6 +356,9 @@ namespace ConsoleGame
             InventoryManager.AddItemStatBonus(item);
             InventoryManager.RemoveItem(item, count);
             Console.WriteLine($"{item.Name}을 {count}개를 사용하였습니다.");
+            Console.WriteLine("===================");
+            Console.WriteLine("다시 몬스터 공격 차례입니다.");
+            Game.instance.inputManager.InputAnyKey();
         }
 
     }
