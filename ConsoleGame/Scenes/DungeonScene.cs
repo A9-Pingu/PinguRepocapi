@@ -176,7 +176,7 @@ namespace ConsoleGame.Scenes
             Console.WriteLine($"\nLv.{player.Level} {player.Name}");
             Console.WriteLine($"HP {origin.Health} -> Dead\n"); ////////던전에 깊은 복사
             Console.WriteLine("0. 다음\n");
-            Game.instance.inputManager.GetValidSelectedIndex(0);
+            Game.instance.inputManager.GetValidSelectedIndex(0)
             //대기
         }
 
