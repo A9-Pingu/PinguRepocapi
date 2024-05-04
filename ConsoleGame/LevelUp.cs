@@ -22,13 +22,13 @@ namespace ConsoleGame
             if (character.Exp >= requiredExp || character.Exp >= character.MaxExp)
             {
                 // 기본 공격력과 방어력 증가
-                character.AttackPower += 1;    // 정수로 변경
-                character.DefensePower += 2;  // 정수로 변경
+                character.AttackPower += 4;    // 정수로 변경
+                character.DefensePower += 4;  // 정수로 변경
 
                 character.Level++;
 
                 Console.WriteLine($"축하합니다! 레벨 업! 현재 레벨은 Lv{character.Level} 입니다.");
-                Console.WriteLine($"기본 공격력이 2, 방어력이 2 증가했습니다.");
+                Console.WriteLine($"기본 공격력이 4, 방어력이 4 증가했습니다.");
 
                 // 경험치를 0으로 초기화
                 character.Exp = 0;

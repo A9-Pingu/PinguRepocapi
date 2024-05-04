@@ -79,6 +79,7 @@ namespace ConsoleGame.Managers
         int damage;
         public void EnemyAttack(Character player) //몬스터 공격
         {
+            Game.instance.dungeon.isUseItem = false;
             Console.WriteLine("===================");
             Console.WriteLine($"{Name} 의 공격!\n");
             int playerPreHP = player.Health; //기존 체력
@@ -100,39 +101,27 @@ namespace ConsoleGame.Managers
             Console.WriteLine($"\nLv.{player.Level} {player.Name}");
             if (player.Health <= 0)
             {
+                player.Health = 0;
                 Console.WriteLine($"HP {playerPreHP} -> Dead\n");
+                Console.WriteLine($"0. 다음");
+                Console.Write(">>");
+                Game.instance.inputManager.GetValidSelectedIndex(0);
             }
             else
-                Console.WriteLine($"HP {playerPreHP} -> {player.Health}\n");
-            Console.WriteLine($"1. 아이템 사용");
-            Console.WriteLine($"0. 다음");
-            Console.Write(">>");
-            int input = Game.instance.inputManager.GetValidSelectedIndex(1);
-            if (input == 1)
             {
-                UseItem();
-                isUseItem = true;
+                Console.WriteLine($"HP {playerPreHP} -> {player.Health}\n");
+                Console.WriteLine($"1. 아이템 사용");
+                Console.WriteLine($"0. 다음");
+                Console.Write(">>");
+                int input = Game.instance.inputManager.GetValidSelectedIndex(1);
+                if (input == 1)
+                {
+                    Game.instance.dungeon.isUseItem = true;
+                    Game.instance.dungeon.UseItem();
+                }
+                else
+                    Game.instance.dungeon.isUseItem = false;
             }
-            else
-                isUseItem = false;
-        }
-        public void UseItem()
-        {
-            Console.WriteLine("===================");
-            Console.WriteLine("아이템을 사용하였습니다.");
-            Console.WriteLine("다시 몬스터 공격 차례입니다.");
-            Console.WriteLine($"\n0. 다음");
-            Console.Write(">>");
-            Game.instance.inputManager.GetValidSelectedIndex(0);
-            // 아이템 사용 로직은 구현하지 못했습니다
-        }
-
-        public bool IsUseItem()
-        {
-            if (isUseItem)
-                return true;
-            else
-                return false;
         }
     }
 }

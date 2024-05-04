@@ -107,7 +107,7 @@ namespace ConsoleGame
         //플레이어공격(일반,스킬)
         public void Attack(Enemy enemy)
         {
-            if (!enemy.IsUseItem())
+            if (!Game.instance.dungeon.isUseItem)
             {
                 Console.WriteLine("===================");
                 Console.WriteLine("1. 일반공격");

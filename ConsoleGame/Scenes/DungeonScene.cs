@@ -18,8 +18,7 @@ namespace ConsoleGame.Scenes
         private Random random2 = new Random();
         public Character origin; ////////던전에 깊은 복사
         private Dungeon dungeon;
-        bool useItem = false;
-
+        public bool isUseItem { get; set; }
         public DungeonScene(Character character)
         {
             player = character;
@@ -46,14 +45,14 @@ namespace ConsoleGame.Scenes
 
                 if (InputKey == 0)
                     return;
-
-                else if (InputKey != 0 && dungeon.requiredDefense < player.DefensePower)
+                  
+                else if (InputKey != 0 && dungeon.SetRequiredDefense() < player.DefensePower) 
                 {
                     Start(dungeon.difficulty);;
                 }
                 else
                 {
-                    Console.WriteLine($"방어력이 {dungeon.requiredDefense} 이상이어야 {dungeon.difficulty} 던전에 입장할 수 있습니다.");
+                    Console.WriteLine($"방어력이 {dungeon.SetRequiredDefense()} 이상이어야 {dungeon.difficulty} 던전에 입장할 수 있습니다.");
                     Game.instance.inputManager.InputAnyKey();
                     Console.Clear();
                 }
@@ -98,9 +97,6 @@ namespace ConsoleGame.Scenes
                     ClearDungeon();
                     return;
                 }
-                //위치 바뀌어야함
-                UseItem();
-                Game.instance.inputManager.InputAnyKey();
             }
         }
         private List<Enemy> SelectMonsters(Difficulty difficulty)
@@ -186,7 +182,7 @@ namespace ConsoleGame.Scenes
             player.UseSkill(enemy);
         }
 
-        private void UseItem()
+        public void UseItem()
         {
             Console.WriteLine("===================");
             Console.WriteLine("사용할 아이템을 선택하세요.");
@@ -198,19 +194,33 @@ namespace ConsoleGame.Scenes
                     consumable.Add(item.Value);
                 }
             }
-            
-            int itemIndex = 1;
-            foreach (var item in consumable) 
+            if (consumable.Count > 0)
             {
-                Console.WriteLine($"- {itemIndex++}. {item.Name} * {item.Count} | {item.Description}");
-            }
+                int itemIndex = 1;
+                foreach (var item in consumable)
+                {
+                    Console.WriteLine($"- {itemIndex++}. {item.Name} * {item.Count} | {item.Description}");
+                }
 
-            int inputkey = Game.instance.inputManager.GetValidSelectedIndex(consumable.Count);
-            if (inputkey == 0)
-                return;
-            player.InventoryManager.AddItemStatBonus(consumable[inputkey - 1]);
-            player.InventoryManager.RemoveItem(consumable[inputkey - 1]);
-            Thread.Sleep(2000);
+                int inputkey = Game.instance.inputManager.GetValidSelectedIndex(consumable.Count);
+                if (inputkey == 0)
+                    return;
+                player.InventoryManager.AddItemStatBonus(consumable[inputkey - 1]);
+                player.InventoryManager.RemoveItem(consumable[inputkey - 1]);
+                Thread.Sleep(2000);
+                Console.WriteLine("몬스터의 공격 차례입니다.");
+                Console.WriteLine($"\n0. 다음");
+                Console.Write(">>");
+                Game.instance.inputManager.GetValidSelectedIndex(0);
+            }
+            else
+            {
+                isUseItem = false;
+                Console.WriteLine("사용할 아이템이 없습니다.");
+                Console.WriteLine($"\n0. 다음");
+                Console.Write(">>");
+                Game.instance.inputManager.GetValidSelectedIndex(0);
+            }
         }
 
         //전투 승리 화면
@@ -229,7 +239,7 @@ namespace ConsoleGame.Scenes
             Console.WriteLine($"\n던전 클리어! 체력 {damage} 소모됨.");
             Console.WriteLine($"남은 체력: {player.Health}\n");
 
-            player.Exp += 5;       // 적을 물리칠 때마다 경험치 1 증가
+            player.Exp += 3;       // 클리어시 마다 경험치 3 상승
             Console.WriteLine($"\n경험치획득: {player.Exp}");
 
             player.LevelUp.CheckLevelUp();

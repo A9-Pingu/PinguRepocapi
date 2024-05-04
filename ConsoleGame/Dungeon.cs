@@ -8,7 +8,7 @@ namespace ConsoleGame
     {
         public Difficulty difficulty;
         public int baseReward;
-        public int requiredDefense;
+        public int requiredDefense;  //얘를 사용하게 해야 할 것 같긴 한데 
 
         public Dungeon(Difficulty Step)
         {
