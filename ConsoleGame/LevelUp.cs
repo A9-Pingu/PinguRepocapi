@@ -13,17 +13,20 @@ namespace ConsoleGame
         }
 
         public void CheckLevelUp()
-            {            
-            int defeatedMonsterLevel = 1;                                  // 전투에서 이긴 몬스터의 레벨로 가정
-            int earnedExp = defeatedMonsterLevel;                         // 몬스터 레벨당 경험치 1로 가정
-            int requiredExp = CalculateRequiredExp(character.Level);     // 필요한 경험치 계산  
+        {
+            // 전투에서 이긴 몬스터의 레벨로 가정
+            int defeatedMonsterLevel = 1;
+            // 몬스터 레벨당 경험치 1로 가정
+            int earnedExp = defeatedMonsterLevel;
+            // 필요한 경험치 계산  
+            int requiredExp = CalculateRequiredExp(character.Level);
 
             // 경험치가 최대치에 도달하거나 필요한 경험치보다 크거나 같으면 레벨업 가능
             if (character.Exp >= requiredExp || character.Exp >= character.MaxExp)
             {
                 // 기본 공격력과 방어력 증가
-                character.AttackPower += 1;    // 정수로 변경
-                character.DefensePower += 2;  // 정수로 변경
+                character.AttackPower += 4;    // 정수로 변경
+                character.DefensePower += 4;  // 정수로 변경
 
                 character.Level++;
 
@@ -37,13 +40,15 @@ namespace ConsoleGame
             }
             else if (character.Exp < requiredExp)
             {
-                Console.WriteLine("레벨을 위한 경험치가 부족합니다.");
+                int leftEXP = requiredExp - character.Exp;
+                Console.WriteLine($"레벨을 위한 경험치가 {leftEXP} 부족합니다.");
             }
-            
+
         }
         private int CalculateRequiredExp(int level)
         {
-            return (level - 1) * 2 + 5; // 레벨에 따른 필요 경험치 계산
+            // 레벨에 따른 필요 경험치 계산
+            return (level - 1) * 5 + 10;
         }
     }
 }

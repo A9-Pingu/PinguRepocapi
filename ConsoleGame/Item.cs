@@ -21,7 +21,7 @@
 
     public class Item
     {
-        public int UniqueKey { get; private set; }
+        public int UniqueKey { get; set; }
         public string Name { get; set; }
         public ItemType Type { get; set; }
         public Dictionary<e_ItemStatusType, int> dicStatusBonus { get; set; } = new Dictionary<e_ItemStatusType, int>();

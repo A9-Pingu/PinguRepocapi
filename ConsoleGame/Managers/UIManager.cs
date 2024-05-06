@@ -13,6 +13,7 @@ namespace ConsoleGame.Managers
 {
     public class UIManager
     {
+        ASCIIArt aSCIIArt = new ASCIIArt();
 
         public void DisplayMainMenu()
         {
@@ -32,45 +33,139 @@ namespace ConsoleGame.Managers
 
         public void ShowStatus(Character player)
         {
+            int row = 16;
             Console.Clear();
-            Console.WriteLine("상태 보기");
-            Console.WriteLine($"이름: {player.Name}");
-            Console.WriteLine($"직업: {player.Job}");
-            Console.WriteLine($"레벨: {player.Level}");
-            Console.WriteLine($"경험치: {player.Exp}");
-            Console.WriteLine($"체력: {player.Health}");
-            Console.WriteLine($"마나: {player.MP}");
-            Console.WriteLine($"Gold: {player.Gold}");
-            Console.WriteLine($"공격력: {player.AttackPower}");
-            Console.WriteLine($"방어력: {player.DefensePower}");
+            Console.WriteLine("=====================================================================================================================================================");
+            Console.WriteLine("\r\t .----------------.    .----------------.    .----------------.    .----------------.    .----------------.    .----------------.   ");
+            Console.WriteLine("\r\t| .--------------. |  | .--------------. |  | .--------------. |  | .--------------. |  | .--------------. |  | .--------------. | ");
+            Console.WriteLine("\r\t| |    _______   | |  | |  _________   | |  | |      __      | |  | |  _________   | |  | | _____  _____ | |  | |    _______   | | ");
+            Console.WriteLine("\r\t| |   /  ___  |  | |  | | |  _   _  |  | |  | |     /  \\     | |  | | |  _   _  |  | |  | ||_   _||_   _|| |  | |   /  ___  |  | | ");
+            Console.WriteLine("\r\t| |  |  (__ \\_|  | |  | | |_/ | | \\_|  | |  | |    / /\\ \\    | |  | | |_/ | | \\_|  | |  | |  | |    | |  | |  | |  |  (__ \\_|  | | ");
+            Console.WriteLine("\r\t| |   '.___`-.   | |  | |     | |      | |  | |   / ____ \\   | |  | |     | |      | |  | |  | '    ' |  | |  | |   '.___`-.   | | ");
+            Console.WriteLine("\r\t| |  |`\\____) |  | |  | |    _| |_     | |  | | _/ /    \\ \\_ | |  | |    _| |_     | |  | |   \\ `--' /   | |  | |  |`\\____) |  | |");
+            Console.WriteLine("\r\t| |  |_______.'  | |  | |   |_____|    | |  | ||____|  |____|| |  | |   |_____|    | |  | |    `.__.'    | |  | |  |_______.'  | | ");
+            Console.WriteLine("\r\t| |              | |  | |              | |  | |              | |  | |              | |  | |              | |  | |              | | ");
+            Console.WriteLine("\r\t| '--------------' |  | '--------------' |  | '--------------' |  | '--------------' |  | '--------------' |  | '--------------' | ");
+            Console.WriteLine("\r\t '----------------'    '----------------'    '----------------'    '----------------'    '----------------'    '----------------' \r");
+            Console.WriteLine("\n=====================================================================================================================================================");
 
+            Console.SetCursorPosition(0, 16);
+            Console.WriteLine("\t                  ;~~-------~~~~~:;!!*~;           ");
+            Console.WriteLine("\t                 ;:~~---~~~~~::::;;!;*;!!          ");
+            Console.WriteLine("\t               !;;;:::::;;;;;;;;;;;:*=:*          ");
+            Console.WriteLine("\t              *****!!!!!!!!******!!!=*:!!;:!;!*==*");
+            Console.WriteLine("\t              $!=~-,--------;*=*;!**=*!~**!*!;;*=*");
+            Console.WriteLine("\t             !##=---~~--,,:#@##$~!$#*~;#!!*!;;:*=");
+            Console.WriteLine("\t            !**@@#---~~-,,,#@#@=#*~*$#$!=;!!;::::*");
+            Console.WriteLine("\t           !**=#=!~;:~~~:,.$=#$$=*-!$##*:****!:~::");
+            Console.WriteLine("\t            !! ~..,;*!*=:  .,~;:..,!$##=-         ");
+            Console.WriteLine("\t           !*!,...,,;$=~. ......,.-!$##$~         ");
+            Console.WriteLine("\t           !*!.......-,.. .....,,,:=$###:!        ");
+            Console.WriteLine("\t$$        !!**,,...... .......,,-:*$####;;        ");
+            Console.WriteLine("\t$$        !!*$-,,,...   ... ..,,~!=$####!         ");
+            Console.WriteLine("\t $$        *$=,.,............,.,-!$##$##*,        ");
+            Console.WriteLine("\t  $$      !$#-,,,,,,........,...,~!##$###=        ");
+            Console.WriteLine("\t   #$    ;=@*,,,,,,..,......,....,;$#####$*       ");
+            Console.WriteLine("\t    $$   $@#-,,.,,..........,...,--!$######$:     ");
+            Console.WriteLine("\t    #$$  ##~,,,,,,,,,,,,,,,,,,,,,--~;=#@@#$###!   ");
+            Console.WriteLine("\t    $#$##$#-,,,,.,,,,,,,,,,,,,,,,,-~;*$@@##$###!  ");
+            Console.WriteLine("\t$$$$$$#$$$=,,,,,,,,,,,,,,,,,,,,,,--~:!$@##@#####: ");
+            Console.WriteLine("\t$=$$$$##$$*,,,,,,,,,,,,,,,,,,,,,,--~:;=@$!#@###$=*");
+            Console.WriteLine("\t      #@##;-,---,,,----------------~::!$#!=###@##=");
+            Console.WriteLine("\t         #=!;:::;::~~~~~~~~~~::;;;!!!**$$!*       ");
+            Console.WriteLine("\t         #$*!;;;;;;;::::;:::;;;!!!****==$;$       ");
+            Console.WriteLine("\t          #=*!!!!!!!!;;;!;;;;!!******==$$:        ");
+            Console.WriteLine("\t          @@##$======================$$=          ");
+
+
+            for (int i = 15; i < 43; i++)
+            {
+                Console.SetCursorPosition(75, i);
+                Console.WriteLine("|");
+            }
+            int firstX = 95;
+            int secondX = 105;
+            Console.SetCursorPosition(firstX, row++);
+            Console.WriteLine("\t\t   상태 보기");
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"이름:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine(player.Name);
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"직업:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine(player.Job);
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"레벨:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine(player.Level);
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"경험치:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine($"{player.Exp}  /  {player.MaxExp}");
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"체력:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine($"{player.Health}   /   {player.MaxHealth}");
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"마나:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine(player.MP);
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"Gold:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine($"{player.Gold} G");
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"공격력:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine(player.AttackPower);
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"방어력:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine(player.DefensePower);
+            Console.SetCursorPosition(firstX, row += 2);
             Console.WriteLine("[장착 아이템]");
             // 장착한 아이템 정보 출력
             if (player.InventoryManager.dicEquipItem[ItemType.Weapon] != null)
             {
-                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Weapon].Name} (무기) : +{player.InventoryManager.dicEquipItem[ItemType.Weapon].dicStatusBonus[e_ItemStatusType.Attack]}");
+                ++row;
+                Console.SetCursorPosition(firstX, ++row);
+                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Weapon].Name} (무기) :");
+                Console.SetCursorPosition(firstX + 30, row);
+                Console.WriteLine($"+ {player.InventoryManager.dicEquipItem[ItemType.Weapon].dicStatusBonus[e_ItemStatusType.Attack]}");
             }
             else
             {
+                ++row;
+                Console.SetCursorPosition(firstX, ++row);
                 Console.WriteLine("장착한 무기아이템이 없습니다.");
             }
 
             if (player.InventoryManager.dicEquipItem[ItemType.Armor] != null)
             {
-                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Armor].Name} (방어구) : +{player.InventoryManager.dicEquipItem[ItemType.Armor].dicStatusBonus[e_ItemStatusType.Defense]}");
+                row += 2;
+                Console.SetCursorPosition(firstX, row);
+                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Armor].Name} (방어구) :");
+                Console.SetCursorPosition(firstX + 30, row);
+                Console.WriteLine($"+ {player.InventoryManager.dicEquipItem[ItemType.Armor].dicStatusBonus[e_ItemStatusType.Defense]}");
             }
             else
             {
+                row += 2;
+                Console.SetCursorPosition(firstX, row);
                 Console.WriteLine("장착한 방어구아이템이 없습니다.");
             }
 
-
+            Console.SetCursorPosition(0, 49);
+            Console.WriteLine("=====================================================================================================================================================");
+            Console.SetCursorPosition(65, 46);
             Game.instance.inputManager.InputAnyKey();
         }
 
         public bool DisplayInventory(InventoryManager inventory)
         {
             Console.Clear();
+            aSCIIArt.InventoryImage();
             if (inventory.dicInventory.Count == 0)
             {
                 Console.WriteLine("인벤토리가 비어 있습니다.");
@@ -97,6 +192,7 @@ namespace ConsoleGame.Managers
         public void DisplayShopMenu()
         {
             Console.Clear();
+            aSCIIArt.StoreImage();
             Console.WriteLine("===== 상점 메뉴 =====");
             Console.WriteLine("1. 무기 상점");
             Console.WriteLine("2. 방어구 상점");
@@ -135,6 +231,7 @@ namespace ConsoleGame.Managers
         public void ShowRestMenu()
         {
             Console.Clear();
+            aSCIIArt.Igloo();
             Console.WriteLine("이글루");
             Console.WriteLine($"500 G 를 내면 체력을 회복할 수 있습니다. (보유 골드 : {Game.instance.player.Gold} G)");
             Console.WriteLine("\n1. 잠자기");
@@ -145,6 +242,7 @@ namespace ConsoleGame.Managers
         public void ShowGuildMenu()
         {
             Console.Clear();
+            aSCIIArt.GuildImage();
             Console.WriteLine("< 모험가 길드 빙하 지부 >");
             Console.WriteLine("이곳에서는 의뢰를 받고 달성을 통해 보상을 받을 수 있습니다.");
             Console.WriteLine($"\n[길드 접수원]\n안녕하세요 {Game.instance.player.Name}님 모험가 길드에 오신걸 환영합니다.\n어떤 일로 방문 하셨나요?");
@@ -163,7 +261,7 @@ namespace ConsoleGame.Managers
             Console.WriteLine("===================");
             Console.WriteLine("\n     Battle!!     \n");
             int index = 1;
-            
+
             foreach (var monster in selectedMonsters)
             {
                 if (isReadyToFight) // 1. 공격 선택
@@ -187,20 +285,20 @@ namespace ConsoleGame.Managers
             }
             Console.WriteLine("\n[플레이어 정보]");
             Console.WriteLine($"Lv.{player.Level} {player.Name} ({player.Job})");
-            Console.WriteLine($"HP {player.Health}/{Game.instance.dungeon.origin.Health}"); ///////던전 깊은 복사
+            Console.WriteLine($"HP {player.Health}/{Game.instance.dungeon.origin.Health}"); ///////던전 깊은 복사n
             if (isFighting)
             {
-                Console.WriteLine("\n0. 취소");
+                Console.WriteLine($"\n{index++}. 아이템 사용");
+                Console.WriteLine("0. 취소");
                 Console.WriteLine("\n대상을 선택해주세요.");
             }
             else
             {
-                Console.WriteLine("\n1. 공격"); 
+                Console.WriteLine("\n1. 공격");
                 Console.WriteLine("\n원하시는 행동을 입력해주세요.");
             }
             Console.Write(">> ");
         }
     }
 }
-
 
