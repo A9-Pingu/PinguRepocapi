@@ -8,6 +8,7 @@ namespace ConsoleGame.Managers
 {
     public sealed class SaveLoadManager
     {
+        ASCIIArt aSCIIArt = new ASCIIArt();
         private const string SAVE_FOLDER = "SaveGames";
 
         public SaveLoadManager() {}  // private 생성자로 외부에서 인스턴스화 방지
@@ -15,6 +16,7 @@ namespace ConsoleGame.Managers
         public Character LoadOrStartGame(InputManager input)
         {
             List<string> savedGames = GetSavedGames();
+            aSCIIArt.MainImage();
 
             if (savedGames.Count > 0)
             {

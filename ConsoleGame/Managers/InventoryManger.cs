@@ -194,10 +194,25 @@ namespace ConsoleGame.Managers
                 AddItemStatBonus(item);
             }
             Console.WriteLine("\t[아이템]{0}을/를 장착{1}하였습니다.", item.Name, CheckedEquipItem(item) ? " " : " 해제");
-            Thread.Sleep(1000);
+            Game.instance.inputManager.InputAnyKey();
         }
 
-
+        public int StatBonus(Item item, int nStat, e_ItemStatusType type, bool isIncrease, string strStat)
+        {
+            Console.Write($"캐릭터의 {strStat}이 {nStat} 에서");
+            if (isIncrease)
+            {
+                nStat += (int)item.dicStatusBonus[type];
+                Console.WriteLine("{0} 만큼 증가하였습니다", (int)item.dicStatusBonus[type]);
+            }
+            else
+            {
+                nStat -= (int)item.dicStatusBonus[type];
+                Console.WriteLine("{0} 만큼 감소하였습니다", (int)item.dicStatusBonus[type]);
+            }
+            Console.WriteLine($"현재 {strStat} : {nStat}");
+            return nStat;
+        }
         public void AddItemStatBonus(Item item)
         {
             foreach (var key in item.dicStatusBonus.Keys)
@@ -205,24 +220,15 @@ namespace ConsoleGame.Managers
                 switch (key)
                 {
                     case e_ItemStatusType.Attack:
-                        Console.Write($"캐릭터의 공격력이 {player.AttackPower} 에서");
-                        player.AttackPower += (int)item.dicStatusBonus[e_ItemStatusType.Attack];
-                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.Attack]} 만큼 증가하였습니다");
-                        Console.WriteLine($"현재 공격력 : {player.AttackPower}");
+                        player.AttackPower = StatBonus(item, player.AttackPower, e_ItemStatusType.Attack, true, "공격력");
                         break;
 
                     case e_ItemStatusType.Defense:
-                        Console.Write($"캐릭터의 방어력이 {player.DefensePower} 에서");
-                        player.DefensePower += (int)item.dicStatusBonus[e_ItemStatusType.Defense];
-                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.Defense]} 만큼 증가하였습니다");
-                        Console.WriteLine($"현재 방어력 : {player.DefensePower}");
+                        player.DefensePower = StatBonus(item, player.DefensePower, e_ItemStatusType.Defense, true, "방어력");
                         break;
 
                     case e_ItemStatusType.MaxHealth:
-                        Console.Write($"캐릭터의 최대 체력이 {player.MaxHealth} 에서");
-                        player.MaxHealth += (int)item.dicStatusBonus[e_ItemStatusType.MaxHealth];
-                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.MaxHealth]} 만큼 증가하였습니다");
-                        Console.WriteLine($"현재 최대 체력 : {player.MaxHealth}");
+                        player.MaxHealth = StatBonus(item, player.MaxHealth, e_ItemStatusType.MaxHealth, true, "최대 체력");
                         break;
 
                     case e_ItemStatusType.RecoveryHp:
@@ -241,17 +247,11 @@ namespace ConsoleGame.Managers
                         break;
 
                     case e_ItemStatusType.RecoveryMp:
-                        Console.Write($"캐릭터의 마나를 {player.MP} 에서 ");
-                        player.MP += (int)item.dicStatusBonus[e_ItemStatusType.RecoveryMp];
-                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.RecoveryMp]} 만큼 회복하였습니다");
-                        Console.WriteLine($"현재 마나 : {player.MP}");
+                        player.MP = StatBonus(item, player.MP, e_ItemStatusType.RecoveryMp, true, "마나");
                         break;
 
                     case e_ItemStatusType.AdditionalDamage:
-                        Console.Write($"캐릭터의 추가 데미지가 {player.AdditionalDamage} 에서 ");
-                        player.AdditionalDamage += (int)item.dicStatusBonus[e_ItemStatusType.AdditionalDamage];
-                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.AdditionalDamage]} 만큼 증가하였습니다");
-                        Console.WriteLine($"현재 추가 데미지 : {player.AdditionalDamage}");
+                        player.AdditionalDamage = StatBonus(item, player.AdditionalDamage, e_ItemStatusType.AdditionalDamage, true, "추가 데미지");
                         break;
                 }
             }
@@ -265,40 +265,27 @@ namespace ConsoleGame.Managers
                 switch (key)
                 {
                     case e_ItemStatusType.Attack:
-                        Console.Write($"캐릭터의 공격력이 {player.AttackPower} 에서");
-                        player.AttackPower -= (int)item.dicStatusBonus[e_ItemStatusType.Attack];
-                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.Attack]} 만큼 감소하였습니다");
-                        Console.WriteLine($"현재 공격력 : {player.AttackPower}");
+                        player.AttackPower = StatBonus(item, player.AttackPower, e_ItemStatusType.Attack, false, "공격력");
                         break;
+
                     case e_ItemStatusType.Defense:
-                        Console.Write($"캐릭터의 방어력이 {player.DefensePower} 에서");
-                        player.DefensePower -= (int)item.dicStatusBonus[e_ItemStatusType.Defense];
-                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.Defense]} 만큼 감소하였습니다");
-                        Console.WriteLine($"현재 방어력 : {player.DefensePower}");
+                        player.DefensePower = StatBonus(item, player.DefensePower, e_ItemStatusType.Defense, false, "방어력");
                         break;
+
                     case e_ItemStatusType.MaxHealth:
-                        Console.Write($"캐릭터의 최대 체력이 {player.MaxHealth} 에서");
-                        player.MaxHealth -= (int)item.dicStatusBonus[e_ItemStatusType.MaxHealth];
-                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.MaxHealth]} 만큼 감소하였습니다");
-                        Console.WriteLine($"현재 최대 체력 : {player.MaxHealth}");
+                        player.MaxHealth = StatBonus(item, player.MaxHealth, e_ItemStatusType.MaxHealth, false, "최대 체력");
                         break;
+
                     case e_ItemStatusType.RecoveryHp:
-                        Console.Write($"캐릭터의 체력을 {player.Health} 에서 ");
-                        player.Health -= (int)item.dicStatusBonus[e_ItemStatusType.RecoveryHp];
-                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.RecoveryHp]} 만큼 회복하였습니다");
-                        Console.WriteLine($"현재 체력 : {player.Health}");
+                        player.Health = StatBonus(item, player.Health, e_ItemStatusType.RecoveryHp, false, "체력");
                         break;
+
                     case e_ItemStatusType.RecoveryMp:
-                        Console.Write($"캐릭터의 마나를 {player.MP} 에서 ");
-                        player.MP -= (int)item.dicStatusBonus[e_ItemStatusType.RecoveryMp];
-                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.RecoveryMp]} 만큼 감소하였습니다");
-                        Console.WriteLine($"현재 마나 : {player.MP}");
+                        player.MP = StatBonus(item, player.MP, e_ItemStatusType.RecoveryMp, false, "마나");
                         break;
+
                     case e_ItemStatusType.AdditionalDamage:
-                        Console.Write($"캐릭터의 추가 데미지가 {player.AdditionalDamage} 에서 ");
-                        player.AdditionalDamage -= (int)item.dicStatusBonus[e_ItemStatusType.AdditionalDamage];
-                        Console.WriteLine($"{(int)item.dicStatusBonus[e_ItemStatusType.AdditionalDamage]} 만큼 감소하였습니다");
-                        Console.WriteLine($"현재 추가 데미지 : {player.AdditionalDamage}");
+                        player.AdditionalDamage = StatBonus(item, player.AdditionalDamage, e_ItemStatusType.AdditionalDamage, true, "추가 데미지");
                         break;
                 }
             }
