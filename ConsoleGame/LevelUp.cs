@@ -13,7 +13,8 @@ namespace ConsoleGame
         }
 
         public void CheckLevelUp()
-            {
+        {
+            character = Game.instance.player;
             // 전투에서 이긴 몬스터의 레벨로 가정
             int defeatedMonsterLevel = 1;
             // 몬스터 레벨당 경험치 1로 가정
