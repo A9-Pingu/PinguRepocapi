@@ -21,6 +21,7 @@ namespace ConsoleGame.Scenes
         private Dungeon dungeon;
         bool useItem = false;
         int monsterIndex = 0;
+
         // 몬스터 도감
         List<Enemy> allMonsters = new List<Enemy>
         {
@@ -106,6 +107,12 @@ namespace ConsoleGame.Scenes
                     else
                         continue;
                 }
+                if (selectedMonsters[inputKey - 1].isDead)
+                {
+                    Console.WriteLine("이미 죽은 몬스터입니다.");
+                    Thread.Sleep(500);
+                    continue;
+                }
                 Battle(inputKey); //배틀 시작
                 if (player.Health <= 0) //플레이어 사망
                 {
@@ -165,6 +172,8 @@ namespace ConsoleGame.Scenes
 
             for (int i = 0; i < selectedMonsters.Count; i++)
             {
+                if (selectedMonsters[i].isDead)
+                    continue;
                 if (!deadMonsters.Contains(selectedMonsters[i]) && !player.SkillFail()) //몬스터생존 + 플레이어 스킬공격 또는 일반공격 유효
                     selectedMonsters[i].EnemyAttack(player); //몬스터 공격
                 Console.WriteLine($"\n0. 다음");
@@ -241,7 +250,7 @@ namespace ConsoleGame.Scenes
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("\nVictory");
             Console.ResetColor();
-            Console.WriteLine("\n던전에서 몬스터 3마리를 잡았습니다.");
+            Console.WriteLine($"\n던전에서 몬스터 {monsterIndex}마리를 잡았습니다.");
             Console.WriteLine($"\nLv.{player.Level} {player.Name}");
             Console.WriteLine($"HP {origin.Health} -> {player.Health}");////////던전에 깊은 복사
             Console.WriteLine($"\n기본 보상: {dungeon.baseReward} G");
