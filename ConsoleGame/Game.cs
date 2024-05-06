@@ -31,6 +31,7 @@ namespace ConsoleGame
             {
                 instance = this;
             }
+            Console.SetWindowSize(150, 50);
             uiManager = new UIManager();
             inputManager = new InputManager();
             saveLoadManager = new SaveLoadManager();

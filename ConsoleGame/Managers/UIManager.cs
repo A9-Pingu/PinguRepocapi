@@ -32,39 +32,132 @@ namespace ConsoleGame.Managers
 
         public void ShowStatus(Character player)
         {
+            int row = 16;
             Console.Clear();
-            Console.WriteLine("상태 보기");
-            Console.WriteLine($"이름: {player.Name}");
-            Console.WriteLine($"직업: {player.Job}");
-            Console.WriteLine($"레벨: {player.Level}");
-            Console.WriteLine($"경험치: {player.Exp}");
-            Console.WriteLine($"체력: {player.Health}");
-            Console.WriteLine($"마나: {player.MP}");
-            Console.WriteLine($"Gold: {player.Gold}");
-            Console.WriteLine($"공격력: {player.AttackPower}");
-            Console.WriteLine($"방어력: {player.DefensePower}");
+            Console.WriteLine("=====================================================================================================================================================");
+            Console.WriteLine("\r\t .----------------.    .----------------.    .----------------.    .----------------.    .----------------.    .----------------.   ");
+            Console.WriteLine("\r\t| .--------------. |  | .--------------. |  | .--------------. |  | .--------------. |  | .--------------. |  | .--------------. | ");
+            Console.WriteLine("\r\t| |    _______   | |  | |  _________   | |  | |      __      | |  | |  _________   | |  | | _____  _____ | |  | |    _______   | | ");
+            Console.WriteLine("\r\t| |   /  ___  |  | |  | | |  _   _  |  | |  | |     /  \\     | |  | | |  _   _  |  | |  | ||_   _||_   _|| |  | |   /  ___  |  | | ");
+            Console.WriteLine("\r\t| |  |  (__ \\_|  | |  | | |_/ | | \\_|  | |  | |    / /\\ \\    | |  | | |_/ | | \\_|  | |  | |  | |    | |  | |  | |  |  (__ \\_|  | | ");
+            Console.WriteLine("\r\t| |   '.___`-.   | |  | |     | |      | |  | |   / ____ \\   | |  | |     | |      | |  | |  | '    ' |  | |  | |   '.___`-.   | | ");
+            Console.WriteLine("\r\t| |  |`\\____) |  | |  | |    _| |_     | |  | | _/ /    \\ \\_ | |  | |    _| |_     | |  | |   \\ `--' /   | |  | |  |`\\____) |  | |");
+            Console.WriteLine("\r\t| |  |_______.'  | |  | |   |_____|    | |  | ||____|  |____|| |  | |   |_____|    | |  | |    `.__.'    | |  | |  |_______.'  | | ");
+            Console.WriteLine("\r\t| |              | |  | |              | |  | |              | |  | |              | |  | |              | |  | |              | | ");
+            Console.WriteLine("\r\t| '--------------' |  | '--------------' |  | '--------------' |  | '--------------' |  | '--------------' |  | '--------------' | ");
+            Console.WriteLine("\r\t '----------------'    '----------------'    '----------------'    '----------------'    '----------------'    '----------------' \r");
+            Console.WriteLine("\n=====================================================================================================================================================");
 
+            Console.SetCursorPosition(0,16);
+            Console.WriteLine("\t                  ;~~-------~~~~~:;!!*~;           ");
+            Console.WriteLine("\t                 ;:~~---~~~~~::::;;!;*;!!          ");
+            Console.WriteLine("\t               !;;;:::::;;;;;;;;;;;:*=:*          ");
+            Console.WriteLine("\t              *****!!!!!!!!******!!!=*:!!;:!;!*==*");
+            Console.WriteLine("\t              $!=~-,--------;*=*;!**=*!~**!*!;;*=*");
+            Console.WriteLine("\t             !##=---~~--,,:#@##$~!$#*~;#!!*!;;:*=");
+            Console.WriteLine("\t            !**@@#---~~-,,,#@#@=#*~*$#$!=;!!;::::*");
+            Console.WriteLine("\t           !**=#=!~;:~~~:,.$=#$$=*-!$##*:****!:~::");
+            Console.WriteLine("\t            !! ~..,;*!*=:  .,~;:..,!$##=-         ");
+            Console.WriteLine("\t           !*!,...,,;$=~. ......,.-!$##$~         ");
+            Console.WriteLine("\t           !*!.......-,.. .....,,,:=$###:!        ");
+            Console.WriteLine("\t$$        !!**,,...... .......,,-:*$####;;        ");
+            Console.WriteLine("\t$$        !!*$-,,,...   ... ..,,~!=$####!         ");
+            Console.WriteLine("\t $$        *$=,.,............,.,-!$##$##*,        ");
+            Console.WriteLine("\t  $$      !$#-,,,,,,........,...,~!##$###=        ");
+            Console.WriteLine("\t   #$    ;=@*,,,,,,..,......,....,;$#####$*       ");
+            Console.WriteLine("\t    $$   $@#-,,.,,..........,...,--!$######$:     ");
+            Console.WriteLine("\t    #$$  ##~,,,,,,,,,,,,,,,,,,,,,--~;=#@@#$###!   ");
+            Console.WriteLine("\t    $#$##$#-,,,,.,,,,,,,,,,,,,,,,,-~;*$@@##$###!  ");
+            Console.WriteLine("\t$$$$$$#$$$=,,,,,,,,,,,,,,,,,,,,,,--~:!$@##@#####: ");
+            Console.WriteLine("\t$=$$$$##$$*,,,,,,,,,,,,,,,,,,,,,,--~:;=@$!#@###$=*");
+            Console.WriteLine("\t      #@##;-,---,,,----------------~::!$#!=###@##=");
+            Console.WriteLine("\t         #=!;:::;::~~~~~~~~~~::;;;!!!**$$!*       ");
+            Console.WriteLine("\t         #$*!;;;;;;;::::;:::;;;!!!****==$;$       ");
+            Console.WriteLine("\t          #=*!!!!!!!!;;;!;;;;!!******==$$:        ");
+            Console.WriteLine("\t          @@##$======================$$=          ");
+
+
+            for (int i = 15; i < 43; i++)
+            {
+                Console.SetCursorPosition(75, i);
+                Console.WriteLine("|");
+            }
+            int firstX = 95;
+            int secondX = 105;
+            Console.SetCursorPosition(firstX, row++);
+            Console.WriteLine("\t\t   상태 보기");
+            Console.SetCursorPosition(firstX, row+=2);
+            Console.WriteLine($"이름:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine(player.Name);
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"직업:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine(player.Job);
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"레벨:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine(player.Level);
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"경험치:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine($"{player.Exp}  /  {player.MaxExp}");
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"체력:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine($"{player.Health}   /   {player.MaxHealth}");
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"마나:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine(player.MP);
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"Gold:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine($"{player.Gold} G");
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"공격력:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine(player.AttackPower);
+            Console.SetCursorPosition(firstX, row += 2);
+            Console.WriteLine($"방어력:");
+            Console.SetCursorPosition(secondX, row);
+            Console.WriteLine(player.DefensePower);
+            Console.SetCursorPosition(firstX, row += 2);
             Console.WriteLine("[장착 아이템]");
             // 장착한 아이템 정보 출력
             if (player.InventoryManager.dicEquipItem[ItemType.Weapon] != null)
             {
-                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Weapon].Name} (무기) : +{player.InventoryManager.dicEquipItem[ItemType.Weapon].dicStatusBonus[e_ItemStatusType.Attack]}");
+                ++row;
+                Console.SetCursorPosition(firstX, ++row); 
+                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Weapon].Name} (무기) :");
+                Console.SetCursorPosition(firstX + 30, row);
+                Console.WriteLine($"+ {player.InventoryManager.dicEquipItem[ItemType.Weapon].dicStatusBonus[e_ItemStatusType.Attack]}");
             }
             else
             {
+                ++row;
+                Console.SetCursorPosition(firstX, ++row); 
                 Console.WriteLine("장착한 무기아이템이 없습니다.");
             }
 
             if (player.InventoryManager.dicEquipItem[ItemType.Armor] != null)
             {
-                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Armor].Name} (방어구) : +{player.InventoryManager.dicEquipItem[ItemType.Armor].dicStatusBonus[e_ItemStatusType.Defense]}");
+                row += 2;
+                Console.SetCursorPosition(firstX, row);
+                Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Armor].Name} (방어구) :");
+                Console.SetCursorPosition(firstX + 30, row);
+                Console.WriteLine($"+ {player.InventoryManager.dicEquipItem[ItemType.Armor].dicStatusBonus[e_ItemStatusType.Defense]}");
             }
             else
             {
+                row += 2;
+                Console.SetCursorPosition(firstX, row);
                 Console.WriteLine("장착한 방어구아이템이 없습니다.");
             }
 
-
+            Console.SetCursorPosition(0, 49);
+            Console.WriteLine("=====================================================================================================================================================");
+            Console.SetCursorPosition(65, 46);
             Game.instance.inputManager.InputAnyKey();
         }
 
