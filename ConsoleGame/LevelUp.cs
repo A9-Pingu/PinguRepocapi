@@ -40,7 +40,7 @@ namespace ConsoleGame
             }
             else if (character.Exp < requiredExp)
             {
-                int leftEXP = requiredExp - character.Exp;
+                int leftEXP = requiredExp - character.Exp; 
                 Console.WriteLine($"레벨을 위한 경험치가 {leftEXP} 부족합니다.");
             }
 
@@ -48,7 +48,7 @@ namespace ConsoleGame
         private int CalculateRequiredExp(int level)
         {
             // 레벨에 따른 필요 경험치 계산
-            return (level - 1) * 5 + 10;
+            return (level - 1) * 5 + 10; 
         }
     }
 }

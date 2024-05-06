@@ -1,4 +1,4 @@
-using ConsoleGame.Managers;
+﻿using ConsoleGame.Managers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -34,11 +34,11 @@ namespace ConsoleGame.Scenes
         };
         List<Enemy> deadMonsters = new List<Enemy>(); //던전에 깊은 복사
         List<Enemy> selectedMonsters = new List<Enemy>();
-        Enemy[] enemies = new Enemy[3]//--------------------------------------------------------4를 3으로 변경  <1>
+        Enemy[] enemies = new Enemy[3]
         {
             new Enemy(),
             new Enemy(),
-            new Enemy(),//--------------------------------------한줄 삭제하여 3줄만 남김  <2>
+            new Enemy()
         };
 
         public DungeonScene(Character character)
@@ -125,15 +125,15 @@ namespace ConsoleGame.Scenes
         {
             selectedMonsters.Clear();
             //난이도별 랜덤 몬스터 3마리 선택
-            (int, int) difficultyIndex = difficulty switch
+            (int,int) difficultyIndex = difficulty switch
             {
-                Difficulty.Easy => (0, 3),//-------------------------(0,3)으로 변경   <3>
-                Difficulty.Normal => (2, 5),//-------------------------(2,5)으로 변경   <4>
-                Difficulty.Hard => (4, 7),//-------------------------(4,7)으로 변경   <5>
+                Difficulty.Easy => (0, 3),
+                Difficulty.Normal => (2, 5),
+                Difficulty.Hard => (4, 7),
                 _ => (0, 0)
             };
 
-            monsterIndex = random.Next(1, 3);//-------------------------(4,7)으로 변경   <6>
+            monsterIndex = random.Next(1, 3);
             int rand = 0;
             for (int i = 0; i < monsterIndex; i++)
             {
@@ -165,9 +165,6 @@ namespace ConsoleGame.Scenes
             {
                 if (!deadMonsters.Contains(selectedMonsters[i]) && !player.SkillFail()) //몬스터생존 + 플레이어 스킬공격 또는 일반공격 유효
                     selectedMonsters[i].EnemyAttack(player); //몬스터 공격
-                //Console.WriteLine($"\n0. 다음"); ----------------------------------------------------세줄 삭제    <7>끝
-                //Console.Write(">>");
-                //Game.instance.inputManager.GetValidSelectedIndex(0);
             }
         }
 

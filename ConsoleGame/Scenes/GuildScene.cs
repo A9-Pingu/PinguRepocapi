@@ -25,7 +25,7 @@ namespace ConsoleGame.Scenes
         public void GuildMenu()
         {
             dicQuests = Game.instance.questManager.dicQuestInfos;
-            while (true)
+            while (true) 
             {
                 Game.instance.uiManager.ShowGuildMenu();
                 int inputKey = Game.instance.inputManager.GetValidSelectedIndex(2);
@@ -47,19 +47,19 @@ namespace ConsoleGame.Scenes
 
         public void CheckedQuestCondition()
         {
-            while (true)
+            while(true) 
             {
                 Console.Clear();
                 Console.WriteLine("\n모험가 길드 - 의뢰 목록 확인\n\n");
                 int i = 1;
-                foreach (var quest in dicQuests)
-                {
+                foreach (var quest in dicQuests) 
+                {                    
                     Console.Write($"{i++}. {quest.Value.Title}");
                     if (quest.Value.IsEnd)
                         Console.Write("\t - 보상완료");
-                    else if (quest.Value.IsClear)
+                    else if(quest.Value.IsClear)
                         Console.Write("\t - 보상받기");
-                    else if (quest.Value.IsAccept)
+                    else if(quest.Value.IsAccept)
                         Console.Write("\t - 진행 중");
                     Console.WriteLine("");
                 }
@@ -94,7 +94,7 @@ namespace ConsoleGame.Scenes
             }
 
             Console.WriteLine($"\n< 보상 >");
-            if (quest.Gold != 0)
+            if(quest.Gold != 0)
                 Console.WriteLine($"- {quest.Gold} G");
             if (quest.Reward != null)
                 Console.WriteLine($"- {quest.Reward.Name} * {quest.ItemConunt}");
@@ -124,8 +124,8 @@ namespace ConsoleGame.Scenes
             Console.Write("원하시는 행동을 입력해주세요.\n>> ");
 
             int inputKey = Game.instance.inputManager.GetValidSelectedIndex(index);
-            switch (inputKey)
-            {
+            switch(inputKey) 
+            { 
                 case 0:
                     Console.WriteLine("의뢰 확인을 그만합니다.");
                     return;
@@ -135,7 +135,7 @@ namespace ConsoleGame.Scenes
                 case 2:
                     Console.WriteLine("에잉..쯧... 요즘 애들은 근성이 없어요 근성이!");
                     return;
-                default:
+                default :
                     return;
             }
         }

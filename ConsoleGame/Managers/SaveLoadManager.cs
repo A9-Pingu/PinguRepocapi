@@ -12,7 +12,7 @@ namespace ConsoleGame.Managers
         private const string SAVE_FOLDER = "SaveGames";
         public SaveData saveData { get; set; } = new SaveData();
 
-        public SaveLoadManager() { }
+        public SaveLoadManager() {}
 
         public void InitData()
         {
@@ -40,7 +40,7 @@ namespace ConsoleGame.Managers
                 Console.WriteLine("저장된 게임 파일이 없습니다.");
                 saveData.player = CreateNewCharacter();
                 return saveData;
-            }
+            }            
         }
 
 

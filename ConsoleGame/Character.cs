@@ -63,9 +63,9 @@ namespace ConsoleGame
         {
             Name = data.Name;
             Job = data.Job;
-            Level = data.Level;
+            Level = data.Level;    
             LevelUp = data.LevelUp;
-            Exp = data.Exp;
+            Exp = data.Exp;   
             MaxExp = data.MaxExp;
             AttackPower = data.AttackPower;
             DefensePower = data.DefensePower;
@@ -74,7 +74,7 @@ namespace ConsoleGame
             MaxHealth = data.MaxHealth;
             AdditionalDamage = data.AdditionalDamage;
             InventoryManager.Init(data);
-            MP = data.MP;
+            MP = data.MP;          
             InitializeSkillSet();
         }
 

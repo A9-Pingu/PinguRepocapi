@@ -23,7 +23,7 @@ namespace ConsoleGame
         #endregion
         public Character player = new Character();
         public SaveData saveData { get; set; } = new SaveData();
-
+        
         public bool isPlaying = true;
         public Game()
         {
@@ -38,8 +38,8 @@ namespace ConsoleGame
             saveData = saveLoadManager.LoadOrStartGame(inputManager);
             player.Init(saveLoadManager.saveData.player);
             //플레이어추가
-            itemManager = new ItemManager();
-            if (saveLoadManager.saveData.itemManager != null)
+            itemManager = new ItemManager();            
+            if(saveLoadManager.saveData.itemManager != null)
                 itemManager = saveLoadManager.saveData.itemManager;
             else
                 itemManager.InitItemList();
@@ -48,7 +48,7 @@ namespace ConsoleGame
             dungeon = new DungeonScene(player);
             questManager = new QuestManager();
             questManager.InitQuest();
-            if (saveLoadManager.saveData.questManager != null)
+            if(saveLoadManager.saveData.questManager != null)
                 questManager = saveLoadManager.saveData.questManager;
             guild = new GuildScene(player);
         }

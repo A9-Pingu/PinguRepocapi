@@ -28,7 +28,7 @@ namespace ConsoleGame.Scenes
                     case "1":
                         ShowItemActions(ItemType.Weapon);
                         break;
-                    case "2":
+                    case "2":                       
                         ShowItemActions(ItemType.Armor);
                         break;
                     case "3":
@@ -121,7 +121,7 @@ namespace ConsoleGame.Scenes
             else
             {
                 Console.WriteLine("\n잘못된 수량입니다.");
-                return;
+                return ;
             }
 
             Thread.Sleep(1000);
@@ -168,7 +168,7 @@ namespace ConsoleGame.Scenes
                 if (item.Type == ItemType.Weapon || item.Type == ItemType.Armor)
                 {
                     bool isContinue = ReleasedAndSellingEquipment(item.UniqueKey, quantity);
-                    if (!isContinue)
+                    if(!isContinue) 
                     {
                         return;
                     }
@@ -176,7 +176,7 @@ namespace ConsoleGame.Scenes
 
                 int totalPrice = (int)(item.Price * quantity * 0.85);
                 player.Gold += totalPrice;
-                Console.WriteLine($"{item.Name} {quantity}개를 총 {totalPrice}G에 판매했습니다.");
+                Console.WriteLine($"{item.Name} {quantity}개를 총 {totalPrice}G에 판매했습니다.");               
                 player.InventoryManager.RemoveItem(item, quantity);
             }
             else

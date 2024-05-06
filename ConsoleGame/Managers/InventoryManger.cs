@@ -52,7 +52,7 @@ namespace ConsoleGame.Managers
                     default:
                         break;
                 }
-
+                
             }
         }
 
@@ -175,7 +175,7 @@ namespace ConsoleGame.Managers
             if (item.Type == ItemType.Consumable || item.Type == ItemType.All)
             {
                 Console.WriteLine("장착 아이템이 아닙니다.");
-                Thread.Sleep(1000);
+                Thread.Sleep(1000); 
                 return;
             }
 
@@ -198,9 +198,9 @@ namespace ConsoleGame.Managers
             else
             {
                 RemoveItemStatBonus(dicEquipItem[item.Type]);
-                foreach (var item2 in dicInventory)
-                {
-                    if (item2.Value.Count == dicEquipItem[item.Type].Count)
+                foreach (var item2 in dicInventory) 
+                { 
+                    if(item2.Value.Count == dicEquipItem[item.Type].Count)
                         item2.Value.Equipped = false;
                 }
                 dicEquipItem[item.Type].Equipped = false;
