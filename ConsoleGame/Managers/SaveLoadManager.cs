@@ -8,6 +8,7 @@ namespace ConsoleGame.Managers
 {
     public sealed class SaveLoadManager
     {
+        ASCIIArt aSCIIArt = new ASCIIArt();
         private const string SAVE_FOLDER = "SaveGames";
         public SaveData saveData { get; set; } = new SaveData();
 
@@ -22,6 +23,7 @@ namespace ConsoleGame.Managers
         public SaveData LoadOrStartGame(InputManager input)
         {
             List<string> savedGames = GetSavedGames();
+            aSCIIArt.MainImage();
 
             if (savedGames.Count > 0)
             {

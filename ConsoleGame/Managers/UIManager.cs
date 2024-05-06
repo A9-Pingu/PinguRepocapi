@@ -13,6 +13,7 @@ namespace ConsoleGame.Managers
 {
     public class UIManager
     {
+        ASCIIArt aSCIIArt = new ASCIIArt();
 
         public void DisplayMainMenu()
         {
@@ -48,7 +49,7 @@ namespace ConsoleGame.Managers
             Console.WriteLine("\r\t '----------------'    '----------------'    '----------------'    '----------------'    '----------------'    '----------------' \r");
             Console.WriteLine("\n=====================================================================================================================================================");
 
-            Console.SetCursorPosition(0,16);
+            Console.SetCursorPosition(0, 16);
             Console.WriteLine("\t                  ;~~-------~~~~~:;!!*~;           ");
             Console.WriteLine("\t                 ;:~~---~~~~~::::;;!;*;!!          ");
             Console.WriteLine("\t               !;;;:::::;;;;;;;;;;;:*=:*          ");
@@ -86,7 +87,7 @@ namespace ConsoleGame.Managers
             int secondX = 105;
             Console.SetCursorPosition(firstX, row++);
             Console.WriteLine("\t\t   상태 보기");
-            Console.SetCursorPosition(firstX, row+=2);
+            Console.SetCursorPosition(firstX, row += 2);
             Console.WriteLine($"이름:");
             Console.SetCursorPosition(secondX, row);
             Console.WriteLine(player.Name);
@@ -128,7 +129,7 @@ namespace ConsoleGame.Managers
             if (player.InventoryManager.dicEquipItem[ItemType.Weapon] != null)
             {
                 ++row;
-                Console.SetCursorPosition(firstX, ++row); 
+                Console.SetCursorPosition(firstX, ++row);
                 Console.WriteLine($"- {player.InventoryManager.dicEquipItem[ItemType.Weapon].Name} (무기) :");
                 Console.SetCursorPosition(firstX + 30, row);
                 Console.WriteLine($"+ {player.InventoryManager.dicEquipItem[ItemType.Weapon].dicStatusBonus[e_ItemStatusType.Attack]}");
@@ -136,7 +137,7 @@ namespace ConsoleGame.Managers
             else
             {
                 ++row;
-                Console.SetCursorPosition(firstX, ++row); 
+                Console.SetCursorPosition(firstX, ++row);
                 Console.WriteLine("장착한 무기아이템이 없습니다.");
             }
 
@@ -164,6 +165,7 @@ namespace ConsoleGame.Managers
         public bool DisplayInventory(InventoryManager inventory)
         {
             Console.Clear();
+            aSCIIArt.InventoryImage();
             if (inventory.dicInventory.Count == 0)
             {
                 Console.WriteLine("인벤토리가 비어 있습니다.");
@@ -190,6 +192,7 @@ namespace ConsoleGame.Managers
         public void DisplayShopMenu()
         {
             Console.Clear();
+            aSCIIArt.StoreImage();
             Console.WriteLine("===== 상점 메뉴 =====");
             Console.WriteLine("1. 무기 상점");
             Console.WriteLine("2. 방어구 상점");
@@ -228,6 +231,7 @@ namespace ConsoleGame.Managers
         public void ShowRestMenu()
         {
             Console.Clear();
+            aSCIIArt.Igloo();
             Console.WriteLine("이글루");
             Console.WriteLine($"500 G 를 내면 체력을 회복할 수 있습니다. (보유 골드 : {Game.instance.player.Gold} G)");
             Console.WriteLine("\n1. 잠자기");
@@ -238,6 +242,7 @@ namespace ConsoleGame.Managers
         public void ShowGuildMenu()
         {
             Console.Clear();
+            aSCIIArt.GuildImage();
             Console.WriteLine("< 모험가 길드 빙하 지부 >");
             Console.WriteLine("이곳에서는 의뢰를 받고 달성을 통해 보상을 받을 수 있습니다.");
             Console.WriteLine($"\n[길드 접수원]\n안녕하세요 {Game.instance.player.Name}님 모험가 길드에 오신걸 환영합니다.\n어떤 일로 방문 하셨나요?");
@@ -256,7 +261,7 @@ namespace ConsoleGame.Managers
             Console.WriteLine("===================");
             Console.WriteLine("\n     Battle!!     \n");
             int index = 1;
-            
+
             foreach (var monster in selectedMonsters)
             {
                 if (isReadyToFight) // 1. 공격 선택

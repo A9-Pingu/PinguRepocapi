@@ -212,7 +212,6 @@ namespace ConsoleGame.Managers
                 Game.instance.questManager.dicQuestInfos[2].OnCheckEvent(2, 1);
 
             }
-
             Game.instance.inputManager.InputAnyKey();
         }
 

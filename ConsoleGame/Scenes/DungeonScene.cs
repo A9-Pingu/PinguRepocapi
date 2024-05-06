@@ -13,6 +13,7 @@ namespace ConsoleGame.Scenes
 {
     public class DungeonScene
     {
+        ASCIIArt aSCIIArt = new ASCIIArt();
         private Character player;
         private Random random = new Random();
         private Random random2 = new Random();
@@ -54,6 +55,7 @@ namespace ConsoleGame.Scenes
             while (true)
             {
                 Console.Clear();
+                aSCIIArt.BattleImage();
                 Console.WriteLine("===================");
                 Console.WriteLine("1. 쉬운 던전     | 누구나 가능");
                 Console.WriteLine("2. 일반 던전     | 방어력 30 이상 권장");
@@ -175,7 +177,9 @@ namespace ConsoleGame.Scenes
         {
             Console.WriteLine("===================");
             Console.WriteLine("\nBattle!! - Result");
+            Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine("\nYou Lose.");
+            Console.ResetColor();
             Console.WriteLine("\n전투에서 패배하였습니다.");
             Console.WriteLine($"\nLv.{player.Level} {player.Name}");
             Console.WriteLine($"HP {origin.Health} -> Dead\n"); ////////던전에 깊은 복사
@@ -233,7 +237,9 @@ namespace ConsoleGame.Scenes
             int damage = origin.Health - player.Health;
             Console.WriteLine("===================");
             Console.WriteLine("\nBattle!! - Result");
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("\nVictory");
+            Console.ResetColor();
             Console.WriteLine("\n던전에서 몬스터 3마리를 잡았습니다.");
             Console.WriteLine($"\nLv.{player.Level} {player.Name}");
             Console.WriteLine($"HP {origin.Health} -> {player.Health}");////////던전에 깊은 복사
