@@ -12,16 +12,20 @@ namespace ConsoleGame.Managers
         public Character player;
         public Dictionary<int, Item> dicInventory = new Dictionary<int, Item>();
 
-        // 인벤토리 초기화
-        public InventoryManager(Character character)
+        public InventoryManager()
         {
-            player = character;
             dicEquipItem[ItemType.Weapon] = null;
             dicEquipItem[ItemType.Armor] = null;
             dicEquipItem[ItemType.Consumable] = null;
             dicEquipItem[ItemType.All] = null;
         }
-
+        // 인벤토리 초기화
+        public void Init(Character data)
+        {
+            player = Game.instance.player;
+            dicEquipItem = data.InventoryManager.dicEquipItem;
+            dicInventory = data.InventoryManager.dicInventory;
+        }
         // 인벤토리 출력 및 아이템 장착/해제 기능
         public void ShowInventory()
         {
@@ -48,7 +52,7 @@ namespace ConsoleGame.Managers
                     default:
                         break;
                 }
-                Thread.Sleep(1000);
+                
             }
         }
 
@@ -159,7 +163,7 @@ namespace ConsoleGame.Managers
 
         public bool CheckedEquipItem(Item item)
         {
-            if (dicEquipItem[item.Type] == item)
+            if (dicEquipItem[item.Type].UniqueKey == item.UniqueKey)
             {
                 return true;
             }
@@ -171,29 +175,43 @@ namespace ConsoleGame.Managers
             if (item.Type == ItemType.Consumable || item.Type == ItemType.All)
             {
                 Console.WriteLine("장착 아이템이 아닙니다.");
-                Thread.Sleep(1000);
+                Thread.Sleep(1000); 
                 return;
             }
 
-            if (CheckedEquipItem(item))
+
+            if (dicEquipItem[item.Type] == null)
+            {
+                dicEquipItem[item.Type] = item;
+                item.Equipped = true;
+                AddItemStatBonus(item);
+                Game.instance.questManager.dicQuestInfos[2].OnCheckEvent(2, 1);
+                Console.WriteLine("\t[아이템]{0}을/를 장착하였습니다.", item.Name);
+            }
+            else if (CheckedEquipItem(item))
             {
                 RemoveItemStatBonus(item);
                 item.Equipped = false;
                 dicEquipItem[item.Type] = null;
+                Console.WriteLine("\t[아이템]{0}을/를 장착해제하였습니다.", item.Name);
             }
             else
             {
-                if (dicEquipItem[item.Type] != null)
-                {
-                    RemoveItemStatBonus(dicEquipItem[item.Type]);
-                    dicEquipItem[item.Type].Equipped = false;
+                RemoveItemStatBonus(dicEquipItem[item.Type]);
+                foreach (var item2 in dicInventory) 
+                { 
+                    if(item2.Value.Count == dicEquipItem[item.Type].Count)
+                        item2.Value.Equipped = false;
                 }
+                dicEquipItem[item.Type].Equipped = false;
+                Console.WriteLine("\t[아이템]{0}을/를 장착해제하였습니다.", dicEquipItem[item.Type].Name);
                 dicEquipItem[item.Type] = item;
                 item.Equipped = true;
-                Game.instance.questManager.dicQuestInfos[2].OnCheckEvent(2, 1);
                 AddItemStatBonus(item);
+                Console.WriteLine("\t[아이템]{0}을/를 장착하였습니다.", item.Name);
+                Game.instance.questManager.dicQuestInfos[2].OnCheckEvent(2, 1);
+
             }
-            Console.WriteLine("\t[아이템]{0}을/를 장착{1}하였습니다.", item.Name, CheckedEquipItem(item) ? " " : " 해제");
             Game.instance.inputManager.InputAnyKey();
         }
 

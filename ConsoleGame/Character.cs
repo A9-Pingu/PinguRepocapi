@@ -28,8 +28,9 @@ namespace ConsoleGame
 
         public int AdditionalDamage { get; set; } = 0;
         public int MP { get; set; } = 50;
+        public Dictionary<int, Quest> DicQuests { get; set; } = new Dictionary<int, Quest>();
 
-        public InventoryManager InventoryManager { get; set; }
+        public InventoryManager InventoryManager { get; set; } = new InventoryManager();
 
         public delegate void SkillAction(Character player, Enemy enemy, int skillIndex);
         private SkillAction[] SkillSet;
@@ -38,6 +39,10 @@ namespace ConsoleGame
         private readonly string[] MageSkills = { "펭귄 행진곡 - MP 15", "아르페지오 - MP 20" };
         private readonly string[] RogueSkills = { "더블 펭펭이 - MP 10", "스프릿 대거 - MP 15" };
 
+        public Character()
+        {
+
+        }
 
         public Character(string name, JobType job)
         {
@@ -52,7 +57,24 @@ namespace ConsoleGame
 
             // 최대 경험치를 초기화합니다. 예를 들어 레벨이 1일 때 최대 경험치를 설정할 수 있습니다.
             MaxExp = CalculateMaxExp(Level);
-            InventoryManager = new InventoryManager(this);
+            InitializeSkillSet();
+        }
+        public void Init(Character data)
+        {
+            Name = data.Name;
+            Job = data.Job;
+            Level = data.Level;    
+            LevelUp = data.LevelUp;
+            Exp = data.Exp;   
+            MaxExp = data.MaxExp;
+            AttackPower = data.AttackPower;
+            DefensePower = data.DefensePower;
+            Gold = data.Gold;
+            Health = data.Health;
+            MaxHealth = data.MaxHealth;
+            AdditionalDamage = data.AdditionalDamage;
+            InventoryManager.Init(data);
+            MP = data.MP;          
             InitializeSkillSet();
         }
 

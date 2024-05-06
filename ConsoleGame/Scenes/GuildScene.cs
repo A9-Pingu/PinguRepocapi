@@ -4,22 +4,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ConsoleGame.Scenes
 {
     public class GuildScene
     {
         Dictionary<int, Quest> dicQuests;
-        List<Quest> EnrolledQuest = new List<Quest>();
         Character player;
 
         public GuildScene(Character character)
         {
             player = character;
             dicQuests = Game.instance.questManager.dicQuestInfos;
+            for (int i = 0; i < character.DicQuests.Count; i++)
+            {
+                dicQuests[i] = character.DicQuests[i];
+            }
         }
         public void GuildMenu()
         {
+            dicQuests = Game.instance.questManager.dicQuestInfos;
             while (true) 
             {
                 Game.instance.uiManager.ShowGuildMenu();
@@ -50,8 +55,10 @@ namespace ConsoleGame.Scenes
                 foreach (var quest in dicQuests) 
                 {                    
                     Console.Write($"{i++}. {quest.Value.Title}");
-                    if(quest.Value.IsClear)
-                        Console.Write("\t - 완료");
+                    if (quest.Value.IsEnd)
+                        Console.Write("\t - 보상완료");
+                    else if(quest.Value.IsClear)
+                        Console.Write("\t - 보상받기");
                     else if(quest.Value.IsAccept)
                         Console.Write("\t - 진행 중");
                     Console.WriteLine("");

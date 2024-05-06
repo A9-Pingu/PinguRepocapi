@@ -10,10 +10,17 @@ namespace ConsoleGame.Managers
     {
         ASCIIArt aSCIIArt = new ASCIIArt();
         private const string SAVE_FOLDER = "SaveGames";
+        public SaveData saveData { get; set; } = new SaveData();
 
-        public SaveLoadManager() {}  // private 생성자로 외부에서 인스턴스화 방지
+        public SaveLoadManager() {}
 
-        public Character LoadOrStartGame(InputManager input)
+        public void InitData()
+        {
+            Game.instance.player = saveData.player;
+            Game.instance.questManager = saveData.questManager;
+            Game.instance.itemManager = saveData.itemManager;
+        }
+        public SaveData LoadOrStartGame(InputManager input)
         {
             List<string> savedGames = GetSavedGames();
             aSCIIArt.MainImage();
@@ -24,14 +31,15 @@ namespace ConsoleGame.Managers
                 int selectedIndex = input.GetValidSelectedIndex(savedGames.Count, 1);
 
                 string selectedGame = savedGames[selectedIndex - 1];
-                Character player = LoadGame(selectedGame);
-                return player;
+                saveData = LoadGame(selectedGame);
+                InitData();
+                return saveData;
             }
             else
             {
                 Console.WriteLine("저장된 게임 파일이 없습니다.");
-                Character player = CreateNewCharacter();
-                return player;
+                saveData.player = CreateNewCharacter();
+                return saveData;
             }            
         }
 
@@ -57,7 +65,7 @@ namespace ConsoleGame.Managers
             return savedGames;
         }
 
-        public void SaveGame(Character player)
+        public void SaveGame(SaveData saveData)
         {
             string saveFolderPath = Path.Combine(Directory.GetCurrentDirectory(), SAVE_FOLDER);
 
@@ -91,14 +99,14 @@ namespace ConsoleGame.Managers
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             };
 
-            string json = JsonConvert.SerializeObject(player, Formatting.Indented, settings);
+            string json = JsonConvert.SerializeObject(saveData, Formatting.Indented, settings);
             File.WriteAllText(filePath, json);
 
             Console.WriteLine($"게임이 저장되었습니다. ({saveName}.json)");
         }
 
 
-        public Character LoadGame(string fileName)
+        public SaveData LoadGame(string fileName)
         {
             string filePath = Path.Combine(Directory.GetCurrentDirectory(), SAVE_FOLDER, fileName);
             if (File.Exists(filePath))
@@ -106,9 +114,9 @@ namespace ConsoleGame.Managers
                 try
                 {
                     string json = File.ReadAllText(filePath);
-                    Character player = JsonConvert.DeserializeObject<Character>(json);
+                    saveData = JsonConvert.DeserializeObject<SaveData>(json);
                     Console.WriteLine("게임 불러오기 완료");
-                    return player;
+                    return saveData;
                 }
                 catch (Exception e)
                 {
@@ -182,5 +190,12 @@ namespace ConsoleGame.Managers
         }
 
 
+    }
+
+    public class SaveData
+    {
+        public ItemManager itemManager;
+        public QuestManager questManager;
+        public Character player;
     }
 }
