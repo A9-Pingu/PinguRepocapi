@@ -18,6 +18,7 @@ namespace ConsoleGame
             int defeatedMonsterLevel = 1;
             // 몬스터 레벨당 경험치 1로 가정
             int earnedExp = defeatedMonsterLevel;
+            character = Game.instance.player;
             // 필요한 경험치 계산  
             int requiredExp = CalculateRequiredExp(character.Level);
 

@@ -158,6 +158,7 @@ namespace ConsoleGame.Scenes
                 {
                     deadMonsters.Add(selectedMonsters[EnemyNum - 1]);
                     selectedMonsters[EnemyNum - 1].isDead = true; //Dead회색표시
+                    selectedMonsters.Remove(selectedMonsters[EnemyNum - 1]);
                     Game.instance.questManager.dicQuestInfos[1].OnCheckEvent(1, 1);
                 }
             }
