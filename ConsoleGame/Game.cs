@@ -21,8 +21,8 @@ namespace ConsoleGame
         public DungeonScene dungeon { get; set; }
         public GuildScene guild { get; set; }
         #endregion
-        public Character player;
-       
+        public Character player = new Character();
+        public SaveData saveData { get; set; } = new SaveData();
         
         public bool isPlaying = true;
         public Game()
@@ -35,16 +35,25 @@ namespace ConsoleGame
             uiManager = new UIManager();
             inputManager = new InputManager();
             saveLoadManager = new SaveLoadManager();
-            player = saveLoadManager.LoadOrStartGame(inputManager);
-            itemManager = new ItemManager();
-            itemManager.InitItemList();
+            saveData = saveLoadManager.LoadOrStartGame(inputManager);
+            player.Init(saveLoadManager.saveData.player);
+            //플레이어추가
+            itemManager = new ItemManager();            
+            if(saveLoadManager.saveData.itemManager != null)
+                itemManager = saveLoadManager.saveData.itemManager;
+            else
+                itemManager.InitItemList();
             shopScene = new Shop(player, itemManager);
             restScene = new RestInTown(player);
             dungeon = new DungeonScene(player);
             questManager = new QuestManager();
             questManager.InitQuest();
+            if(saveLoadManager.saveData.questManager != null)
+                questManager = saveLoadManager.saveData.questManager;
             guild = new GuildScene(player);
         }
+
+
 
         public void Run()
         {          
@@ -83,12 +92,15 @@ namespace ConsoleGame
                     guild.GuildMenu();
                     break;
                 case (int)EScene.e_Save:
-                    saveLoadManager.SaveGame(player);
+                    saveData.questManager = questManager;
+                    saveData.itemManager = itemManager;
+                    saveData.player = player;
+                    saveLoadManager.SaveGame(saveData);
                     Console.WriteLine("게임이 저장되었습니다.");
                     Console.ReadKey();
                     break;
                 case (int)EScene.e_Load:
-                    player = saveLoadManager.LoadOrStartGame(inputManager);
+                    saveData = saveLoadManager.LoadOrStartGame(inputManager);
                     break;
                 default:
                     Console.WriteLine("잘못된 선택입니다.");
