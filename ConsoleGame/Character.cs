@@ -100,7 +100,7 @@ namespace ConsoleGame
             SkillSet[(int)JobType.전사] = UseWarriorSkill;
             SkillSet[(int)JobType.마법사] = UseMageSkill;
             SkillSet[(int)JobType.도적] = UseRogueSkill;
-         }
+        }
 
         private int CalculateMaxExp(int level)
         {
@@ -364,7 +364,7 @@ namespace ConsoleGame
             while (!int.TryParse(Console.ReadLine(), out skillChoice) || (skillChoice < 0 || skillChoice > 2))
             {
                 Console.WriteLine("잘못된 입력입니다. 다시 입력해주세요.");
-                Console.Write("원하시는 행동을 입력해주세요: ");               
+                Console.Write("원하시는 행동을 입력해주세요: ");
             }
 
             Console.WriteLine($"당신이 {enemy.Name}에게 {AttackPower}의 피해를 입혔습니다.");
